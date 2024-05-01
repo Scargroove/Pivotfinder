@@ -236,12 +236,14 @@ namespace Pixelfinder
                         {
                             Console.WriteLine(coordinatesItem);
                         }
+
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("Fehler beim Laden des Bildes: " + imagePath + " " + ex.Message);
                     }
                 }
+                MessageBox.Show("Fertig");
             }
             else
             {
