@@ -148,6 +148,9 @@
             this.Name = "Form1";
             this.Text = "Pixlelfinder";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).EndInit();

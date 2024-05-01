@@ -33,6 +33,26 @@ namespace Pixelfinder
             listBox.AllowDrop = true ;
         }
 
+        private void Form1_DragEnter(object sender, DragEventArgs e)
+        {
+
+            listBox.BackColor = Color.LightGray;
+            HandleDragEnter(e);
+
+        }
+        private void Form1_DragLeave(object sender, EventArgs e)
+        {
+            listBox.BackColor = SystemColors.Window;
+
+        }
+
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            HandleDragDrop(e);
+            listBox.BackColor = SystemColors.Window;
+
+        }
+
         private void listBox_DragEnter(object sender, DragEventArgs e)
         {
             listBox.BackColor = Color.LightGray; 
@@ -54,22 +74,23 @@ namespace Pixelfinder
 
         private void PictureBox_DragEnter(object sender, DragEventArgs e)
         {
-            pictureBox.BackColor = Color.LightGray;
+            listBox.BackColor = Color.LightGray;
             HandleDragEnter(e);
-            
         }
 
         private void pictureBox_DragLeave(object sender, EventArgs e)
         {
-            pictureBox.BackColor = SystemColors.Window; 
+            listBox.BackColor = SystemColors.Window;
 
         }
+
         private void PictureBox_DragDrop(object sender, DragEventArgs e)
         {
             HandleDragDrop(e);
-            pictureBox.BackColor = SystemColors.Window; 
+            listBox.BackColor = SystemColors.Window;
 
         }
+
 
         private void HandleDragEnter(DragEventArgs e)
         {
@@ -269,6 +290,6 @@ namespace Pixelfinder
             }
         }
 
-
+    
     }
 }
