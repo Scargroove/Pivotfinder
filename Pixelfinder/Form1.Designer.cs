@@ -32,7 +32,11 @@
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonDeleteListItem = new System.Windows.Forms.Button();
             this.startPixelfind = new System.Windows.Forms.Button();
+            this.numericUpDownSpriteWidth = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownSpriteHeight = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
             this.SuspendLayout();
             // 
             // listBox
@@ -78,19 +82,65 @@
             // 
             // startPixelfind
             // 
-            this.startPixelfind.Location = new System.Drawing.Point(225, 183);
+            this.startPixelfind.Location = new System.Drawing.Point(381, 280);
             this.startPixelfind.Name = "startPixelfind";
             this.startPixelfind.Size = new System.Drawing.Size(75, 23);
             this.startPixelfind.TabIndex = 3;
-            this.startPixelfind.Text = "button1";
+            this.startPixelfind.Text = "start";
             this.startPixelfind.UseVisualStyleBackColor = true;
             this.startPixelfind.Click += new System.EventHandler(this.startPixelfind_Click);
+            // 
+            // numericUpDownSpriteWidth
+            // 
+            this.numericUpDownSpriteWidth.Location = new System.Drawing.Point(508, 76);
+            this.numericUpDownSpriteWidth.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUpDownSpriteWidth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownSpriteWidth.Name = "numericUpDownSpriteWidth";
+            this.numericUpDownSpriteWidth.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownSpriteWidth.TabIndex = 4;
+            this.numericUpDownSpriteWidth.Value = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            // 
+            // numericUpDownSpriteHeight
+            // 
+            this.numericUpDownSpriteHeight.Location = new System.Drawing.Point(508, 134);
+            this.numericUpDownSpriteHeight.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUpDownSpriteHeight.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownSpriteHeight.Name = "numericUpDownSpriteHeight";
+            this.numericUpDownSpriteHeight.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownSpriteHeight.TabIndex = 5;
+            this.numericUpDownSpriteHeight.Value = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.numericUpDownSpriteHeight);
+            this.Controls.Add(this.numericUpDownSpriteWidth);
             this.Controls.Add(this.startPixelfind);
             this.Controls.Add(this.buttonDeleteListItem);
             this.Controls.Add(this.listBox);
@@ -99,6 +149,8 @@
             this.Text = "Pixlelfinder";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -109,6 +161,8 @@
         private System.Windows.Forms.ListBox listBox;
         private System.Windows.Forms.Button buttonDeleteListItem;
         private System.Windows.Forms.Button startPixelfind;
+        private System.Windows.Forms.NumericUpDown numericUpDownSpriteWidth;
+        private System.Windows.Forms.NumericUpDown numericUpDownSpriteHeight;
     }
 }
 

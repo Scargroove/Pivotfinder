@@ -174,8 +174,14 @@ namespace Pixelfinder
         {
             if (listBox.SelectedIndex != -1)
             {
+
+                // Bildressourcen freigeben
+                Image imageToRemove = imagesList[listBox.SelectedIndex];
+                imageToRemove.Dispose();
+
                 // Das ausgewählte Bild aus der ListBox und der Liste entfernen
                 imagesList.RemoveAt(listBox.SelectedIndex);
+
 
                 // ListBox aktualisieren, um die Liste der verbleibenden Bilder anzuzeigen
                 UpdateListBox();
@@ -201,32 +207,56 @@ namespace Pixelfinder
 
         private void startPixelfind_Click(object sender, EventArgs e)
         {
-            // Pfad zum Bild angeben
-            string imagePath = @"C:\texture.png";
-
-            // Farbcode definieren (RGB-Wert)
-            Color targetColor = Color.FromArgb(255, 255, 0, 255);
-
-            // Bild laden
-            Bitmap bitmap = new Bitmap(imagePath);
-
-
-            // Breite und Höhe des Sprites erhalten
-            Point spriteSize = new Point(128, 128);
-            Stopwatch stopwatch = new Stopwatch();
-
-            stopwatch.Start();
-
-            List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor);
-
-            foreach (string coordinatesItem in coordinates)
+            if (imagesList.Count > 0)
             {
-                Console.WriteLine(coordinatesItem);
+                // Farbcode definieren (RGB-Wert)
+                Color targetColor = Color.FromArgb(255, 255, 0, 255);
+
+                // Breite und Höhe des Sprites definieren
+                Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
+
+                // Stopwatch zur Zeitmessung
+                Stopwatch stopwatch = new Stopwatch();
+
+                foreach (Image img in imagesList)
+                {
+                    // Pfad aus dem Tag des Bildes holen
+                    string imagePath = img.Tag.ToString();
+
+                    try
+                    {
+                        // Bild laden
+                        Bitmap bitmap = new Bitmap(imagePath);
+
+                        stopwatch.Start();
+
+                        // Pixel finden
+                        List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor);
+
+                        stopwatch.Stop();
+                        Console.WriteLine("Dauer für Bild " + imagePath + ": " + stopwatch.ElapsedMilliseconds + " ms");
+
+                        // Koordinaten ausgeben
+                        foreach (string coordinatesItem in coordinates)
+                        {
+                            Console.WriteLine(coordinatesItem);
+                        }
+
+                        // Stopwatch zurücksetzen für das nächste Bild
+                        stopwatch.Reset();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Fehler beim Laden des Bildes: " + ex.Message);
+                    }
+                }
             }
-            stopwatch.Stop();
-            Console.WriteLine("Dauer: " + stopwatch.ElapsedMilliseconds + " ms");
-
-
+            else
+            {
+                MessageBox.Show("Es sind keine Bilder in der Liste.");
+            }
         }
+
+
     }
 }
