@@ -31,6 +31,7 @@
             this.listBox = new System.Windows.Forms.ListBox();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonDeleteListItem = new System.Windows.Forms.Button();
+            this.startPixelfind = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -75,11 +76,22 @@
             this.buttonDeleteListItem.UseVisualStyleBackColor = true;
             this.buttonDeleteListItem.Click += new System.EventHandler(this.buttonDeleteListItem_Click);
             // 
+            // startPixelfind
+            // 
+            this.startPixelfind.Location = new System.Drawing.Point(225, 183);
+            this.startPixelfind.Name = "startPixelfind";
+            this.startPixelfind.Size = new System.Drawing.Size(75, 23);
+            this.startPixelfind.TabIndex = 3;
+            this.startPixelfind.Text = "button1";
+            this.startPixelfind.UseVisualStyleBackColor = true;
+            this.startPixelfind.Click += new System.EventHandler(this.startPixelfind_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.startPixelfind);
             this.Controls.Add(this.buttonDeleteListItem);
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.pictureBox);
@@ -96,6 +108,7 @@
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.ListBox listBox;
         private System.Windows.Forms.Button buttonDeleteListItem;
+        private System.Windows.Forms.Button startPixelfind;
     }
 }
 

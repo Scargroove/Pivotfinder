@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,12 +13,15 @@ namespace Pixelfinder
 {
     public partial class Form1 : Form
     {
+
+
         private List<Image> imagesList = new List<Image>();
 
         public Form1()
         {
             InitializeComponent();
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+ 
 
         }
 
@@ -195,5 +199,34 @@ namespace Pixelfinder
             RemoveSelectedImage();
         }
 
+        private void startPixelfind_Click(object sender, EventArgs e)
+        {
+            // Pfad zum Bild angeben
+            string imagePath = @"C:\texture.png";
+
+            // Farbcode definieren (RGB-Wert)
+            Color targetColor = Color.FromArgb(255, 255, 0, 255);
+
+            // Bild laden
+            Bitmap bitmap = new Bitmap(imagePath);
+
+
+            // Breite und Höhe des Sprites erhalten
+            Point spriteSize = new Point(128, 128);
+            Stopwatch stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
+            List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor);
+
+            foreach (string coordinatesItem in coordinates)
+            {
+                Console.WriteLine(coordinatesItem);
+            }
+            stopwatch.Stop();
+            Console.WriteLine("Dauer: " + stopwatch.ElapsedMilliseconds + " ms");
+
+
+        }
     }
 }
