@@ -29,14 +29,15 @@
         private void InitializeComponent()
         {
             this.listBox = new System.Windows.Forms.ListBox();
-            this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonDeleteListItem = new System.Windows.Forms.Button();
-            this.startPixelfind = new System.Windows.Forms.Button();
+            this.buttonStartPixelfind = new System.Windows.Forms.Button();
             this.numericUpDownSpriteWidth = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownSpriteHeight = new System.Windows.Forms.NumericUpDown();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // listBox
@@ -53,23 +54,6 @@
             this.listBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.listBox_DragEnter);
             this.listBox.DragLeave += new System.EventHandler(this.listBox_DragLeave);
             // 
-            // pictureBox
-            // 
-            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox.BackgroundImage = global::Pixelfinder.Properties.Resources.drag_and_drop;
-            this.pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox.Location = new System.Drawing.Point(508, 213);
-            this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(280, 225);
-            this.pictureBox.TabIndex = 0;
-            this.pictureBox.TabStop = false;
-            this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
-            this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
-            this.pictureBox.DragLeave += new System.EventHandler(this.pictureBox_DragLeave);
-            // 
             // buttonDeleteListItem
             // 
             this.buttonDeleteListItem.Location = new System.Drawing.Point(381, 343);
@@ -80,15 +64,15 @@
             this.buttonDeleteListItem.UseVisualStyleBackColor = true;
             this.buttonDeleteListItem.Click += new System.EventHandler(this.buttonDeleteListItem_Click);
             // 
-            // startPixelfind
+            // buttonStartPixelfind
             // 
-            this.startPixelfind.Location = new System.Drawing.Point(381, 280);
-            this.startPixelfind.Name = "startPixelfind";
-            this.startPixelfind.Size = new System.Drawing.Size(75, 23);
-            this.startPixelfind.TabIndex = 3;
-            this.startPixelfind.Text = "start";
-            this.startPixelfind.UseVisualStyleBackColor = true;
-            this.startPixelfind.Click += new System.EventHandler(this.startPixelfind_Click);
+            this.buttonStartPixelfind.Location = new System.Drawing.Point(381, 280);
+            this.buttonStartPixelfind.Name = "buttonStartPixelfind";
+            this.buttonStartPixelfind.Size = new System.Drawing.Size(75, 23);
+            this.buttonStartPixelfind.TabIndex = 3;
+            this.buttonStartPixelfind.Text = "start";
+            this.buttonStartPixelfind.UseVisualStyleBackColor = true;
+            this.buttonStartPixelfind.Click += new System.EventHandler(this.startPixelfind_Click);
             // 
             // numericUpDownSpriteWidth
             // 
@@ -134,14 +118,42 @@
             0,
             0});
             // 
+            // pictureBox
+            // 
+            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pictureBox.Location = new System.Drawing.Point(508, 213);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(280, 225);
+            this.pictureBox.TabIndex = 0;
+            this.pictureBox.TabStop = false;
+            this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
+            this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
+            this.pictureBox.DragLeave += new System.EventHandler(this.pictureBox_DragLeave);
+            
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(508, 29);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(120, 23);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "choose pixel color";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.numericUpDownSpriteHeight);
             this.Controls.Add(this.numericUpDownSpriteWidth);
-            this.Controls.Add(this.startPixelfind);
+            this.Controls.Add(this.buttonStartPixelfind);
             this.Controls.Add(this.buttonDeleteListItem);
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.pictureBox);
@@ -151,9 +163,9 @@
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -163,9 +175,10 @@
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.ListBox listBox;
         private System.Windows.Forms.Button buttonDeleteListItem;
-        private System.Windows.Forms.Button startPixelfind;
+        private System.Windows.Forms.Button buttonStartPixelfind;
         private System.Windows.Forms.NumericUpDown numericUpDownSpriteWidth;
         private System.Windows.Forms.NumericUpDown numericUpDownSpriteHeight;
+        private System.Windows.Forms.Button button1;
     }
 }
 

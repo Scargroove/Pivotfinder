@@ -59,15 +59,5 @@ namespace Pixelfinder.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap drag_and_drop {
-            get {
-                object obj = ResourceManager.GetObject("drag_and_drop", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

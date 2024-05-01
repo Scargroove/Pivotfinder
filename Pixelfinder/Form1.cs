@@ -24,8 +24,10 @@ namespace Pixelfinder
 
             // Drag-and-Drop für das Formular aktivieren
             this.AllowDrop = true;
+            // Farbcode definieren (RGB-Wert)
 
         }
+        Color targetColor = Color.FromArgb(255, 255, 0, 255);
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -90,6 +92,7 @@ namespace Pixelfinder
             listBox.BackColor = SystemColors.Window;
 
         }
+
 
 
         private void HandleDragEnter(DragEventArgs e)
@@ -220,7 +223,6 @@ namespace Pixelfinder
                 if (imagesList.Count == 0)
                 {
                     pictureBox.Image = null;
-                    pictureBox.BackgroundImage = Properties.Resources.drag_and_drop; // Setze ein Platzhalterbild oder einen anderen Hinweis ein
                 }
                 else
                 {
@@ -240,14 +242,10 @@ namespace Pixelfinder
         {
             if (imagesList.Count > 0)
             {
-                // Farbcode definieren (RGB-Wert)
-                Color targetColor = Color.FromArgb(255, 255, 0, 255);
+                
 
                 // Breite und Höhe des Sprites definieren
                 Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
-
-                // Stopwatch zur Zeitmessung
-                Stopwatch stopwatch = new Stopwatch();
 
                 foreach (Image img in imagesList)
                 {
@@ -259,24 +257,14 @@ namespace Pixelfinder
                         // Bild laden
                         Bitmap bitmap = new Bitmap(imagePath);
 
-                        stopwatch.Start();
-
                         // Pixel finden
                         List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor);
                         
-                        stopwatch.Stop();
-
-                        stopwatch.Stop();
-                        Console.WriteLine("Dauer für Bild " + imagePath + ": " + stopwatch.ElapsedMilliseconds + " ms");
-
                         // Koordinaten ausgeben
                         foreach (string coordinatesItem in coordinates)
                         {
                             Console.WriteLine(coordinatesItem);
                         }
-
-                        // Stopwatch zurücksetzen für das nächste Bild
-                        stopwatch.Reset();
                     }
                     catch (Exception ex)
                     {
@@ -290,6 +278,23 @@ namespace Pixelfinder
             }
         }
 
-    
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+
+            // Definieren einer benutzerdefinierten Farbe als RGB-Wert 255, 0, 255 (Magenta)
+            int[] customColors = new int[] { ColorTranslator.ToOle(Color.FromArgb(255, 0, 255)) };
+            colorDialog.CustomColors = customColors;
+
+            // Setzen der initial ausgewählten Farbe auf Magenta
+            colorDialog.Color = Color.FromArgb(255, 0, 255);
+
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Die ausgewählte Farbe verwenden
+                Color selectedColor = colorDialog.Color;
+                targetColor = selectedColor;
+            }
+        }
     }
 }
