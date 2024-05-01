@@ -13,6 +13,12 @@ namespace Pixelfinder
         // Methode zum Suchen eines Pixels in einem Sprite Sheet (Bild, das mehrere kleinere Bilder enthält)
         public static List<string> FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor)
         {
+            // Überprüfung, ob die Sprite-Größe größer als die Bitmap-Größe ist
+            if (spriteSize.X > bitmap.Width || spriteSize.Y > bitmap.Height)
+            {
+                throw new ArgumentException("Die Sprite-Größe darf nicht größer als die Spritesheet-Größe sein.");
+            }
+
             int targetColorInt = targetColor.ToArgb(); // Konvertieren der Ziel-Farbe zu einem ARGB-Wert
 
             // Berechnung der Anzahl der Sprites im Sprite Sheet basierend auf der Größe des Bitmaps und der Sprite-Größe
@@ -44,6 +50,7 @@ namespace Pixelfinder
             // Rückgabe der Liste mit Ergebnissen
             return resultsList;
         }
+
 
         // Hilfsmethode zur Suche eines Pixels in einem einzelnen Sprite
         private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos)

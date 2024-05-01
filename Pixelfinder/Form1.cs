@@ -21,7 +21,9 @@ namespace Pixelfinder
         {
             InitializeComponent();
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
- 
+
+            // Drag-and-Drop für das Formular aktivieren
+            this.AllowDrop = true;
 
         }
 
@@ -172,16 +174,23 @@ namespace Pixelfinder
         }
         private void RemoveSelectedImage()
         {
-            if (listBox.SelectedIndex != -1)
-            {
+            // Überprüfen, ob ein Bild in der ListBox ausgewählt ist
+            int selectedIndex = listBox.SelectedIndex;
 
+            // Wenn kein Bild ausgewählt ist, das letzte Bild in der Liste löschen
+            if (selectedIndex == -1 && imagesList.Count > 0)
+            {
+                selectedIndex = imagesList.Count - 1; // Letztes Element der Liste
+            }
+
+            if (selectedIndex != -1)
+            {
                 // Bildressourcen freigeben
-                Image imageToRemove = imagesList[listBox.SelectedIndex];
+                Image imageToRemove = imagesList[selectedIndex];
                 imageToRemove.Dispose();
 
                 // Das ausgewählte Bild aus der ListBox und der Liste entfernen
-                imagesList.RemoveAt(listBox.SelectedIndex);
-
+                imagesList.RemoveAt(selectedIndex);
 
                 // ListBox aktualisieren, um die Liste der verbleibenden Bilder anzuzeigen
                 UpdateListBox();
@@ -204,6 +213,7 @@ namespace Pixelfinder
         {
             RemoveSelectedImage();
         }
+
 
         private void startPixelfind_Click(object sender, EventArgs e)
         {
@@ -232,6 +242,8 @@ namespace Pixelfinder
 
                         // Pixel finden
                         List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor);
+                        
+                        stopwatch.Stop();
 
                         stopwatch.Stop();
                         Console.WriteLine("Dauer für Bild " + imagePath + ": " + stopwatch.ElapsedMilliseconds + " ms");
@@ -247,7 +259,7 @@ namespace Pixelfinder
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Fehler beim Laden des Bildes: " + ex.Message);
+                        MessageBox.Show("Fehler beim Laden des Bildes: " + imagePath + " " + ex.Message);
                     }
                 }
             }
