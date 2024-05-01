@@ -11,29 +11,21 @@ using System.Windows.Forms;
 
 namespace Pixelfinder
 {
-    public partial class Form1 : Form
+    public partial class MainWindow : Form
     {
 
 
         private List<Image> imagesList = new List<Image>();
 
-        public Form1()
+        public MainWindow()
         {
             InitializeComponent();
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-
-            // Drag-and-Drop für das Formular aktivieren
-            this.AllowDrop = true;
-            // Farbcode definieren (RGB-Wert)
-
+            pictureBox.AllowDrop = true;
+            
+     
         }
         Color targetColor = Color.FromArgb(255, 255, 0, 255);
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            pictureBox.AllowDrop = true;
-            listBox.AllowDrop = true ;
-        }
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
@@ -112,28 +104,7 @@ namespace Pixelfinder
             // Die gezogenen Daten als Bild laden
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-            foreach (string file in files)
-            {
-                try
-                {
-                    // Überprüfen, ob das Bild bereits in der Liste vorhanden ist
-                    if (!IsImageDuplicate(file))
-                    {
-                        // Bild aus der Datei laden
-                        Image img = Image.FromFile(file);
-
-                        // Den Dateipfad als Tag zum Bildobjekt hinzufügen
-                        img.Tag = file;
-
-                        // Bild zur PictureBox und zur Liste hinzufügen
-                        AddImageToPictureBoxAndList(img);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Fehler beim Laden des Bildes: " + ex.Message);
-                }
-            }
+            LoadImages(files);
         }
 
 
@@ -294,6 +265,44 @@ namespace Pixelfinder
                 // Die ausgewählte Farbe verwenden
                 Color selectedColor = colorDialog.Color;
                 targetColor = selectedColor;
+            }
+        }
+
+        private void buttonAddListItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.jpg;*.jpeg;*.png;*.gif;*.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+            openFileDialog.Multiselect = true; // Ermöglicht die Auswahl mehrerer Dateien
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Laden der ausgewählten Bilder
+                LoadImages(openFileDialog.FileNames);
+            }
+        }
+        private void LoadImages(string[] fileNames)
+        {
+            foreach (string file in fileNames)
+            {
+                try
+                {
+                    // Überprüfen, ob das Bild bereits in der Liste vorhanden ist
+                    if (!IsImageDuplicate(file))
+                    {
+                        // Bild aus der Datei laden
+                        Image img = Image.FromFile(file);
+
+                        // Den Dateipfad als Tag zum Bildobjekt hinzufügen
+                        img.Tag = file;
+
+                        // Bild zur PictureBox und zur Liste hinzufügen
+                        AddImageToPictureBoxAndList(img);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Fehler beim Laden des Bildes: " + ex.Message);
+                }
             }
         }
     }
