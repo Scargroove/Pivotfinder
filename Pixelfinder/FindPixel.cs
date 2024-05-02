@@ -88,7 +88,7 @@ namespace Pixelfinder
             return result;
         }
 
-        public static void SaveModifiedBitmap(Bitmap bitmap)
+        public static void SaveModifiedBitmap(Bitmap bitmap, string modifiedText = "_modified")
         {
             if (bitmap.Tag == null || string.IsNullOrEmpty(bitmap.Tag.ToString()))
             {
@@ -99,7 +99,7 @@ namespace Pixelfinder
             string directory = Path.GetDirectoryName(originalPath);
             string filename = Path.GetFileNameWithoutExtension(originalPath);
             string extension = Path.GetExtension(originalPath);
-            string newFileName = Path.Combine(directory, filename + "_modified" + extension);
+            string newFileName = Path.Combine(directory, filename + modifiedText + extension);
 
             bitmap.Save(newFileName, ImageFormat.Png);
         }
