@@ -196,7 +196,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(595, 424);
+            this.ClientSize = new System.Drawing.Size(643, 424);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonAddListItem);
             this.Controls.Add(this.groupBox1);
@@ -204,6 +204,7 @@
             this.Controls.Add(this.buttonDeleteListItem);
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.pictureBox);
+            this.KeyPreview = true;
             this.Name = "MainWindow";
             this.Text = "Pixlelfinder";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);

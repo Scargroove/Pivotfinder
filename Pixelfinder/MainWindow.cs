@@ -23,10 +23,22 @@ namespace Pixelfinder
             InitializeComponent();
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.AllowDrop = true;
+
             
      
         }
         Color targetColor = Color.FromArgb(255, 255, 0, 255);
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.KeyCode == Keys.Delete)
+            {
+                RemoveSelectedImage();
+                e.Handled = true;  // Markiert das Ereignis als behandelt
+            }
+        }
+
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
