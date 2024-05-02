@@ -16,6 +16,7 @@ namespace Pixelfinder
 
 
         private List<Image> imagesList = new List<Image>();
+        private bool removePixel = false;
 
         public MainWindow()
         {
@@ -72,7 +73,7 @@ namespace Pixelfinder
             HandleDragEnter(e);
         }
 
-        private void pictureBox_DragLeave(object sender, EventArgs e)
+        private void PictureBox_DragLeave(object sender, EventArgs e)
         {
             listBox.BackColor = SystemColors.Window;
 
@@ -229,7 +230,7 @@ namespace Pixelfinder
                         Bitmap bitmap = new Bitmap(imagePath);
 
                         // Pixel finden
-                        List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor);
+                        List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, removePixel);
                         
                         // Koordinaten ausgeben
                         foreach (string coordinatesItem in coordinates)
@@ -307,5 +308,38 @@ namespace Pixelfinder
                 }
             }
         }
+
+        private void CheckBoxRemovePixel_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (checkBoxRemovePixel.Checked)
+            {
+                removePixel = true;
+            }
+            else
+            {
+                removePixel = false;
+            }
+        }
+
+        private void ButtonExit_Click(object sender, EventArgs e)
+        {
+            ExitApplication();
+        }
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ExitApplication();
+        }
+        private void ExitApplication()
+        {
+            // Alle Bilder in der imagesList freigeben
+            foreach (Image img in imagesList)
+            {
+                img.Dispose();
+            }
+            imagesList.Clear();
+
+            // Programm beenden
+            System.Windows.Forms.Application.Exit();
+        } 
     }
 }

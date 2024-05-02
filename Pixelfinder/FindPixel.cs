@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 
 namespace Pixelfinder
@@ -11,7 +13,7 @@ namespace Pixelfinder
     internal class FindPixel
     {
         // Methode zum Suchen eines Pixels in einem Sprite Sheet (Bild, das mehrere kleinere Bilder enthält)
-        public static List<string> FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor)
+        public static List<string> FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, bool removePixel = false )
         {
             // Überprüfung, ob die Sprite-Größe größer als die Bitmap-Größe ist
             if (spriteSize.X > bitmap.Width || spriteSize.Y > bitmap.Height)
@@ -41,7 +43,7 @@ namespace Pixelfinder
                 for (int x = 0; x < spriteAmount.X; x++)
                 {
                     // Suche nach dem Ziel-Pixel im aktuellen Sprite
-                    Point result = FindPixelInSprite(pixelData, bitmapData.Stride, spriteSize, targetColorInt, new Point(spriteSize.X * x, spriteSize.Y * y));
+                    Point result = FindPixelInSprite(pixelData, bitmapData.Stride, spriteSize, targetColorInt, new Point(spriteSize.X * x, spriteSize.Y * y), removePixel);
                     // Hinzufügen des Ergebnisses zur Liste, als Koordinaten im Format "x,y"
                     resultsList.Add(result.X + "," + result.Y);
                 }
@@ -53,7 +55,7 @@ namespace Pixelfinder
 
 
         // Hilfsmethode zur Suche eines Pixels in einem einzelnen Sprite
-        private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos)
+        private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false)
         {
             // Initiale Position, wenn das Pixel nicht gefunden wird
             Point result = new Point(0, 0);
@@ -72,6 +74,25 @@ namespace Pixelfinder
                     if (color == targetColorInt)
                     {
                         result = new Point(x, y);
+                        if (removePixel)
+                        {
+                            // Checking the colors of the neighboring pixels
+                            int[] neighboringColors = new int[4]; // Top, bottom, left, right
+                            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // Top
+                            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // Bottom
+                            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // Left
+                            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // Right
+
+                            // Finding two neighboring pixels with the same color
+                            var colorGroups = neighboringColors.GroupBy(c => c).Where(g => g.Count() >= 2).ToList();
+                            if (colorGroups.Any())
+                            {
+                                // Setting the color of the pixel to the color of the neighboring pixels
+                                int newColor = colorGroups.First().Key;
+                                BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
+                                Console.WriteLine("New color set" + newColor);
+                            }
+                        }
                         return result; // Rückgabe der Position und Abbruch der Schleife, wenn gefunden
                     }
                 }

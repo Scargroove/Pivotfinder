@@ -36,8 +36,9 @@
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonSelectPixelColor = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.buttonAddListItem = new System.Windows.Forms.Button();
             this.checkBoxRemovePixel = new System.Windows.Forms.CheckBox();
+            this.buttonAddListItem = new System.Windows.Forms.Button();
+            this.buttonExit = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
@@ -61,9 +62,9 @@
             // 
             // buttonDeleteListItem
             // 
-            this.buttonDeleteListItem.Location = new System.Drawing.Point(12, 185);
+            this.buttonDeleteListItem.Location = new System.Drawing.Point(392, 68);
             this.buttonDeleteListItem.Name = "buttonDeleteListItem";
-            this.buttonDeleteListItem.Size = new System.Drawing.Size(366, 23);
+            this.buttonDeleteListItem.Size = new System.Drawing.Size(151, 23);
             this.buttonDeleteListItem.TabIndex = 2;
             this.buttonDeleteListItem.Text = "delete";
             this.buttonDeleteListItem.UseVisualStyleBackColor = true;
@@ -71,7 +72,7 @@
             // 
             // buttonStartPixelfind
             // 
-            this.buttonStartPixelfind.Location = new System.Drawing.Point(392, 214);
+            this.buttonStartPixelfind.Location = new System.Drawing.Point(392, 238);
             this.buttonStartPixelfind.Name = "buttonStartPixelfind";
             this.buttonStartPixelfind.Size = new System.Drawing.Size(186, 135);
             this.buttonStartPixelfind.TabIndex = 3;
@@ -127,14 +128,14 @@
             // 
             this.pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox.Location = new System.Drawing.Point(12, 214);
+            this.pictureBox.Location = new System.Drawing.Point(15, 171);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(363, 241);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
             this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
-            this.pictureBox.DragLeave += new System.EventHandler(this.pictureBox_DragLeave);
+            this.pictureBox.DragLeave += new System.EventHandler(this.PictureBox_DragLeave);
             // 
             // buttonSelectPixelColor
             // 
@@ -152,22 +153,12 @@
             this.groupBox1.Controls.Add(this.buttonSelectPixelColor);
             this.groupBox1.Controls.Add(this.numericUpDownSpriteHeight);
             this.groupBox1.Controls.Add(this.numericUpDownSpriteWidth);
-            this.groupBox1.Location = new System.Drawing.Point(392, 29);
+            this.groupBox1.Location = new System.Drawing.Point(392, 97);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(186, 135);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "options";
-            // 
-            // buttonAddListItem
-            // 
-            this.buttonAddListItem.Location = new System.Drawing.Point(12, 156);
-            this.buttonAddListItem.Name = "buttonAddListItem";
-            this.buttonAddListItem.Size = new System.Drawing.Size(366, 23);
-            this.buttonAddListItem.TabIndex = 8;
-            this.buttonAddListItem.Text = "add";
-            this.buttonAddListItem.UseVisualStyleBackColor = true;
-            this.buttonAddListItem.Click += new System.EventHandler(this.buttonAddListItem_Click);
             // 
             // checkBoxRemovePixel
             // 
@@ -178,13 +169,35 @@
             this.checkBoxRemovePixel.TabIndex = 7;
             this.checkBoxRemovePixel.Text = "remove pixel";
             this.checkBoxRemovePixel.UseVisualStyleBackColor = true;
+            this.checkBoxRemovePixel.CheckStateChanged += new System.EventHandler(this.CheckBoxRemovePixel_CheckStateChanged);
+            // 
+            // buttonAddListItem
+            // 
+            this.buttonAddListItem.Location = new System.Drawing.Point(392, 29);
+            this.buttonAddListItem.Name = "buttonAddListItem";
+            this.buttonAddListItem.Size = new System.Drawing.Size(151, 33);
+            this.buttonAddListItem.TabIndex = 8;
+            this.buttonAddListItem.Text = "add";
+            this.buttonAddListItem.UseVisualStyleBackColor = true;
+            this.buttonAddListItem.Click += new System.EventHandler(this.buttonAddListItem_Click);
+            // 
+            // buttonExit
+            // 
+            this.buttonExit.Location = new System.Drawing.Point(392, 379);
+            this.buttonExit.Name = "buttonExit";
+            this.buttonExit.Size = new System.Drawing.Size(186, 32);
+            this.buttonExit.TabIndex = 9;
+            this.buttonExit.Text = "exit";
+            this.buttonExit.UseVisualStyleBackColor = true;
+            this.buttonExit.Click += new System.EventHandler(this.ButtonExit_Click);
             // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(612, 467);
+            this.ClientSize = new System.Drawing.Size(595, 424);
+            this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonAddListItem);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonStartPixelfind);
@@ -193,6 +206,7 @@
             this.Controls.Add(this.pictureBox);
             this.Name = "MainWindow";
             this.Text = "Pixlelfinder";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
@@ -217,6 +231,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button buttonAddListItem;
         private System.Windows.Forms.CheckBox checkBoxRemovePixel;
+        private System.Windows.Forms.Button buttonExit;
     }
 }
 
