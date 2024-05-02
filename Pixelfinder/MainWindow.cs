@@ -214,8 +214,6 @@ namespace Pixelfinder
         {
             if (imagesList.Count > 0)
             {
-                
-
                 // Breite und Höhe des Sprites definieren
                 Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
 
@@ -226,24 +224,31 @@ namespace Pixelfinder
 
                     try
                     {
-                        // Bild laden
+                        // Bild laden und Tag übertragen
                         Bitmap bitmap = new Bitmap(imagePath);
+                        bitmap.Tag = img.Tag;  // Übertragen des Tags vom Image zum Bitmap
 
                         // Pixel finden
                         List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, removePixel);
-                        
+
                         // Koordinaten ausgeben
-                        foreach (string coordinatesItem in coordinates)
+                        foreach (string coordinate in coordinates)
                         {
-                            Console.WriteLine(coordinatesItem);
+                            Console.WriteLine(coordinate);
                         }
 
+                        // Nach Verwendung das Bitmap wieder freigeben
+                        bitmap.Dispose();
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("Fehler beim Laden des Bildes: " + imagePath + " " + ex.Message);
                     }
                 }
+                //foreach (Image img in imagesList)
+                //{
+                //    img.Dispose();
+                //}
                 MessageBox.Show("Fertig");
             }
             else
@@ -251,6 +256,7 @@ namespace Pixelfinder
                 MessageBox.Show("Es sind keine Bilder in der Liste.");
             }
         }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
