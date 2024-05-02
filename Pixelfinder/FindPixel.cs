@@ -67,18 +67,7 @@ namespace Pixelfinder
                         result = new Point(x, y);
                         if (removePixel)
                         {
-                            int[] neighboringColors = new int[4];
-                            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride);
-                            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride);
-                            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4);
-                            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4);
-
-                            var colorGroups = neighboringColors.GroupBy(c => c).Where(g => g.Count() >= 2).ToList();
-                            if (colorGroups.Any())
-                            {
-                                int newColor = colorGroups.First().Key;
-                                BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
-                            }
+                            ReplacePixelWithDominantNeighboringColor(pixelData, stride, spriteSize, position);
                         }
                         return result;
                     }
@@ -103,7 +92,42 @@ namespace Pixelfinder
 
             bitmap.Save(newFileName, ImageFormat.Png);
         }
+        private static void ReplacePixelWithDominantNeighboringColor(byte[] pixelData, int stride, Point spriteSize, int position)
+        {
+            int[] neighboringColors = new int[4];
+            int y = position / stride;
+            int x = (position % stride) / 4;
 
+            // Berechne die Positionen der benachbarten Pixel und speichere ihre Farben
+            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // Oben
+            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // Unten
+            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // Links
+            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // Rechts
+
+            // Gruppiere die Farben und zähle, wie oft jede vorkommt
+            var colorGroups = neighboringColors.GroupBy(c => c).ToList();
+
+            // Überprüfe, ob drei Nachbarpixel die gleiche Farbe haben
+            var threeColorMatch = colorGroups.FirstOrDefault(g => g.Count() == 3);
+            if (threeColorMatch != null)
+            {
+                int newColor = threeColorMatch.Key;
+                BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
+                return;
+            }
+
+            // Überprüfe, ob zwei Nachbarpixel die gleiche Farbe haben
+            var twoColorMatch = colorGroups.FirstOrDefault(g => g.Count() == 2);
+            if (twoColorMatch != null)
+            {
+                int newColor = twoColorMatch.Key;
+                // Wenn das linke Pixel zu den zwei gleichen Farben gehört, verwenden wir dieses
+                if (neighboringColors[2] == newColor)
+                {
+                    BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
+                }
+            }
+        }
         // alte Methoden
         //public static List<string> FindPixelInSpriteSheetOld(Bitmap bitmap, Point spriteSize, Color targetColor)
         //{

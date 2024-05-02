@@ -50,7 +50,7 @@
             this.listBox.AllowDrop = true;
             this.listBox.FormattingEnabled = true;
             this.listBox.HorizontalScrollbar = true;
-            this.listBox.Location = new System.Drawing.Point(12, 29);
+            this.listBox.Location = new System.Drawing.Point(12, 12);
             this.listBox.MinimumSize = new System.Drawing.Size(250, 56);
             this.listBox.Name = "listBox";
             this.listBox.Size = new System.Drawing.Size(366, 121);
@@ -62,7 +62,7 @@
             // 
             // buttonDeleteListItem
             // 
-            this.buttonDeleteListItem.Location = new System.Drawing.Point(392, 68);
+            this.buttonDeleteListItem.Location = new System.Drawing.Point(384, 51);
             this.buttonDeleteListItem.Name = "buttonDeleteListItem";
             this.buttonDeleteListItem.Size = new System.Drawing.Size(151, 23);
             this.buttonDeleteListItem.TabIndex = 2;
@@ -72,7 +72,7 @@
             // 
             // buttonStartPixelfind
             // 
-            this.buttonStartPixelfind.Location = new System.Drawing.Point(392, 238);
+            this.buttonStartPixelfind.Location = new System.Drawing.Point(384, 221);
             this.buttonStartPixelfind.Name = "buttonStartPixelfind";
             this.buttonStartPixelfind.Size = new System.Drawing.Size(186, 135);
             this.buttonStartPixelfind.TabIndex = 3;
@@ -128,7 +128,7 @@
             // 
             this.pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox.Location = new System.Drawing.Point(15, 171);
+            this.pictureBox.Location = new System.Drawing.Point(12, 145);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(363, 241);
             this.pictureBox.TabIndex = 0;
@@ -153,7 +153,7 @@
             this.groupBox1.Controls.Add(this.buttonSelectPixelColor);
             this.groupBox1.Controls.Add(this.numericUpDownSpriteHeight);
             this.groupBox1.Controls.Add(this.numericUpDownSpriteWidth);
-            this.groupBox1.Location = new System.Drawing.Point(392, 97);
+            this.groupBox1.Location = new System.Drawing.Point(384, 80);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(186, 135);
             this.groupBox1.TabIndex = 7;
@@ -173,7 +173,7 @@
             // 
             // buttonAddListItem
             // 
-            this.buttonAddListItem.Location = new System.Drawing.Point(392, 29);
+            this.buttonAddListItem.Location = new System.Drawing.Point(384, 12);
             this.buttonAddListItem.Name = "buttonAddListItem";
             this.buttonAddListItem.Size = new System.Drawing.Size(151, 33);
             this.buttonAddListItem.TabIndex = 8;
@@ -183,7 +183,7 @@
             // 
             // buttonExit
             // 
-            this.buttonExit.Location = new System.Drawing.Point(392, 379);
+            this.buttonExit.Location = new System.Drawing.Point(384, 362);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(186, 32);
             this.buttonExit.TabIndex = 9;
