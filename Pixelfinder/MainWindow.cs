@@ -118,6 +118,9 @@ namespace Pixelfinder
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             LoadImages(files);
+
+            // Fokus an das Hauptfenster zurückgeben
+            this.Activate();
         }
 
 
