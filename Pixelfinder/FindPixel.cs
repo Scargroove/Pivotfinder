@@ -109,42 +109,19 @@ namespace Pixelfinder
         // Diese Methode ersetzt ein gefundenes Pixel durch die dominante Farbe der benachbarten Pixel, falls erforderlich.
         private static void ReplacePixelWithDominantNeighboringColor(byte[] pixelData, int stride, Point spriteSize, int position)
         {
-            // Initialisiere ein Array, um die Farben der vier direkten Nachbarpixel zu speichern
             int[] neighboringColors = new int[4];
-            // Berechne die Y-Koordinate des Pixels im Bild (Zeilenposition)
             int y = position / stride;
-            // Berechne die X-Koordinate des Pixels im Bild (Spaltenposition)
             int x = (position % stride) / 4;
 
-            // Prüfe ob es ein Pixel oberhalb gibt und speichere seine Farbe
             if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride);
-            // Prüfe ob es ein Pixel unterhalb gibt und speichere seine Farbe
             if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride);
-            // Prüfe ob es ein Pixel links gibt und speichere seine Farbe
             if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4);
-            // Prüfe ob es ein Pixel rechts gibt und speichere seine Farbe
             if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4);
 
-            // Gruppiere die gespeicherten Farben nach ihrer ARGB-Wert und zähle, wie oft jede Farbe vorkommt
-            var colorGroups = neighboringColors.GroupBy(c => c).ToList();
-
-            // Suche nach einer Gruppe, die genau drei Pixel derselben Farbe enthält
-            var threeColorMatch = colorGroups.FirstOrDefault(g => g.Count() == 3);
-            // Wenn eine solche Gruppe existiert, benutze deren Farbe, um das aktuelle Pixel zu ersetzen
-            if (threeColorMatch != null)
+            var colorGroups = neighboringColors.GroupBy(c => c).Where(g => g.Count() >= 2).ToList();
+            if (colorGroups.Any())
             {
-                int newColor = threeColorMatch.Key;
-                BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
-                return; // Beende die Methode frühzeitig nach dem Ersetzen
-            }
-
-            // Wenn keine drei gleichen Farben gefunden wurden, suche nach einer Gruppe mit genau zwei gleichen Farben
-            var twoColorMatch = colorGroups.FirstOrDefault(g => g.Count() == 2);
-            // Wenn eine solche Gruppe existiert und das linke Nachbarpixel (index 2) diese Farbe hat, 
-            // benutze diese Farbe zum Ersetzen des aktuellen Pixels
-            if (twoColorMatch != null && neighboringColors[2] == twoColorMatch.Key)
-            {
-                int newColor = twoColorMatch.Key;
+                int newColor = colorGroups.First().Key;
                 BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
             }
         }
