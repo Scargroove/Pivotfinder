@@ -177,7 +177,8 @@ namespace Pixelfinder
             foreach (int color in colors)
             {
                 int distance = ColorDistance(color, targetColor); // Berechnen der Distanz zur Ziel-Farbe.
-                                                                  // Aktualisieren der minimalen Distanz und der nächsten Farbe, falls die aktuelle Distanz kleiner ist.
+
+                // Aktualisieren der minimalen Distanz und der nächsten Farbe, falls die aktuelle Distanz kleiner ist.
                 if (distance < minDistance)
                 {
                     minDistance = distance;
