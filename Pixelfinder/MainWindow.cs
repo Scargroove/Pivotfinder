@@ -245,14 +245,23 @@ namespace Pixelfinder
                         Bitmap bitmap = new Bitmap(imagePath);
                         bitmap.Tag = img.Tag;  // Übertragen des Tags vom Image zum Bitmap
 
+                        stopwatch.Restart();  // Start der Zeitmessung
+
+
                         // Pixel finden
                         List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, removePixel);
+
+                        stopwatch.Stop();  // Zeitmessung stoppen
+
 
                         // Koordinaten ausgeben
                         foreach (string coordinate in coordinates)
                         {
                             Console.WriteLine(coordinate);
                         }
+
+                        // Ausgabe der Verarbeitungszeit
+                        Console.WriteLine($"Verarbeitungszeit für {imagePath}: {stopwatch.ElapsedMilliseconds} ms");
 
                         // Nach Verwendung das Bitmap wieder freigeben
                         bitmap.Dispose();
