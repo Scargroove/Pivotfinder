@@ -18,6 +18,7 @@ namespace Pixelfinder
         private List<Image> imagesList = new List<Image>();
         private bool removePixel = false;
         private Stopwatch stopwatch = new Stopwatch();
+        private Color targetColor = Color.FromArgb(255, 255, 0, 255);
 
 
         public MainWindow()
@@ -25,11 +26,10 @@ namespace Pixelfinder
             InitializeComponent();
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.AllowDrop = true;
-
+            pictureBoxPickedColor.BackColor = targetColor;
             
      
         }
-        Color targetColor = Color.FromArgb(255, 255, 0, 255);
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -300,6 +300,7 @@ namespace Pixelfinder
                 // Die ausgewählte Farbe verwenden
                 Color selectedColor = colorDialog.Color;
                 targetColor = selectedColor;
+                pictureBoxPickedColor.BackColor = selectedColor;
             }
         }
 

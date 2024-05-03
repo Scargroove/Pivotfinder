@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.listBox = new System.Windows.Forms.ListBox();
             this.buttonDeleteListItem = new System.Windows.Forms.Button();
             this.buttonStartPixelfind = new System.Windows.Forms.Button();
@@ -35,14 +36,21 @@
             this.numericUpDownSpriteHeight = new System.Windows.Forms.NumericUpDown();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonSelectPixelColor = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBoxOptions = new System.Windows.Forms.GroupBox();
             this.checkBoxRemovePixel = new System.Windows.Forms.CheckBox();
             this.buttonAddListItem = new System.Windows.Forms.Button();
             this.buttonExit = new System.Windows.Forms.Button();
+            this.groupBoxSpriteSize = new System.Windows.Forms.GroupBox();
+            this.labelSpriteSizeX = new System.Windows.Forms.Label();
+            this.labelSpriteSizeY = new System.Windows.Forms.Label();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.pictureBoxPickedColor = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
-            this.groupBox1.SuspendLayout();
+            this.groupBoxOptions.SuspendLayout();
+            this.groupBoxSpriteSize.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPickedColor)).BeginInit();
             this.SuspendLayout();
             // 
             // listBox
@@ -72,9 +80,9 @@
             // 
             // buttonStartPixelfind
             // 
-            this.buttonStartPixelfind.Location = new System.Drawing.Point(384, 221);
+            this.buttonStartPixelfind.Location = new System.Drawing.Point(384, 287);
             this.buttonStartPixelfind.Name = "buttonStartPixelfind";
-            this.buttonStartPixelfind.Size = new System.Drawing.Size(186, 135);
+            this.buttonStartPixelfind.Size = new System.Drawing.Size(186, 69);
             this.buttonStartPixelfind.TabIndex = 3;
             this.buttonStartPixelfind.Text = "start";
             this.buttonStartPixelfind.UseVisualStyleBackColor = true;
@@ -82,7 +90,7 @@
             // 
             // numericUpDownSpriteWidth
             // 
-            this.numericUpDownSpriteWidth.Location = new System.Drawing.Point(6, 48);
+            this.numericUpDownSpriteWidth.Location = new System.Drawing.Point(27, 19);
             this.numericUpDownSpriteWidth.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -94,7 +102,7 @@
             0,
             0});
             this.numericUpDownSpriteWidth.Name = "numericUpDownSpriteWidth";
-            this.numericUpDownSpriteWidth.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownSpriteWidth.Size = new System.Drawing.Size(53, 20);
             this.numericUpDownSpriteWidth.TabIndex = 4;
             this.numericUpDownSpriteWidth.Value = new decimal(new int[] {
             128,
@@ -104,7 +112,7 @@
             // 
             // numericUpDownSpriteHeight
             // 
-            this.numericUpDownSpriteHeight.Location = new System.Drawing.Point(6, 74);
+            this.numericUpDownSpriteHeight.Location = new System.Drawing.Point(27, 43);
             this.numericUpDownSpriteHeight.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -116,7 +124,7 @@
             0,
             0});
             this.numericUpDownSpriteHeight.Name = "numericUpDownSpriteHeight";
-            this.numericUpDownSpriteHeight.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownSpriteHeight.Size = new System.Drawing.Size(53, 20);
             this.numericUpDownSpriteHeight.TabIndex = 5;
             this.numericUpDownSpriteHeight.Value = new decimal(new int[] {
             128,
@@ -147,23 +155,23 @@
             this.buttonSelectPixelColor.UseVisualStyleBackColor = true;
             this.buttonSelectPixelColor.Click += new System.EventHandler(this.button1_Click);
             // 
-            // groupBox1
+            // groupBoxOptions
             // 
-            this.groupBox1.Controls.Add(this.checkBoxRemovePixel);
-            this.groupBox1.Controls.Add(this.buttonSelectPixelColor);
-            this.groupBox1.Controls.Add(this.numericUpDownSpriteHeight);
-            this.groupBox1.Controls.Add(this.numericUpDownSpriteWidth);
-            this.groupBox1.Location = new System.Drawing.Point(384, 80);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(186, 135);
-            this.groupBox1.TabIndex = 7;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "options";
+            this.groupBoxOptions.Controls.Add(this.pictureBoxPickedColor);
+            this.groupBoxOptions.Controls.Add(this.groupBoxSpriteSize);
+            this.groupBoxOptions.Controls.Add(this.checkBoxRemovePixel);
+            this.groupBoxOptions.Controls.Add(this.buttonSelectPixelColor);
+            this.groupBoxOptions.Location = new System.Drawing.Point(384, 80);
+            this.groupBoxOptions.Name = "groupBoxOptions";
+            this.groupBoxOptions.Size = new System.Drawing.Size(186, 178);
+            this.groupBoxOptions.TabIndex = 7;
+            this.groupBoxOptions.TabStop = false;
+            this.groupBoxOptions.Text = "options";
             // 
             // checkBoxRemovePixel
             // 
             this.checkBoxRemovePixel.AutoSize = true;
-            this.checkBoxRemovePixel.Location = new System.Drawing.Point(7, 101);
+            this.checkBoxRemovePixel.Location = new System.Drawing.Point(6, 127);
             this.checkBoxRemovePixel.Name = "checkBoxRemovePixel";
             this.checkBoxRemovePixel.Size = new System.Drawing.Size(85, 17);
             this.checkBoxRemovePixel.TabIndex = 7;
@@ -191,22 +199,68 @@
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.ButtonExit_Click);
             // 
+            // groupBoxSpriteSize
+            // 
+            this.groupBoxSpriteSize.Controls.Add(this.labelSpriteSizeY);
+            this.groupBoxSpriteSize.Controls.Add(this.labelSpriteSizeX);
+            this.groupBoxSpriteSize.Controls.Add(this.numericUpDownSpriteWidth);
+            this.groupBoxSpriteSize.Controls.Add(this.numericUpDownSpriteHeight);
+            this.groupBoxSpriteSize.Location = new System.Drawing.Point(6, 48);
+            this.groupBoxSpriteSize.Name = "groupBoxSpriteSize";
+            this.groupBoxSpriteSize.Size = new System.Drawing.Size(95, 73);
+            this.groupBoxSpriteSize.TabIndex = 10;
+            this.groupBoxSpriteSize.TabStop = false;
+            this.groupBoxSpriteSize.Text = "spritesize";
+            // 
+            // labelSpriteSizeX
+            // 
+            this.labelSpriteSizeX.AutoSize = true;
+            this.labelSpriteSizeX.Location = new System.Drawing.Point(9, 21);
+            this.labelSpriteSizeX.Name = "labelSpriteSizeX";
+            this.labelSpriteSizeX.Size = new System.Drawing.Size(12, 13);
+            this.labelSpriteSizeX.TabIndex = 6;
+            this.labelSpriteSizeX.Text = "x";
+            // 
+            // labelSpriteSizeY
+            // 
+            this.labelSpriteSizeY.AutoSize = true;
+            this.labelSpriteSizeY.Location = new System.Drawing.Point(9, 45);
+            this.labelSpriteSizeY.Name = "labelSpriteSizeY";
+            this.labelSpriteSizeY.Size = new System.Drawing.Size(12, 13);
+            this.labelSpriteSizeY.TabIndex = 7;
+            this.labelSpriteSizeY.Text = "y";
+            // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // pictureBoxPickedColor
+            // 
+            this.pictureBoxPickedColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pictureBoxPickedColor.Location = new System.Drawing.Point(131, 22);
+            this.pictureBoxPickedColor.Name = "pictureBoxPickedColor";
+            this.pictureBoxPickedColor.Size = new System.Drawing.Size(19, 19);
+            this.pictureBoxPickedColor.TabIndex = 10;
+            this.pictureBoxPickedColor.TabStop = false;
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(643, 424);
+            this.ClientSize = new System.Drawing.Size(588, 424);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonAddListItem);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.groupBoxOptions);
             this.Controls.Add(this.buttonStartPixelfind);
             this.Controls.Add(this.buttonDeleteListItem);
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.pictureBox);
             this.KeyPreview = true;
             this.Name = "MainWindow";
-            this.Text = "Pixlelfinder";
+            this.Text = "Pixelfinder";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
@@ -214,8 +268,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.groupBoxOptions.ResumeLayout(false);
+            this.groupBoxOptions.PerformLayout();
+            this.groupBoxSpriteSize.ResumeLayout(false);
+            this.groupBoxSpriteSize.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPickedColor)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -229,10 +286,15 @@
         private System.Windows.Forms.NumericUpDown numericUpDownSpriteWidth;
         private System.Windows.Forms.NumericUpDown numericUpDownSpriteHeight;
         private System.Windows.Forms.Button buttonSelectPixelColor;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBoxOptions;
         private System.Windows.Forms.Button buttonAddListItem;
         private System.Windows.Forms.CheckBox checkBoxRemovePixel;
         private System.Windows.Forms.Button buttonExit;
+        private System.Windows.Forms.GroupBox groupBoxSpriteSize;
+        private System.Windows.Forms.Label labelSpriteSizeY;
+        private System.Windows.Forms.Label labelSpriteSizeX;
+        private System.Windows.Forms.PictureBox pictureBoxPickedColor;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }
 
