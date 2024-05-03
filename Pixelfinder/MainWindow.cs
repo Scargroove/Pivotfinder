@@ -17,6 +17,8 @@ namespace Pixelfinder
 
         private List<Image> imagesList = new List<Image>();
         private bool removePixel = false;
+        private Stopwatch stopwatch = new Stopwatch();
+
 
         public MainWindow()
         {

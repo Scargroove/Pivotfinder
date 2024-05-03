@@ -113,17 +113,95 @@ namespace Pixelfinder
             int y = position / stride;
             int x = (position % stride) / 4;
 
-            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride);
-            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride);
-            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4);
-            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4);
+            // Überprüfen der benachbarten Pixel und Sammeln ihrer Farben
+            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // oben
+            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // unten
+            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // links
+            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // rechts
 
-            var colorGroups = neighboringColors.GroupBy(c => c).Where(g => g.Count() >= 2).ToList();
-            if (colorGroups.Any())
+            // Gruppierung der Farben und Überprüfung auf dominante Gruppen
+            var colorGroups = neighboringColors.GroupBy(c => c);
+            var dominantGroup = colorGroups.FirstOrDefault(g => g.Count() >= 3)
+                                ?? colorGroups.FirstOrDefault(g => g.Count() == 2);
+
+            if (dominantGroup == null && colorGroups.Count() > 0) // Keine dominante Gruppe gefunden
             {
-                int newColor = colorGroups.First().Key;
+                // Berechnung des Durchschnittsfarbwerts
+                int averageColor = CalculateAverageColor(neighboringColors);
+                // Wähle die Farbe, die dem Durchschnittswert am nächsten liegt
+                int nearestColor = FindNearestColor(neighboringColors, averageColor);
+                BitConverter.GetBytes(nearestColor).CopyTo(pixelData, position);
+            }
+            else if (dominantGroup != null)
+            {
+                // Setze die dominante Farbe, falls vorhanden
+                int newColor = dominantGroup.Key;
                 BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
             }
+        }
+
+        // Diese Methode berechnet den Durchschnittswert der Farben in einem Array.
+        private static int CalculateAverageColor(int[] colors)
+        {
+            int r = 0, g = 0, b = 0; // Variablen zur Speicherung der summierten Farbkomponenten Rot, Grün, Blau.
+            int count = 0; // Zähler für die Anzahl der Farben im Array.
+
+            // Durchlaufen jedes Farbwertes im übergebenen Array.
+            foreach (int color in colors)
+            {
+                r += (color >> 16) & 0xFF; // Extrahieren und Aufsummieren der Rot-Komponente.
+                g += (color >> 8) & 0xFF;  // Extrahieren und Aufsummieren der Grün-Komponente.
+                b += color & 0xFF;         // Extrahieren und Aufsummieren der Blau-Komponente.
+                count++;                   // Inkrementieren des Zählers.
+            }
+
+            // Vermeidung der Division durch Null, falls das Array leer ist.
+            if (count > 0)
+            {
+                r /= count; // Berechnen des Durchschnitts für Rot.
+                g /= count; // Berechnen des Durchschnitts für Grün.
+                b /= count; // Berechnen des Durchschnitts für Blau.
+            }
+
+            // Rückgabe des Durchschnittswerts als eine einzige Farbe im ARGB-Format.
+            return (r << 16) | (g << 8) | b;
+        }
+
+        // Diese Methode findet die Farbe, die einer Ziel-Farbe am nächsten liegt, aus einem Array von Farben.
+        private static int FindNearestColor(int[] colors, int targetColor)
+        {
+            int minDistance = int.MaxValue; // Variable zur Speicherung der kleinsten gefundenen Distanz.
+            int nearestColor = 0;           // Variable zur Speicherung der Farbe mit der kleinsten Distanz.
+
+            // Durchlaufen aller Farben im Array.
+            foreach (int color in colors)
+            {
+                int distance = ColorDistance(color, targetColor); // Berechnen der Distanz zur Ziel-Farbe.
+                                                                  // Aktualisieren der minimalen Distanz und der nächsten Farbe, falls die aktuelle Distanz kleiner ist.
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestColor = color;
+                }
+            }
+            return nearestColor; // Rückgabe der Farbe mit der geringsten Distanz zur Ziel-Farbe.
+        }
+
+        // Diese Methode berechnet die Distanz zwischen zwei Farben im RGB-Farbraum.
+        private static int ColorDistance(int color1, int color2)
+        {
+            // Extrahieren der Rot-, Grün- und Blau-Komponenten der ersten Farbe.
+            int r1 = (color1 >> 16) & 0xFF;
+            int g1 = (color1 >> 8) & 0xFF;
+            int b1 = color1 & 0xFF;
+
+            // Extrahieren der Rot-, Grün- und Blau-Komponenten der zweiten Farbe.
+            int r2 = (color2 >> 16) & 0xFF;
+            int g2 = (color2 >> 8) & 0xFF;
+            int b2 = color2 & 0xFF;
+
+            // Berechnen des quadratischen Abstands zwischen den Farben im RGB-Raum.
+            return (r2 - r1) * (r2 - r1) + (g2 - g1) * (g2 - g1) + (b2 - b1) * (b2 - b1);
         }
     }
 }
