@@ -21,6 +21,7 @@ namespace Pixelfinder
         private Color targetColor = Color.FromArgb(255, 255, 0, 255);
 
 
+
         public MainWindow()
         {
             InitializeComponent();
@@ -373,6 +374,6 @@ namespace Pixelfinder
 
             // Programm beenden
             System.Windows.Forms.Application.Exit();
-        } 
+        }
     }
 }
