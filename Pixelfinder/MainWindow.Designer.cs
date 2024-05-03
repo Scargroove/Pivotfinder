@@ -246,7 +246,7 @@
             this.buttonExit.TabIndex = 9;
             this.buttonExit.Text = "exit";
             this.buttonExit.UseVisualStyleBackColor = true;
-            this.buttonExit.Click += new System.EventHandler(this.ButtonExit_Click);
+            this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
             // 
             // imageList1
             // 
