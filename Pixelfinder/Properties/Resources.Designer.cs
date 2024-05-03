@@ -59,5 +59,15 @@ namespace Pixelfinder.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ImageBoxBackground {
+            get {
+                object obj = ResourceManager.GetObject("ImageBoxBackground", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

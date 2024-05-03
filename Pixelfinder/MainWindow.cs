@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Pixelfinder
 {
@@ -25,13 +26,24 @@ namespace Pixelfinder
         public MainWindow()
         {
             InitializeComponent();
+            InitializeTooltips();
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.AllowDrop = true;
-            pictureBoxPickedColor.BackColor = targetColor;
+            buttonSelectPixelColor.BackColor = targetColor;
             
      
         }
+        private void InitializeTooltips()
+        {
+            // Konfigurieren des ToolTip
+            toolTip1.AutoPopDelay = 5000;    // Wie lange der Tooltip angezeigt wird
+            toolTip1.InitialDelay = 1000;    // Wie lange bis der Tooltip erscheint
+            toolTip1.ReshowDelay = 500;      // Wie lange bis der Tooltip nach dem ersten Anzeigen erneut angezeigt wird
+            toolTip1.ShowAlways = true;      // Der Tooltip wird auch dann angezeigt, wenn das Formular nicht aktiv ist
 
+            // Tooltip-Text festlegen
+            toolTip1.SetToolTip(this.checkBoxRemovePixel, "Regeln");
+        }
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -213,6 +225,8 @@ namespace Pixelfinder
                 if (imagesList.Count == 0)
                 {
                     pictureBox.Image = null;
+                    pictureBox.BackgroundImage = Pixelfinder.Properties.Resources.ImageBoxBackground;
+                    pictureBox.BackgroundImageLayout = ImageLayout.Center;
                 }
                 else
                 {
@@ -301,7 +315,7 @@ namespace Pixelfinder
                 // Die ausgewählte Farbe verwenden
                 Color selectedColor = colorDialog.Color;
                 targetColor = selectedColor;
-                pictureBoxPickedColor.BackColor = selectedColor;
+                buttonSelectPixelColor.BackColor = selectedColor;
             }
         }
 

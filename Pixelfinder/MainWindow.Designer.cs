@@ -34,23 +34,25 @@
             this.buttonStartPixelfind = new System.Windows.Forms.Button();
             this.numericUpDownSpriteWidth = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownSpriteHeight = new System.Windows.Forms.NumericUpDown();
-            this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonSelectPixelColor = new System.Windows.Forms.Button();
             this.groupBoxOptions = new System.Windows.Forms.GroupBox();
-            this.pictureBoxPickedColor = new System.Windows.Forms.PictureBox();
+            this.groupBoxPixelOptions = new System.Windows.Forms.GroupBox();
+            this.checkBoxRemovePixel = new System.Windows.Forms.CheckBox();
             this.groupBoxSpriteSize = new System.Windows.Forms.GroupBox();
             this.labelSpriteSizeY = new System.Windows.Forms.Label();
             this.labelSpriteSizeX = new System.Windows.Forms.Label();
-            this.checkBoxRemovePixel = new System.Windows.Forms.CheckBox();
             this.buttonAddListItem = new System.Windows.Forms.Button();
             this.buttonExit = new System.Windows.Forms.Button();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.labelPixelColor = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.groupBoxOptions.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPickedColor)).BeginInit();
+            this.groupBoxPixelOptions.SuspendLayout();
             this.groupBoxSpriteSize.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // listBox
@@ -136,39 +138,21 @@
             0,
             0});
             // 
-            // pictureBox
-            // 
-            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox.Location = new System.Drawing.Point(12, 145);
-            this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(360, 202);
-            this.pictureBox.TabIndex = 0;
-            this.pictureBox.TabStop = false;
-            this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
-            this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
-            this.pictureBox.DragLeave += new System.EventHandler(this.PictureBox_DragLeave);
-            // 
             // buttonSelectPixelColor
             // 
-            this.buttonSelectPixelColor.Location = new System.Drawing.Point(6, 74);
+            this.buttonSelectPixelColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.buttonSelectPixelColor.Location = new System.Drawing.Point(6, 19);
             this.buttonSelectPixelColor.Name = "buttonSelectPixelColor";
-            this.buttonSelectPixelColor.Size = new System.Drawing.Size(120, 23);
+            this.buttonSelectPixelColor.Size = new System.Drawing.Size(17, 17);
             this.buttonSelectPixelColor.TabIndex = 6;
-            this.buttonSelectPixelColor.Text = "change pixel color";
             this.buttonSelectPixelColor.UseVisualStyleBackColor = true;
             this.buttonSelectPixelColor.Click += new System.EventHandler(this.button1_Click);
             // 
             // groupBoxOptions
             // 
             this.groupBoxOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxOptions.Controls.Add(this.pictureBoxPickedColor);
+            this.groupBoxOptions.Controls.Add(this.groupBoxPixelOptions);
             this.groupBoxOptions.Controls.Add(this.groupBoxSpriteSize);
-            this.groupBoxOptions.Controls.Add(this.checkBoxRemovePixel);
-            this.groupBoxOptions.Controls.Add(this.buttonSelectPixelColor);
             this.groupBoxOptions.Location = new System.Drawing.Point(383, 80);
             this.groupBoxOptions.Name = "groupBoxOptions";
             this.groupBoxOptions.Size = new System.Drawing.Size(186, 178);
@@ -176,14 +160,30 @@
             this.groupBoxOptions.TabStop = false;
             this.groupBoxOptions.Text = "options";
             // 
-            // pictureBoxPickedColor
+            // groupBoxPixelOptions
             // 
-            this.pictureBoxPickedColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBoxPickedColor.Location = new System.Drawing.Point(132, 76);
-            this.pictureBoxPickedColor.Name = "pictureBoxPickedColor";
-            this.pictureBoxPickedColor.Size = new System.Drawing.Size(19, 19);
-            this.pictureBoxPickedColor.TabIndex = 10;
-            this.pictureBoxPickedColor.TabStop = false;
+            this.groupBoxPixelOptions.Controls.Add(this.buttonSelectPixelColor);
+            this.groupBoxPixelOptions.Controls.Add(this.labelPixelColor);
+            this.groupBoxPixelOptions.Controls.Add(this.checkBoxRemovePixel);
+            this.groupBoxPixelOptions.Location = new System.Drawing.Point(6, 74);
+            this.groupBoxPixelOptions.Name = "groupBoxPixelOptions";
+            this.groupBoxPixelOptions.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 67);
+            this.groupBoxPixelOptions.TabIndex = 12;
+            this.groupBoxPixelOptions.TabStop = false;
+            this.groupBoxPixelOptions.Text = "pixel";
+            // 
+            // checkBoxRemovePixel
+            // 
+            this.checkBoxRemovePixel.AutoSize = true;
+            this.checkBoxRemovePixel.Cursor = System.Windows.Forms.Cursors.Help;
+            this.checkBoxRemovePixel.Location = new System.Drawing.Point(8, 40);
+            this.checkBoxRemovePixel.Name = "checkBoxRemovePixel";
+            this.checkBoxRemovePixel.Size = new System.Drawing.Size(85, 17);
+            this.checkBoxRemovePixel.TabIndex = 7;
+            this.checkBoxRemovePixel.Text = "remove pixel";
+            this.checkBoxRemovePixel.UseVisualStyleBackColor = true;
+            this.checkBoxRemovePixel.CheckStateChanged += new System.EventHandler(this.CheckBoxRemovePixel_CheckStateChanged);
             // 
             // groupBoxSpriteSize
             // 
@@ -203,29 +203,18 @@
             this.labelSpriteSizeY.AutoSize = true;
             this.labelSpriteSizeY.Location = new System.Drawing.Point(86, 21);
             this.labelSpriteSizeY.Name = "labelSpriteSizeY";
-            this.labelSpriteSizeY.Size = new System.Drawing.Size(12, 13);
+            this.labelSpriteSizeY.Size = new System.Drawing.Size(15, 13);
             this.labelSpriteSizeY.TabIndex = 7;
-            this.labelSpriteSizeY.Text = "y";
+            this.labelSpriteSizeY.Text = "y:";
             // 
             // labelSpriteSizeX
             // 
             this.labelSpriteSizeX.AutoSize = true;
             this.labelSpriteSizeX.Location = new System.Drawing.Point(9, 21);
             this.labelSpriteSizeX.Name = "labelSpriteSizeX";
-            this.labelSpriteSizeX.Size = new System.Drawing.Size(12, 13);
+            this.labelSpriteSizeX.Size = new System.Drawing.Size(15, 13);
             this.labelSpriteSizeX.TabIndex = 6;
-            this.labelSpriteSizeX.Text = "x";
-            // 
-            // checkBoxRemovePixel
-            // 
-            this.checkBoxRemovePixel.AutoSize = true;
-            this.checkBoxRemovePixel.Location = new System.Drawing.Point(6, 103);
-            this.checkBoxRemovePixel.Name = "checkBoxRemovePixel";
-            this.checkBoxRemovePixel.Size = new System.Drawing.Size(85, 17);
-            this.checkBoxRemovePixel.TabIndex = 7;
-            this.checkBoxRemovePixel.Text = "remove pixel";
-            this.checkBoxRemovePixel.UseVisualStyleBackColor = true;
-            this.checkBoxRemovePixel.CheckStateChanged += new System.EventHandler(this.CheckBoxRemovePixel_CheckStateChanged);
+            this.labelSpriteSizeX.Text = "x:";
             // 
             // buttonAddListItem
             // 
@@ -255,6 +244,32 @@
             this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             // 
+            // pictureBox
+            // 
+            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox.BackgroundImage = global::Pixelfinder.Properties.Resources.ImageBoxBackground;
+            this.pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pictureBox.Location = new System.Drawing.Point(12, 145);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(360, 202);
+            this.pictureBox.TabIndex = 0;
+            this.pictureBox.TabStop = false;
+            this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
+            this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
+            this.pictureBox.DragLeave += new System.EventHandler(this.PictureBox_DragLeave);
+            // 
+            // labelPixelColor
+            // 
+            this.labelPixelColor.AutoSize = true;
+            this.labelPixelColor.Location = new System.Drawing.Point(24, 21);
+            this.labelPixelColor.Name = "labelPixelColor";
+            this.labelPixelColor.Size = new System.Drawing.Size(62, 13);
+            this.labelPixelColor.TabIndex = 11;
+            this.labelPixelColor.Text = "color to find";
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -278,12 +293,12 @@
             this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.groupBoxOptions.ResumeLayout(false);
-            this.groupBoxOptions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPickedColor)).EndInit();
+            this.groupBoxPixelOptions.ResumeLayout(false);
+            this.groupBoxPixelOptions.PerformLayout();
             this.groupBoxSpriteSize.ResumeLayout(false);
             this.groupBoxSpriteSize.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -304,8 +319,10 @@
         private System.Windows.Forms.GroupBox groupBoxSpriteSize;
         private System.Windows.Forms.Label labelSpriteSizeY;
         private System.Windows.Forms.Label labelSpriteSizeX;
-        private System.Windows.Forms.PictureBox pictureBoxPickedColor;
         private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.GroupBox groupBoxPixelOptions;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label labelPixelColor;
     }
 }
 
