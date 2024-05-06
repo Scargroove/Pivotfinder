@@ -173,7 +173,7 @@
             this.groupBoxPixelOptions.Location = new System.Drawing.Point(6, 74);
             this.groupBoxPixelOptions.Name = "groupBoxPixelOptions";
             this.groupBoxPixelOptions.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 104);
+            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 98);
             this.groupBoxPixelOptions.TabIndex = 12;
             this.groupBoxPixelOptions.TabStop = false;
             this.groupBoxPixelOptions.Text = "pixel";

@@ -42,7 +42,7 @@ namespace Pixelfinder
                 for (int x = 0; x < spriteAmount.X; x++)
                 {
                     // Findet die Position des gesuchten Pixels im Sprite.
-                    Point result = FindPixelInSprite(pixelData, bitmapData.Stride, spriteSize, targetColorInt, new Point(spriteSize.X * x, spriteSize.Y * y), removePixel, findCoordinates);
+                    Point result = FindPixelInSprite(pixelData, bitmapData.Stride, spriteSize, targetColorInt, new Point(spriteSize.X * x, spriteSize.Y * y), removePixel, findCoordinates, bitmap.Tag.ToString());
                     if (findCoordinates)
                     {
                         if (result.X != -1 && result.Y != -1)
@@ -79,7 +79,7 @@ namespace Pixelfinder
         }
 
         // Diese Hilfsmethode sucht das Pixel mit der Ziel-Farbe in einem einzelnen Sprite.
-        private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false, bool findCoordinates = false)
+        private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false, bool findCoordinates = false, string imagePath = "")
         {
             Point result = new Point(0, 0); 
             int foundPixelCount = 0; // Zähler für die Anzahl der gefundenen Pixel.
@@ -101,8 +101,8 @@ namespace Pixelfinder
                             if (foundPixelCount > 0)
                             {
                                 // Warnung ausgeben, dass mehr als ein Pixel gefunden wurde.
-                                MessageBox.Show("Multiple pixels found. Only one pixel should exist.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                result = new Point(-1, -1);
+                                MessageBox.Show($"Multiple pixels found in {imagePath}. Only one pixel should exist.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                result = new Point(-1, -1); // falsche Werte setzen.
                                 return result; // Abbrechen und ungültiges Ergebnis zurückgeben.
                             }
 
