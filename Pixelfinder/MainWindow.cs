@@ -268,6 +268,8 @@ namespace Pixelfinder
                 // Breite und Höhe des Sprites definieren
                 Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
 
+                List<string> messages = new List<string>();
+
                 foreach (Image img in imagesList)
                 {
                     // Pfad aus dem Tag des Bildes holen
@@ -281,41 +283,41 @@ namespace Pixelfinder
 
                         stopwatch.Restart();  // Start der Zeitmessung
 
-
                         // Pixel finden
                         List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, removePixel);
 
                         stopwatch.Stop();  // Zeitmessung stoppen
 
-
-                        // Koordinaten ausgeben
-                        foreach (string coordinate in coordinates)
-                        {
-                            Console.WriteLine(coordinate);
-                        }
-
                         // Ausgabe der Verarbeitungszeit
-                        Console.WriteLine($"Verarbeitungszeit für {imagePath}: {stopwatch.ElapsedMilliseconds} ms");
+                        string message = $"Verarbeitungszeit für {imagePath}: {stopwatch.ElapsedMilliseconds} ms";
+                        messages.Add(message);
+
+                        // Koordinaten in Textdatei speichern
+                        SaveCoordinatesToFile(imagePath, coordinates,messages);
 
                         // Nach Verwendung das Bitmap wieder freigeben
                         bitmap.Dispose();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Fehler beim Laden des Bildes: " + imagePath + " " + ex.Message);
+                        string errorMessage = "Fehler beim Laden des Bildes: " + imagePath + " " + ex.Message;
+                        messages.Add(errorMessage);
                     }
                 }
-                //foreach (Image img in imagesList)
-                //{
-                //    img.Dispose();
-                //}
-                MessageBox.Show("Fertig");
+                messages.Add("Fertig");
+
+                // Neues LogForm erstellen und Nachrichten hinzufügen
+                LogForm logForm = new LogForm();
+                logForm.AddMessagesToListBox(messages);
+                logForm.ShowDialog(); // Fenster anzeigen
             }
             else
             {
                 MessageBox.Show("Es sind keine Bilder in der Liste.");
             }
         }
+
+
 
 
         private void buttonSelectPixelColor_Click(object sender, EventArgs e)
@@ -337,6 +339,37 @@ namespace Pixelfinder
                 buttonSelectPixelColor.BackColor = selectedColor;
             }
         }
+        private void SaveCoordinatesToFile(string imagePath, List<string> coordinates, List<string> messages)
+        {
+            // Dateinamen des Bildes ohne Erweiterung extrahieren
+            string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(imagePath);
+
+            // Pfad für die Textdatei erstellen (gleicher Ordner wie die Bilddatei)
+            string directory = System.IO.Path.GetDirectoryName(imagePath);
+            string textureFilePath = System.IO.Path.Combine(directory, fileNameWithoutExtension + ".txt");
+
+            try
+            {
+                // Textdatei öffnen oder erstellen, um die Koordinaten zu schreiben
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(textureFilePath))
+                {
+                    // Koordinaten in die Textdatei schreiben
+                    foreach (string coordinate in coordinates)
+                    {
+                        file.WriteLine(coordinate);
+                    }
+                }
+
+                // Erfolgsmeldung zur Liste hinzufügen
+                messages.Add($"Koordinaten in {textureFilePath} gespeichert.");
+            }
+            catch (Exception ex)
+            {
+                // Fehlermeldung zur Liste hinzufügen, wenn das Speichern fehlschlägt
+                messages.Add($"Fehler beim Speichern der Koordinaten {textureFilePath}: {ex.Message}");
+            }
+        }
+
 
         private void buttonAddListItem_Click(object sender, EventArgs e)
         {
