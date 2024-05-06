@@ -47,6 +47,7 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxChangeAlpha = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
             this.groupBoxOptions.SuspendLayout();
@@ -163,13 +164,14 @@
             // 
             // groupBoxPixelOptions
             // 
+            this.groupBoxPixelOptions.Controls.Add(this.checkBoxChangeAlpha);
             this.groupBoxPixelOptions.Controls.Add(this.buttonSelectPixelColor);
             this.groupBoxPixelOptions.Controls.Add(this.labelPixelColor);
             this.groupBoxPixelOptions.Controls.Add(this.checkBoxRemovePixel);
             this.groupBoxPixelOptions.Location = new System.Drawing.Point(6, 74);
             this.groupBoxPixelOptions.Name = "groupBoxPixelOptions";
             this.groupBoxPixelOptions.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 67);
+            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 104);
             this.groupBoxPixelOptions.TabIndex = 12;
             this.groupBoxPixelOptions.TabStop = false;
             this.groupBoxPixelOptions.Text = "pixel";
@@ -271,6 +273,17 @@
             this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
             this.pictureBox.DragLeave += new System.EventHandler(this.PictureBox_DragLeave);
             // 
+            // checkBoxChangeAlpha
+            // 
+            this.checkBoxChangeAlpha.AutoSize = true;
+            this.checkBoxChangeAlpha.Location = new System.Drawing.Point(8, 63);
+            this.checkBoxChangeAlpha.Name = "checkBoxChangeAlpha";
+            this.checkBoxChangeAlpha.Size = new System.Drawing.Size(104, 17);
+            this.checkBoxChangeAlpha.TabIndex = 12;
+            this.checkBoxChangeAlpha.Text = "change Alpha to";
+            this.checkBoxChangeAlpha.UseVisualStyleBackColor = true;
+            this.checkBoxChangeAlpha.CheckedChanged += new System.EventHandler(this.checkBoxChangeAlpha_CheckedChanged);
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -324,6 +337,7 @@
         private System.Windows.Forms.GroupBox groupBoxPixelOptions;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label labelPixelColor;
+        private System.Windows.Forms.CheckBox checkBoxChangeAlpha;
     }
 }
 

@@ -17,9 +17,11 @@ namespace Pixelfinder
 
 
         private List<Image> imagesList = new List<Image>();
+        private bool changeAlpha = false;
         private bool removePixel = false;
         private Stopwatch stopwatch = new Stopwatch();
         private Color targetColor = Color.FromArgb(255, 255, 0, 255);
+        private Color changeAlphaTo = Color.FromArgb(255, 0, 0, 0);
 
 
 
@@ -199,7 +201,7 @@ namespace Pixelfinder
                 // Überprüfen, ob der Dateipfad bereits in der Liste vorhanden ist
                 if (filePath.Equals((string)img.Tag))
                 {
-                    MessageBox.Show("Das Bild mit demselben Namen und Pfad existiert bereits.");
+                    MessageBox.Show("The image with the same name and path already exists.");
                     return true;
                 }
             }
@@ -284,12 +286,12 @@ namespace Pixelfinder
                         stopwatch.Restart();  // Start der Zeitmessung
 
                         // Pixel finden
-                        List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, removePixel);
+                        List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha);
 
                         stopwatch.Stop();  // Zeitmessung stoppen
 
                         // Ausgabe der Verarbeitungszeit
-                        string message = $"Verarbeitungszeit für {imagePath}: {stopwatch.ElapsedMilliseconds} ms";
+                        string message = $"Processing time for {imagePath}: {stopwatch.ElapsedMilliseconds} ms";
                         messages.Add(message);
 
                         // Koordinaten in Textdatei speichern
@@ -300,11 +302,11 @@ namespace Pixelfinder
                     }
                     catch (Exception ex)
                     {
-                        string errorMessage = "Fehler beim Laden des Bildes: " + imagePath + " " + ex.Message;
+                        string errorMessage = "Error loading image: " + imagePath + " " + ex.Message;
                         messages.Add(errorMessage);
                     }
                 }
-                messages.Add("Fertig");
+                messages.Add("Finished");
 
                 // Neues LogForm erstellen und Nachrichten hinzufügen
                 LogForm logForm = new LogForm();
@@ -313,7 +315,7 @@ namespace Pixelfinder
             }
             else
             {
-                MessageBox.Show("Es sind keine Bilder in der Liste.");
+                MessageBox.Show("There are no images in the list.");
             }
         }
 
@@ -361,12 +363,12 @@ namespace Pixelfinder
                 }
 
                 // Erfolgsmeldung zur Liste hinzufügen
-                messages.Add($"Koordinaten in {textureFilePath} gespeichert.");
+                messages.Add($"Coordinates saved in {textureFilePath}.");
             }
             catch (Exception ex)
             {
                 // Fehlermeldung zur Liste hinzufügen, wenn das Speichern fehlschlägt
-                messages.Add($"Fehler beim Speichern der Koordinaten {textureFilePath}: {ex.Message}");
+                messages.Add($"Error saving coordinates to {textureFilePath}: {ex.Message}");
             }
         }
 
@@ -420,6 +422,17 @@ namespace Pixelfinder
                 removePixel = false;
             }
         }
+        private void checkBoxChangeAlpha_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxChangeAlpha.Checked)
+            {
+                changeAlpha = true;
+            }
+            else
+            {
+                changeAlpha = false;
+            }
+        }
 
         private void buttonExit_Click(object sender, EventArgs e)
         {
@@ -441,5 +454,7 @@ namespace Pixelfinder
             // Programm beenden
             System.Windows.Forms.Application.Exit();
         }
+
+       
     }
 }

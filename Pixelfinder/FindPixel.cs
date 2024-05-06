@@ -11,13 +11,14 @@ namespace Pixelfinder
 {
     internal class FindPixel
     {
+        
         // Diese Methode findet Pixel einer bestimmten Farbe in einem Bitmap und kann optional diese Pixel auch entfernen.
-        public static List<string> FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, bool removePixel = false)
+        public static List<string> FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, Color changeAlphaTo, bool removePixel = false, bool changeAlpha = false)
         {
             // Überprüft, ob die Größe eines einzelnen Sprites kleiner oder gleich der Größe des gesamten Bitmaps ist.
             if (spriteSize.X > bitmap.Width || spriteSize.Y > bitmap.Height)
             {
-                throw new ArgumentException("Die Sprite-Größe darf nicht größer als die Spritesheet-Größe sein.");
+                throw new ArgumentException("The sprite size must not be larger than the spritesheet size.");
             }
 
             // Konvertiert die Ziel-Farbe in ein ARGB-Integer-Format für einfache Vergleiche.
@@ -43,13 +44,17 @@ namespace Pixelfinder
                     resultsList.Add(result.X + "," + result.Y);
                 }
             }
+            if (changeAlpha)
+            {
+                ChangeAlphaToColor(pixelData, changeAlphaTo);
+            }
 
             // Kopiert die veränderten Pixeldaten zurück ins Bitmap.
             Marshal.Copy(pixelData, 0, bitmapData.Scan0, pixelData.Length);
             bitmap.UnlockBits(bitmapData);
 
             // Optional: Speichert das veränderte Bitmap.
-            if (removePixel)
+            if (removePixel || changeAlpha)
             {
                 SaveModifiedBitmap(bitmap);
             }
@@ -62,6 +67,7 @@ namespace Pixelfinder
         // Diese Hilfsmethode sucht das Pixel mit der Ziel-Farbe in einem einzelnen Sprite.
         private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false)
         {
+            
             Point result = new Point(0, 0);
 
             // Durchsucht das Sprite Pixel für Pixel.
@@ -94,7 +100,7 @@ namespace Pixelfinder
         {
             if (bitmap.Tag == null || string.IsNullOrEmpty(bitmap.Tag.ToString()))
             {
-                throw new InvalidOperationException("Das Bitmap-Tag enthält keinen gültigen Speicherpfad.");
+                throw new InvalidOperationException("The bitmap tag does not contain a valid storage path.");
             }
 
             string originalPath = bitmap.Tag.ToString();
@@ -204,5 +210,27 @@ namespace Pixelfinder
             // Berechnen des quadratischen Abstands zwischen den Farben im RGB-Raum.
             return (r2 - r1) * (r2 - r1) + (g2 - g1) * (g2 - g1) + (b2 - b1) * (b2 - b1);
         }
+
+        private static void ChangeAlphaToColor(byte[] pixelData, Color targetColor)
+        {
+            // Durchlaufe alle Pixel im Bild
+            for (int i = 0; i < pixelData.Length; i += 4)
+            {
+                // Alpha-Wert des Pixels abrufen
+                byte alpha = pixelData[i + 3];
+
+                // Überprüfen, ob der Alpha-Wert nicht vollständig undurchsichtig ist (0)
+                if (alpha != 0 && alpha != 255)
+                {
+                    // Die Farbkomponenten auf die Ziel-Farbe setzen
+                    pixelData[i] = targetColor.B;
+                    pixelData[i + 1] = targetColor.G;
+                    pixelData[i + 2] = targetColor.R;
+                    pixelData[i + 3] = targetColor.A;
+                }
+            }
+        }
     }
 }
+
+
