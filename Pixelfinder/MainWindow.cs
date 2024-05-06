@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ namespace Pixelfinder
 {
     public partial class MainWindow : Form
     {
-
 
         private List<Image> imagesList = new List<Image>();
         private bool changeAlpha = false;
@@ -495,6 +495,95 @@ namespace Pixelfinder
             System.Windows.Forms.Application.Exit();
         }
 
-       
+        private void buttonCoordinatesToSpriteSheet_Click(object sender, EventArgs e)
+        {
+            ApplyPixelsFromFile();
+        }
+        public void ApplyPixelsFromFile()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Bitmap Images (*.png)|*.png";
+            openFileDialog.Title = "Select an Image File";
+
+            // Open the dialog for the bitmap file
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string bitmapPath = openFileDialog.FileName;
+                Bitmap bitmap = new Bitmap(bitmapPath);
+
+                openFileDialog.Filter = "Text Files (*.txt)|*.txt";
+                openFileDialog.Title = "Select a Text File with Coordinates";
+
+                // Open the dialog for the text file containing coordinates
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string textFilePath = openFileDialog.FileName;
+                    List<Point> coordinates = ReadCoordinatesFromTextFile(textFilePath);
+
+                    // Assuming the sprite size needs to be provided
+                    Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
+
+                    ColorDialog colorDialog = new ColorDialog();
+                    int[] customColors = new int[] { ColorTranslator.ToOle(Color.FromArgb(255, 0, 255)) }; // Magenta
+                    colorDialog.CustomColors = customColors;
+                    colorDialog.Color = Color.FromArgb(255, 0, 255); // Default color set to Magenta
+
+                    // Initialize colorToDraw with a default value
+                    Color colorToDraw = Color.FromArgb(255, 0, 255);
+
+                    // Show dialog to allow user to change color
+                    if (colorDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        colorToDraw = colorDialog.Color; // Update color to draw if user chooses a new color
+                    }
+
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+
+                    // Apply the color to the specified coordinates in the bitmap
+                    FindPixel.ChangePixelInSpriteSheet(bitmap, spriteSize, colorToDraw, coordinates);
+
+                    stopwatch.Stop();
+                    long processingTime = stopwatch.ElapsedMilliseconds;
+
+                    // Optionally save or display the modified bitmap
+                    string modifiedPath = Path.Combine(Path.GetDirectoryName(bitmapPath), "Modified_" + Path.GetFileName(bitmapPath));
+                    bitmap.Save(modifiedPath);
+                    bitmap.Dispose();
+
+                    List<string> messages = new List<string>
+            {
+                $"Bitmap modified and saved successfully at {modifiedPath}.",
+                $"Processing time: {processingTime} ms"
+            };
+
+                    LogForm logForm = new LogForm();
+                    logForm.AddMessagesToListBox(messages);
+                    logForm.ShowDialog();
+                }
+            }
+        }
+
+
+        private static List<Point> ReadCoordinatesFromTextFile(string filePath)
+        {
+            List<Point> coordinates = new List<Point>();
+            string[] lines = File.ReadAllLines(filePath);
+
+            foreach (string line in lines)
+            {
+                string[] parts = line.Trim().Split(',');
+                if (parts.Length == 2)
+                {
+                    if (int.TryParse(parts[0], out int x) && int.TryParse(parts[1], out int y))
+                    {
+                        coordinates.Add(new Point(x, y));
+                        Console.WriteLine("coords"+ x +","+ y);  
+                    }
+                }
+            }
+
+            return coordinates;
+        }
     }
 }

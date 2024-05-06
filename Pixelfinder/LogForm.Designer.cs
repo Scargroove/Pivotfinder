@@ -41,7 +41,7 @@
             this.listBoxLog.HorizontalScrollbar = true;
             this.listBoxLog.Location = new System.Drawing.Point(0, 0);
             this.listBoxLog.Name = "listBoxLog";
-            this.listBoxLog.Size = new System.Drawing.Size(484, 160);
+            this.listBoxLog.Size = new System.Drawing.Size(622, 160);
             this.listBoxLog.TabIndex = 0;
             this.listBoxLog.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBoxLog_KeyDown);
             // 
@@ -51,7 +51,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonLogExit.Location = new System.Drawing.Point(12, 166);
             this.buttonLogExit.Name = "buttonLogExit";
-            this.buttonLogExit.Size = new System.Drawing.Size(460, 43);
+            this.buttonLogExit.Size = new System.Drawing.Size(598, 43);
             this.buttonLogExit.TabIndex = 1;
             this.buttonLogExit.Text = "exit";
             this.buttonLogExit.UseVisualStyleBackColor = true;
@@ -61,7 +61,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 213);
+            this.ClientSize = new System.Drawing.Size(622, 213);
             this.Controls.Add(this.buttonLogExit);
             this.Controls.Add(this.listBoxLog);
             this.MinimumSize = new System.Drawing.Size(235, 152);

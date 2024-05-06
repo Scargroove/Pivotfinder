@@ -81,7 +81,7 @@ namespace Pixelfinder
         // Diese Hilfsmethode sucht das Pixel mit der Ziel-Farbe in einem einzelnen Sprite.
         private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false, bool findCoordinates = false, string imagePath = "")
         {
-            Point result = new Point(0, 0); 
+            Point result = new Point(0, 0);
             int foundPixelCount = 0; // Zähler für die Anzahl der gefundenen Pixel.
 
             // Durchsucht das Sprite Pixel für Pixel.
@@ -257,7 +257,58 @@ namespace Pixelfinder
                 }
             }
         }
-      
+        public static void ChangePixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, List<Point> points)
+        {
+            // Obtain the size of the spritesheet
+            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+
+            // Lock the bitmap's bits
+            BitmapData bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
+
+            // Get the address of the first line
+            IntPtr ptr = bitmapData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap
+            int bytes = Math.Abs(bitmapData.Stride) * bitmap.Height;
+            byte[] rgbValues = new byte[bytes];
+
+            // Copy the RGB values into the array
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+            int depth = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8; // bytes per pixel
+
+            // Calculate the number of sprites
+            Point spriteAmount = new Point(bitmap.Width / spriteSize.X, bitmap.Height / spriteSize.Y);
+            int pointListPosition = 0;
+
+            for (int y = 0; y < spriteAmount.Y; y++)
+            {
+                for (int x = 0; x < spriteAmount.X; x++)
+                {
+                    if (points[pointListPosition].X != 0 && points[pointListPosition].Y != 0)
+                    {
+                        int pixelX = (spriteSize.X * x) + points[pointListPosition].X;
+                        int pixelY = (spriteSize.Y * y) + points[pointListPosition].Y;
+                        int position = (pixelY * bitmapData.Stride) + (pixelX * depth);
+
+                        rgbValues[position] = targetColor.B; // Blue
+                        rgbValues[position + 1] = targetColor.G; // Green
+                        rgbValues[position + 2] = targetColor.R; // Red
+                        if (depth == 4) // If PixelFormat is 32bppArgb, also set the alpha value
+                        {
+                            rgbValues[position + 3] = targetColor.A; // Alpha
+                        }
+                    }
+                    pointListPosition++;
+                }
+            }
+
+            // Copy the RGB values back to the bitmap
+            Marshal.Copy(rgbValues, 0, ptr, bytes);
+
+            // Unlock the bits
+            bitmap.UnlockBits(bitmapData);
+        }
     }
 }
 

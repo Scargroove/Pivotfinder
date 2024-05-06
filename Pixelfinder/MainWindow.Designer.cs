@@ -37,6 +37,9 @@
             this.buttonSelectPixelColor = new System.Windows.Forms.Button();
             this.groupBoxOptions = new System.Windows.Forms.GroupBox();
             this.groupBoxPixelOptions = new System.Windows.Forms.GroupBox();
+            this.checkBoxFindCoordinates = new System.Windows.Forms.CheckBox();
+            this.buttonAlphaToColor = new System.Windows.Forms.Button();
+            this.checkBoxChangeAlpha = new System.Windows.Forms.CheckBox();
             this.checkBoxRemovePixel = new System.Windows.Forms.CheckBox();
             this.groupBoxSpriteSize = new System.Windows.Forms.GroupBox();
             this.labelSpriteSizeY = new System.Windows.Forms.Label();
@@ -46,9 +49,7 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.checkBoxChangeAlpha = new System.Windows.Forms.CheckBox();
-            this.buttonAlphaToColor = new System.Windows.Forms.Button();
-            this.checkBoxFindCoordinates = new System.Windows.Forms.CheckBox();
+            this.buttonCoordinatesToSpriteSheet = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
             this.groupBoxOptions.SuspendLayout();
@@ -77,7 +78,7 @@
             // buttonDeleteListItem
             // 
             this.buttonDeleteListItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDeleteListItem.Location = new System.Drawing.Point(383, 51);
+            this.buttonDeleteListItem.Location = new System.Drawing.Point(384, 51);
             this.buttonDeleteListItem.Name = "buttonDeleteListItem";
             this.buttonDeleteListItem.Size = new System.Drawing.Size(186, 23);
             this.buttonDeleteListItem.TabIndex = 2;
@@ -88,7 +89,7 @@
             // buttonStartPixelfind
             // 
             this.buttonStartPixelfind.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonStartPixelfind.Location = new System.Drawing.Point(383, 264);
+            this.buttonStartPixelfind.Location = new System.Drawing.Point(384, 329);
             this.buttonStartPixelfind.Name = "buttonStartPixelfind";
             this.buttonStartPixelfind.Size = new System.Drawing.Size(186, 49);
             this.buttonStartPixelfind.TabIndex = 3;
@@ -156,7 +157,7 @@
             this.groupBoxOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxOptions.Controls.Add(this.groupBoxPixelOptions);
             this.groupBoxOptions.Controls.Add(this.groupBoxSpriteSize);
-            this.groupBoxOptions.Location = new System.Drawing.Point(383, 80);
+            this.groupBoxOptions.Location = new System.Drawing.Point(384, 145);
             this.groupBoxOptions.Name = "groupBoxOptions";
             this.groupBoxOptions.Size = new System.Drawing.Size(186, 178);
             this.groupBoxOptions.TabIndex = 7;
@@ -173,16 +174,47 @@
             this.groupBoxPixelOptions.Location = new System.Drawing.Point(6, 74);
             this.groupBoxPixelOptions.Name = "groupBoxPixelOptions";
             this.groupBoxPixelOptions.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 98);
+            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 88);
             this.groupBoxPixelOptions.TabIndex = 12;
             this.groupBoxPixelOptions.TabStop = false;
             this.groupBoxPixelOptions.Text = "pixel";
+            // 
+            // checkBoxFindCoordinates
+            // 
+            this.checkBoxFindCoordinates.AutoSize = true;
+            this.checkBoxFindCoordinates.Location = new System.Drawing.Point(8, 20);
+            this.checkBoxFindCoordinates.Name = "checkBoxFindCoordinates";
+            this.checkBoxFindCoordinates.Size = new System.Drawing.Size(116, 17);
+            this.checkBoxFindCoordinates.TabIndex = 14;
+            this.checkBoxFindCoordinates.Text = "find coordinates for";
+            this.checkBoxFindCoordinates.UseVisualStyleBackColor = true;
+            this.checkBoxFindCoordinates.CheckedChanged += new System.EventHandler(this.checkBoxFindCoordinates_CheckedChanged);
+            // 
+            // buttonAlphaToColor
+            // 
+            this.buttonAlphaToColor.Location = new System.Drawing.Point(140, 43);
+            this.buttonAlphaToColor.Name = "buttonAlphaToColor";
+            this.buttonAlphaToColor.Size = new System.Drawing.Size(17, 17);
+            this.buttonAlphaToColor.TabIndex = 13;
+            this.buttonAlphaToColor.UseVisualStyleBackColor = true;
+            this.buttonAlphaToColor.Click += new System.EventHandler(this.buttonAlphaToColor_Click);
+            // 
+            // checkBoxChangeAlpha
+            // 
+            this.checkBoxChangeAlpha.AutoSize = true;
+            this.checkBoxChangeAlpha.Location = new System.Drawing.Point(8, 43);
+            this.checkBoxChangeAlpha.Name = "checkBoxChangeAlpha";
+            this.checkBoxChangeAlpha.Size = new System.Drawing.Size(103, 17);
+            this.checkBoxChangeAlpha.TabIndex = 12;
+            this.checkBoxChangeAlpha.Text = "change alpha to";
+            this.checkBoxChangeAlpha.UseVisualStyleBackColor = true;
+            this.checkBoxChangeAlpha.CheckedChanged += new System.EventHandler(this.checkBoxChangeAlpha_CheckedChanged);
             // 
             // checkBoxRemovePixel
             // 
             this.checkBoxRemovePixel.AutoSize = true;
             this.checkBoxRemovePixel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.checkBoxRemovePixel.Location = new System.Drawing.Point(8, 40);
+            this.checkBoxRemovePixel.Location = new System.Drawing.Point(8, 66);
             this.checkBoxRemovePixel.Name = "checkBoxRemovePixel";
             this.checkBoxRemovePixel.Size = new System.Drawing.Size(85, 17);
             this.checkBoxRemovePixel.TabIndex = 7;
@@ -224,7 +256,7 @@
             // buttonAddListItem
             // 
             this.buttonAddListItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddListItem.Location = new System.Drawing.Point(383, 12);
+            this.buttonAddListItem.Location = new System.Drawing.Point(384, 12);
             this.buttonAddListItem.Name = "buttonAddListItem";
             this.buttonAddListItem.Size = new System.Drawing.Size(186, 33);
             this.buttonAddListItem.TabIndex = 8;
@@ -235,7 +267,7 @@
             // buttonExit
             // 
             this.buttonExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonExit.Location = new System.Drawing.Point(383, 319);
+            this.buttonExit.Location = new System.Drawing.Point(384, 384);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(186, 32);
             this.buttonExit.TabIndex = 9;
@@ -259,50 +291,31 @@
             this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox.Location = new System.Drawing.Point(12, 145);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(360, 202);
+            this.pictureBox.Size = new System.Drawing.Size(360, 269);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
             this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
             this.pictureBox.DragLeave += new System.EventHandler(this.PictureBox_DragLeave);
             // 
-            // checkBoxChangeAlpha
+            // buttonCoordinatesToSpriteSheet
             // 
-            this.checkBoxChangeAlpha.AutoSize = true;
-            this.checkBoxChangeAlpha.Location = new System.Drawing.Point(8, 63);
-            this.checkBoxChangeAlpha.Name = "checkBoxChangeAlpha";
-            this.checkBoxChangeAlpha.Size = new System.Drawing.Size(104, 17);
-            this.checkBoxChangeAlpha.TabIndex = 12;
-            this.checkBoxChangeAlpha.Text = "change Alpha to";
-            this.checkBoxChangeAlpha.UseVisualStyleBackColor = true;
-            this.checkBoxChangeAlpha.CheckedChanged += new System.EventHandler(this.checkBoxChangeAlpha_CheckedChanged);
-            // 
-            // buttonAlphaToColor
-            // 
-            this.buttonAlphaToColor.Location = new System.Drawing.Point(140, 62);
-            this.buttonAlphaToColor.Name = "buttonAlphaToColor";
-            this.buttonAlphaToColor.Size = new System.Drawing.Size(17, 17);
-            this.buttonAlphaToColor.TabIndex = 13;
-            this.buttonAlphaToColor.UseVisualStyleBackColor = true;
-            this.buttonAlphaToColor.Click += new System.EventHandler(this.buttonAlphaToColor_Click);
-            // 
-            // checkBoxFindCoordinates
-            // 
-            this.checkBoxFindCoordinates.AutoSize = true;
-            this.checkBoxFindCoordinates.Location = new System.Drawing.Point(8, 20);
-            this.checkBoxFindCoordinates.Name = "checkBoxFindCoordinates";
-            this.checkBoxFindCoordinates.Size = new System.Drawing.Size(117, 17);
-            this.checkBoxFindCoordinates.TabIndex = 14;
-            this.checkBoxFindCoordinates.Text = "find Coordinates for";
-            this.checkBoxFindCoordinates.UseVisualStyleBackColor = true;
-            this.checkBoxFindCoordinates.CheckedChanged += new System.EventHandler(this.checkBoxFindCoordinates_CheckedChanged);
+            this.buttonCoordinatesToSpriteSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCoordinatesToSpriteSheet.Location = new System.Drawing.Point(384, 100);
+            this.buttonCoordinatesToSpriteSheet.Name = "buttonCoordinatesToSpriteSheet";
+            this.buttonCoordinatesToSpriteSheet.Size = new System.Drawing.Size(186, 33);
+            this.buttonCoordinatesToSpriteSheet.TabIndex = 15;
+            this.buttonCoordinatesToSpriteSheet.Text = "coordinates to spritesheet";
+            this.buttonCoordinatesToSpriteSheet.UseVisualStyleBackColor = true;
+            this.buttonCoordinatesToSpriteSheet.Click += new System.EventHandler(this.buttonCoordinatesToSpriteSheet_Click);
             // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(582, 359);
+            this.ClientSize = new System.Drawing.Size(582, 426);
+            this.Controls.Add(this.buttonCoordinatesToSpriteSheet);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonAddListItem);
             this.Controls.Add(this.groupBoxOptions);
@@ -311,7 +324,7 @@
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.pictureBox);
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(598, 398);
+            this.MinimumSize = new System.Drawing.Size(598, 465);
             this.Name = "MainWindow";
             this.Text = "Pixelfinder";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
@@ -352,6 +365,7 @@
         private System.Windows.Forms.CheckBox checkBoxChangeAlpha;
         private System.Windows.Forms.Button buttonAlphaToColor;
         private System.Windows.Forms.CheckBox checkBoxFindCoordinates;
+        private System.Windows.Forms.Button buttonCoordinatesToSpriteSheet;
     }
 }
 
