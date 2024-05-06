@@ -19,6 +19,7 @@ namespace Pixelfinder
         private List<Image> imagesList = new List<Image>();
         private bool changeAlpha = false;
         private bool removePixel = false;
+        private bool findCoordinates = false;
         private Stopwatch stopwatch = new Stopwatch();
         private Color targetColor = Color.FromArgb(255, 255, 0, 255);
         private Color changeAlphaTo = Color.FromArgb(255, 0, 0, 0);
@@ -32,8 +33,9 @@ namespace Pixelfinder
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.AllowDrop = true;
             buttonSelectPixelColor.BackColor = targetColor;
-            
-     
+            buttonAlphaToColor.BackColor = changeAlphaTo;
+
+
         }
         private void InitializeTooltips()
         {
@@ -265,62 +267,87 @@ namespace Pixelfinder
 
         private void startPixelfind_Click(object sender, EventArgs e)
         {
-            if (imagesList.Count > 0)
+            if (imagesList.Count > 0 && (changeAlpha || removePixel || findCoordinates))
             {
-                // Breite und Höhe des Sprites definieren
                 Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
-
                 List<string> messages = new List<string>();
 
                 foreach (Image img in imagesList)
                 {
-                    // Pfad aus dem Tag des Bildes holen
                     string imagePath = img.Tag.ToString();
-
                     try
                     {
-                        // Bild laden und Tag übertragen
                         Bitmap bitmap = new Bitmap(imagePath);
-                        bitmap.Tag = img.Tag;  // Übertragen des Tags vom Image zum Bitmap
+                        bitmap.Tag = img.Tag;
 
-                        stopwatch.Restart();  // Start der Zeitmessung
+                        stopwatch.Restart();
 
-                        // Pixel finden
-                        List<string> coordinates = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha);
+                        var (coordinates, errorImagePaths) = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha, findCoordinates);
 
-                        stopwatch.Stop();  // Zeitmessung stoppen
+                        stopwatch.Stop();
 
-                        // Ausgabe der Verarbeitungszeit
                         string message = $"Processing time for {imagePath}: {stopwatch.ElapsedMilliseconds} ms";
                         messages.Add(message);
 
-                        // Koordinaten in Textdatei speichern
-                        SaveCoordinatesToFile(imagePath, coordinates,messages);
+                        if (findCoordinates && coordinates.Any())
+                        {
+                            SaveCoordinatesToFile(imagePath, coordinates, messages);
+                        }
 
-                        // Nach Verwendung das Bitmap wieder freigeben
+                        if (errorImagePaths.Any())
+                        {
+                            foreach (var errorPath in errorImagePaths)
+                            {
+                                messages.Add($"Error found in image at path: {errorPath}");
+                            }
+                        }
+
                         bitmap.Dispose();
                     }
                     catch (Exception ex)
                     {
-                        string errorMessage = "Error loading image: " + imagePath + " " + ex.Message;
-                        messages.Add(errorMessage);
+                        messages.Add($"Error loading image: {imagePath}. Error: {ex.Message}");
                     }
                 }
                 messages.Add("Finished");
 
-                // Neues LogForm erstellen und Nachrichten hinzufügen
                 LogForm logForm = new LogForm();
                 logForm.AddMessagesToListBox(messages);
-                logForm.ShowDialog(); // Fenster anzeigen
+                logForm.ShowDialog();
             }
             else
             {
-                MessageBox.Show("There are no images in the list.");
+                if (imagesList.Count == 0)
+                {
+                    MessageBox.Show("There are no images in the list.");
+                }
+                else
+                    MessageBox.Show("Please select an option.");
             }
         }
 
 
 
+        private void buttonAlphaToColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialogAlpha = new ColorDialog();
+
+            // Definieren einer benutzerdefinierten Farbe als RGB-Wert 255, 0, 0, 0 (Schwarz)
+            int[] customColors = new int[] { ColorTranslator.ToOle(Color.FromArgb(255, 0, 0 , 0)) };
+            colorDialogAlpha.CustomColors = customColors;
+
+            // Setzen der initial ausgewählten Farbe auf Schwarz
+            colorDialogAlpha.Color = Color.FromArgb(255, 0, 0, 0);
+
+            if (colorDialogAlpha.ShowDialog() == DialogResult.OK)
+            {
+                // Die ausgewählte Farbe verwenden
+                Color selectedColor = colorDialogAlpha.Color;
+                changeAlphaTo = selectedColor;
+                buttonAlphaToColor.BackColor = selectedColor;
+                checkBoxChangeAlpha.Checked = true;
+            }
+        }
 
         private void buttonSelectPixelColor_Click(object sender, EventArgs e)
         {
@@ -339,6 +366,8 @@ namespace Pixelfinder
                 Color selectedColor = colorDialog.Color;
                 targetColor = selectedColor;
                 buttonSelectPixelColor.BackColor = selectedColor;
+                checkBoxFindCoordinates.Checked = true;
+
             }
         }
         private void SaveCoordinatesToFile(string imagePath, List<string> coordinates, List<string> messages)
@@ -431,6 +460,17 @@ namespace Pixelfinder
             else
             {
                 changeAlpha = false;
+            }
+        }
+        private void checkBoxFindCoordinates_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxFindCoordinates.Checked)
+            {
+                findCoordinates = true;
+            }
+            else
+            {
+                findCoordinates= false;
             }
         }
 

@@ -11,9 +11,10 @@ namespace Pixelfinder
 {
     internal class FindPixel
     {
-        
+
+
         // Diese Methode findet Pixel einer bestimmten Farbe in einem Bitmap und kann optional diese Pixel auch entfernen.
-        public static List<string> FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, Color changeAlphaTo, bool removePixel = false, bool changeAlpha = false)
+        public static (List<string> resultsList, List<string> errorImagePaths) FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, Color changeAlphaTo, bool removePixel = false, bool changeAlpha = false, bool findCoordinates = false)
         {
             // Überprüft, ob die Größe eines einzelnen Sprites kleiner oder gleich der Größe des gesamten Bitmaps ist.
             if (spriteSize.X > bitmap.Width || spriteSize.Y > bitmap.Height)
@@ -28,6 +29,7 @@ namespace Pixelfinder
             Point spriteAmount = new Point(bitmap.Width / spriteSize.X, bitmap.Height / spriteSize.Y);
 
             List<string> resultsList = new List<string>();
+            List<string> errorImagePaths = new List<string>(); // Liste der Bildpfade mit dem Fehler
 
             // Sperren des Bitmaps im Speicher für schnellen Zugriff.
             BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
@@ -40,8 +42,20 @@ namespace Pixelfinder
                 for (int x = 0; x < spriteAmount.X; x++)
                 {
                     // Findet die Position des gesuchten Pixels im Sprite.
-                    Point result = FindPixelInSprite(pixelData, bitmapData.Stride, spriteSize, targetColorInt, new Point(spriteSize.X * x, spriteSize.Y * y), removePixel);
-                    resultsList.Add(result.X + "," + result.Y);
+                    Point result = FindPixelInSprite(pixelData, bitmapData.Stride, spriteSize, targetColorInt, new Point(spriteSize.X * x, spriteSize.Y * y), removePixel, findCoordinates);
+                    if (findCoordinates)
+                    {
+                        if (result.X != -1 && result.Y != -1)
+                        {
+                            resultsList.Add(result.X + "," + result.Y);
+                        }
+                        else
+                        {
+                            // Fehler: Mehrere Pixel gefunden
+                            errorImagePaths.Add(bitmap.Tag.ToString());
+                        }
+                    }
+
                 }
             }
             if (changeAlpha)
@@ -61,14 +75,14 @@ namespace Pixelfinder
 
             // Gibt das Bitmap-Speicher frei.
             bitmap.Dispose();
-            return resultsList;
+            return (resultsList, errorImagePaths);
         }
 
         // Diese Hilfsmethode sucht das Pixel mit der Ziel-Farbe in einem einzelnen Sprite.
-        private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false)
+        private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false, bool findCoordinates = false)
         {
-            
-            Point result = new Point(0, 0);
+            Point result = new Point(0, 0); 
+            int foundPixelCount = 0; // Zähler für die Anzahl der gefundenen Pixel.
 
             // Durchsucht das Sprite Pixel für Pixel.
             for (int y = 0; y < spriteSize.Y; y++)
@@ -82,18 +96,31 @@ namespace Pixelfinder
 
                     if (color == targetColorInt)
                     {
-                        result = new Point(x, y);
+                        if (findCoordinates == true)
+                        {
+                            if (foundPixelCount > 0)
+                            {
+                                // Warnung ausgeben, dass mehr als ein Pixel gefunden wurde.
+                                MessageBox.Show("Multiple pixels found. Only one pixel should exist.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                result = new Point(-1, -1);
+                                return result; // Abbrechen und ungültiges Ergebnis zurückgeben.
+                            }
+
+                            result = new Point(x, y);
+                        }
+
                         if (removePixel)
                         {
                             ReplacePixelWithDominantNeighboringColor(pixelData, stride, spriteSize, position);
                         }
-                        return result;
+                        foundPixelCount++; // Inkrementieren des Zählers für gefundene Pixel.
                     }
                 }
             }
 
             return result;
         }
+
 
         // Diese Methode speichert das veränderte Bitmap unter einem neuen Dateinamen.
         public static void SaveModifiedBitmap(Bitmap bitmap, string modifiedText = "_modified")
@@ -219,7 +246,7 @@ namespace Pixelfinder
                 // Alpha-Wert des Pixels abrufen
                 byte alpha = pixelData[i + 3];
 
-                // Überprüfen, ob der Alpha-Wert nicht vollständig undurchsichtig ist (0)
+                // auf Alpha-Wert prüfen
                 if (alpha != 0 && alpha != 255)
                 {
                     // Die Farbkomponenten auf die Ziel-Farbe setzen
@@ -230,6 +257,7 @@ namespace Pixelfinder
                 }
             }
         }
+      
     }
 }
 

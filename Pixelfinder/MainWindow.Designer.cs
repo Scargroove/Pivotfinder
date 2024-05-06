@@ -37,7 +37,6 @@
             this.buttonSelectPixelColor = new System.Windows.Forms.Button();
             this.groupBoxOptions = new System.Windows.Forms.GroupBox();
             this.groupBoxPixelOptions = new System.Windows.Forms.GroupBox();
-            this.labelPixelColor = new System.Windows.Forms.Label();
             this.checkBoxRemovePixel = new System.Windows.Forms.CheckBox();
             this.groupBoxSpriteSize = new System.Windows.Forms.GroupBox();
             this.labelSpriteSizeY = new System.Windows.Forms.Label();
@@ -48,6 +47,8 @@
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.checkBoxChangeAlpha = new System.Windows.Forms.CheckBox();
+            this.buttonAlphaToColor = new System.Windows.Forms.Button();
+            this.checkBoxFindCoordinates = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
             this.groupBoxOptions.SuspendLayout();
@@ -143,7 +144,7 @@
             // 
             this.buttonSelectPixelColor.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonSelectPixelColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.buttonSelectPixelColor.Location = new System.Drawing.Point(6, 19);
+            this.buttonSelectPixelColor.Location = new System.Drawing.Point(140, 19);
             this.buttonSelectPixelColor.Name = "buttonSelectPixelColor";
             this.buttonSelectPixelColor.Size = new System.Drawing.Size(17, 17);
             this.buttonSelectPixelColor.TabIndex = 6;
@@ -164,9 +165,10 @@
             // 
             // groupBoxPixelOptions
             // 
+            this.groupBoxPixelOptions.Controls.Add(this.checkBoxFindCoordinates);
+            this.groupBoxPixelOptions.Controls.Add(this.buttonAlphaToColor);
             this.groupBoxPixelOptions.Controls.Add(this.checkBoxChangeAlpha);
             this.groupBoxPixelOptions.Controls.Add(this.buttonSelectPixelColor);
-            this.groupBoxPixelOptions.Controls.Add(this.labelPixelColor);
             this.groupBoxPixelOptions.Controls.Add(this.checkBoxRemovePixel);
             this.groupBoxPixelOptions.Location = new System.Drawing.Point(6, 74);
             this.groupBoxPixelOptions.Name = "groupBoxPixelOptions";
@@ -175,15 +177,6 @@
             this.groupBoxPixelOptions.TabIndex = 12;
             this.groupBoxPixelOptions.TabStop = false;
             this.groupBoxPixelOptions.Text = "pixel";
-            // 
-            // labelPixelColor
-            // 
-            this.labelPixelColor.AutoSize = true;
-            this.labelPixelColor.Location = new System.Drawing.Point(24, 21);
-            this.labelPixelColor.Name = "labelPixelColor";
-            this.labelPixelColor.Size = new System.Drawing.Size(62, 13);
-            this.labelPixelColor.TabIndex = 11;
-            this.labelPixelColor.Text = "color to find";
             // 
             // checkBoxRemovePixel
             // 
@@ -284,6 +277,26 @@
             this.checkBoxChangeAlpha.UseVisualStyleBackColor = true;
             this.checkBoxChangeAlpha.CheckedChanged += new System.EventHandler(this.checkBoxChangeAlpha_CheckedChanged);
             // 
+            // buttonAlphaToColor
+            // 
+            this.buttonAlphaToColor.Location = new System.Drawing.Point(140, 62);
+            this.buttonAlphaToColor.Name = "buttonAlphaToColor";
+            this.buttonAlphaToColor.Size = new System.Drawing.Size(17, 17);
+            this.buttonAlphaToColor.TabIndex = 13;
+            this.buttonAlphaToColor.UseVisualStyleBackColor = true;
+            this.buttonAlphaToColor.Click += new System.EventHandler(this.buttonAlphaToColor_Click);
+            // 
+            // checkBoxFindCoordinates
+            // 
+            this.checkBoxFindCoordinates.AutoSize = true;
+            this.checkBoxFindCoordinates.Location = new System.Drawing.Point(8, 20);
+            this.checkBoxFindCoordinates.Name = "checkBoxFindCoordinates";
+            this.checkBoxFindCoordinates.Size = new System.Drawing.Size(117, 17);
+            this.checkBoxFindCoordinates.TabIndex = 14;
+            this.checkBoxFindCoordinates.Text = "find Coordinates for";
+            this.checkBoxFindCoordinates.UseVisualStyleBackColor = true;
+            this.checkBoxFindCoordinates.CheckedChanged += new System.EventHandler(this.checkBoxFindCoordinates_CheckedChanged);
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -336,8 +349,9 @@
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.GroupBox groupBoxPixelOptions;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Label labelPixelColor;
         private System.Windows.Forms.CheckBox checkBoxChangeAlpha;
+        private System.Windows.Forms.Button buttonAlphaToColor;
+        private System.Windows.Forms.CheckBox checkBoxFindCoordinates;
     }
 }
 
