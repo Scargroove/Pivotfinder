@@ -34,13 +34,15 @@
             this.buttonStartPixelfind = new System.Windows.Forms.Button();
             this.numericUpDownSpriteWidth = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownSpriteHeight = new System.Windows.Forms.NumericUpDown();
-            this.buttonSelectPixelColor = new System.Windows.Forms.Button();
+            this.buttonSelectPivotColor = new System.Windows.Forms.Button();
             this.groupBoxOptions = new System.Windows.Forms.GroupBox();
-            this.groupBoxPixelOptions = new System.Windows.Forms.GroupBox();
-            this.checkBoxFindCoordinates = new System.Windows.Forms.CheckBox();
-            this.buttonAlphaToColor = new System.Windows.Forms.Button();
+            this.groupBoxAlpha = new System.Windows.Forms.GroupBox();
+            this.checkBoxRemoveAlpha = new System.Windows.Forms.CheckBox();
             this.checkBoxChangeAlpha = new System.Windows.Forms.CheckBox();
-            this.checkBoxRemovePixel = new System.Windows.Forms.CheckBox();
+            this.buttonAlphaToColor = new System.Windows.Forms.Button();
+            this.groupBoxPixelOptions = new System.Windows.Forms.GroupBox();
+            this.checkBoxFindPivots = new System.Windows.Forms.CheckBox();
+            this.checkBoxRemovePivot = new System.Windows.Forms.CheckBox();
             this.groupBoxSpriteSize = new System.Windows.Forms.GroupBox();
             this.labelSpriteSizeY = new System.Windows.Forms.Label();
             this.labelSpriteSizeX = new System.Windows.Forms.Label();
@@ -49,10 +51,11 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.buttonCoordinatesToSpriteSheet = new System.Windows.Forms.Button();
+            this.buttonPivotToSpriteSheet = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
             this.groupBoxOptions.SuspendLayout();
+            this.groupBoxAlpha.SuspendLayout();
             this.groupBoxPixelOptions.SuspendLayout();
             this.groupBoxSpriteSize.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
@@ -69,7 +72,7 @@
             this.listBox.MinimumSize = new System.Drawing.Size(250, 56);
             this.listBox.Name = "listBox";
             this.listBox.Size = new System.Drawing.Size(360, 121);
-            this.listBox.TabIndex = 1;
+            this.listBox.TabIndex = 0;
             this.listBox.SelectedIndexChanged += new System.EventHandler(this.listBox_SelectedIndexChanged);
             this.listBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.listBox_DragDrop);
             this.listBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.listBox_DragEnter);
@@ -80,22 +83,22 @@
             this.buttonDeleteListItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonDeleteListItem.Location = new System.Drawing.Point(384, 51);
             this.buttonDeleteListItem.Name = "buttonDeleteListItem";
-            this.buttonDeleteListItem.Size = new System.Drawing.Size(186, 23);
+            this.buttonDeleteListItem.Size = new System.Drawing.Size(186, 24);
             this.buttonDeleteListItem.TabIndex = 2;
-            this.buttonDeleteListItem.Text = "delete spritesheet";
+            this.buttonDeleteListItem.Text = "remove sprites";
             this.buttonDeleteListItem.UseVisualStyleBackColor = true;
             this.buttonDeleteListItem.Click += new System.EventHandler(this.buttonDeleteListItem_Click);
             // 
             // buttonStartPixelfind
             // 
             this.buttonStartPixelfind.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonStartPixelfind.Location = new System.Drawing.Point(384, 329);
+            this.buttonStartPixelfind.Location = new System.Drawing.Point(384, 332);
             this.buttonStartPixelfind.Name = "buttonStartPixelfind";
-            this.buttonStartPixelfind.Size = new System.Drawing.Size(186, 49);
-            this.buttonStartPixelfind.TabIndex = 3;
+            this.buttonStartPixelfind.Size = new System.Drawing.Size(186, 34);
+            this.buttonStartPixelfind.TabIndex = 11;
             this.buttonStartPixelfind.Text = "start";
             this.buttonStartPixelfind.UseVisualStyleBackColor = true;
-            this.buttonStartPixelfind.Click += new System.EventHandler(this.startPixelfind_Click);
+            this.buttonStartPixelfind.Click += new System.EventHandler(this.startOperation_Click);
             // 
             // numericUpDownSpriteWidth
             // 
@@ -112,7 +115,7 @@
             0});
             this.numericUpDownSpriteWidth.Name = "numericUpDownSpriteWidth";
             this.numericUpDownSpriteWidth.Size = new System.Drawing.Size(53, 20);
-            this.numericUpDownSpriteWidth.TabIndex = 4;
+            this.numericUpDownSpriteWidth.TabIndex = 3;
             this.numericUpDownSpriteWidth.Value = new decimal(new int[] {
             128,
             0,
@@ -134,93 +137,117 @@
             0});
             this.numericUpDownSpriteHeight.Name = "numericUpDownSpriteHeight";
             this.numericUpDownSpriteHeight.Size = new System.Drawing.Size(53, 20);
-            this.numericUpDownSpriteHeight.TabIndex = 5;
+            this.numericUpDownSpriteHeight.TabIndex = 4;
             this.numericUpDownSpriteHeight.Value = new decimal(new int[] {
             128,
             0,
             0,
             0});
             // 
-            // buttonSelectPixelColor
+            // buttonSelectPivotColor
             // 
-            this.buttonSelectPixelColor.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonSelectPixelColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.buttonSelectPixelColor.Location = new System.Drawing.Point(140, 19);
-            this.buttonSelectPixelColor.Name = "buttonSelectPixelColor";
-            this.buttonSelectPixelColor.Size = new System.Drawing.Size(17, 17);
-            this.buttonSelectPixelColor.TabIndex = 6;
-            this.buttonSelectPixelColor.UseVisualStyleBackColor = true;
-            this.buttonSelectPixelColor.Click += new System.EventHandler(this.buttonSelectPixelColor_Click);
+            this.buttonSelectPivotColor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonSelectPivotColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.buttonSelectPivotColor.Location = new System.Drawing.Point(6, 17);
+            this.buttonSelectPivotColor.Name = "buttonSelectPivotColor";
+            this.buttonSelectPivotColor.Size = new System.Drawing.Size(162, 24);
+            this.buttonSelectPivotColor.TabIndex = 5;
+            this.buttonSelectPivotColor.Text = "pivot color";
+            this.buttonSelectPivotColor.UseVisualStyleBackColor = true;
+            this.buttonSelectPivotColor.Click += new System.EventHandler(this.buttonSelectPixelColor_Click);
             // 
             // groupBoxOptions
             // 
             this.groupBoxOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxOptions.Controls.Add(this.groupBoxAlpha);
             this.groupBoxOptions.Controls.Add(this.groupBoxPixelOptions);
             this.groupBoxOptions.Controls.Add(this.groupBoxSpriteSize);
-            this.groupBoxOptions.Location = new System.Drawing.Point(384, 145);
+            this.groupBoxOptions.Location = new System.Drawing.Point(384, 80);
             this.groupBoxOptions.Name = "groupBoxOptions";
-            this.groupBoxOptions.Size = new System.Drawing.Size(186, 178);
+            this.groupBoxOptions.Size = new System.Drawing.Size(186, 246);
             this.groupBoxOptions.TabIndex = 7;
             this.groupBoxOptions.TabStop = false;
             this.groupBoxOptions.Text = "options";
             // 
-            // groupBoxPixelOptions
+            // groupBoxAlpha
             // 
-            this.groupBoxPixelOptions.Controls.Add(this.checkBoxFindCoordinates);
-            this.groupBoxPixelOptions.Controls.Add(this.buttonAlphaToColor);
-            this.groupBoxPixelOptions.Controls.Add(this.checkBoxChangeAlpha);
-            this.groupBoxPixelOptions.Controls.Add(this.buttonSelectPixelColor);
-            this.groupBoxPixelOptions.Controls.Add(this.checkBoxRemovePixel);
-            this.groupBoxPixelOptions.Location = new System.Drawing.Point(6, 74);
-            this.groupBoxPixelOptions.Name = "groupBoxPixelOptions";
-            this.groupBoxPixelOptions.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 88);
-            this.groupBoxPixelOptions.TabIndex = 12;
-            this.groupBoxPixelOptions.TabStop = false;
-            this.groupBoxPixelOptions.Text = "pixel";
+            this.groupBoxAlpha.Controls.Add(this.checkBoxRemoveAlpha);
+            this.groupBoxAlpha.Controls.Add(this.checkBoxChangeAlpha);
+            this.groupBoxAlpha.Controls.Add(this.buttonAlphaToColor);
+            this.groupBoxAlpha.Location = new System.Drawing.Point(6, 174);
+            this.groupBoxAlpha.Name = "groupBoxAlpha";
+            this.groupBoxAlpha.Size = new System.Drawing.Size(174, 66);
+            this.groupBoxAlpha.TabIndex = 14;
+            this.groupBoxAlpha.TabStop = false;
+            this.groupBoxAlpha.Text = "alpha";
             // 
-            // checkBoxFindCoordinates
+            // checkBoxRemoveAlpha
             // 
-            this.checkBoxFindCoordinates.AutoSize = true;
-            this.checkBoxFindCoordinates.Location = new System.Drawing.Point(8, 20);
-            this.checkBoxFindCoordinates.Name = "checkBoxFindCoordinates";
-            this.checkBoxFindCoordinates.Size = new System.Drawing.Size(116, 17);
-            this.checkBoxFindCoordinates.TabIndex = 14;
-            this.checkBoxFindCoordinates.Text = "find coordinates for";
-            this.checkBoxFindCoordinates.UseVisualStyleBackColor = true;
-            this.checkBoxFindCoordinates.CheckedChanged += new System.EventHandler(this.checkBoxFindCoordinates_CheckedChanged);
-            // 
-            // buttonAlphaToColor
-            // 
-            this.buttonAlphaToColor.Location = new System.Drawing.Point(140, 43);
-            this.buttonAlphaToColor.Name = "buttonAlphaToColor";
-            this.buttonAlphaToColor.Size = new System.Drawing.Size(17, 17);
-            this.buttonAlphaToColor.TabIndex = 13;
-            this.buttonAlphaToColor.UseVisualStyleBackColor = true;
-            this.buttonAlphaToColor.Click += new System.EventHandler(this.buttonAlphaToColor_Click);
+            this.checkBoxRemoveAlpha.AutoSize = true;
+            this.checkBoxRemoveAlpha.Location = new System.Drawing.Point(6, 43);
+            this.checkBoxRemoveAlpha.Name = "checkBoxRemoveAlpha";
+            this.checkBoxRemoveAlpha.Size = new System.Drawing.Size(90, 17);
+            this.checkBoxRemoveAlpha.TabIndex = 10;
+            this.checkBoxRemoveAlpha.Text = "remove alpha";
+            this.checkBoxRemoveAlpha.UseVisualStyleBackColor = true;
+            this.checkBoxRemoveAlpha.CheckedChanged += new System.EventHandler(this.checkBoxRemoveAlpha_CheckedChanged);
             // 
             // checkBoxChangeAlpha
             // 
             this.checkBoxChangeAlpha.AutoSize = true;
-            this.checkBoxChangeAlpha.Location = new System.Drawing.Point(8, 43);
+            this.checkBoxChangeAlpha.Location = new System.Drawing.Point(6, 19);
             this.checkBoxChangeAlpha.Name = "checkBoxChangeAlpha";
             this.checkBoxChangeAlpha.Size = new System.Drawing.Size(103, 17);
-            this.checkBoxChangeAlpha.TabIndex = 12;
+            this.checkBoxChangeAlpha.TabIndex = 8;
             this.checkBoxChangeAlpha.Text = "change alpha to";
             this.checkBoxChangeAlpha.UseVisualStyleBackColor = true;
             this.checkBoxChangeAlpha.CheckedChanged += new System.EventHandler(this.checkBoxChangeAlpha_CheckedChanged);
             // 
-            // checkBoxRemovePixel
+            // buttonAlphaToColor
             // 
-            this.checkBoxRemovePixel.AutoSize = true;
-            this.checkBoxRemovePixel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.checkBoxRemovePixel.Location = new System.Drawing.Point(8, 66);
-            this.checkBoxRemovePixel.Name = "checkBoxRemovePixel";
-            this.checkBoxRemovePixel.Size = new System.Drawing.Size(85, 17);
-            this.checkBoxRemovePixel.TabIndex = 7;
-            this.checkBoxRemovePixel.Text = "remove pixel";
-            this.checkBoxRemovePixel.UseVisualStyleBackColor = true;
-            this.checkBoxRemovePixel.CheckStateChanged += new System.EventHandler(this.CheckBoxRemovePixel_CheckStateChanged);
+            this.buttonAlphaToColor.Location = new System.Drawing.Point(110, 15);
+            this.buttonAlphaToColor.Name = "buttonAlphaToColor";
+            this.buttonAlphaToColor.Size = new System.Drawing.Size(58, 24);
+            this.buttonAlphaToColor.TabIndex = 9;
+            this.buttonAlphaToColor.Text = "set color";
+            this.buttonAlphaToColor.UseVisualStyleBackColor = true;
+            this.buttonAlphaToColor.Click += new System.EventHandler(this.buttonAlphaToColor_Click);
+            // 
+            // groupBoxPixelOptions
+            // 
+            this.groupBoxPixelOptions.Controls.Add(this.checkBoxFindPivots);
+            this.groupBoxPixelOptions.Controls.Add(this.buttonSelectPivotColor);
+            this.groupBoxPixelOptions.Controls.Add(this.checkBoxRemovePivot);
+            this.groupBoxPixelOptions.Location = new System.Drawing.Point(6, 74);
+            this.groupBoxPixelOptions.Name = "groupBoxPixelOptions";
+            this.groupBoxPixelOptions.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 94);
+            this.groupBoxPixelOptions.TabIndex = 12;
+            this.groupBoxPixelOptions.TabStop = false;
+            this.groupBoxPixelOptions.Text = "pivots";
+            // 
+            // checkBoxFindPivots
+            // 
+            this.checkBoxFindPivots.AutoSize = true;
+            this.checkBoxFindPivots.Location = new System.Drawing.Point(6, 46);
+            this.checkBoxFindPivots.Name = "checkBoxFindPivots";
+            this.checkBoxFindPivots.Size = new System.Drawing.Size(74, 17);
+            this.checkBoxFindPivots.TabIndex = 6;
+            this.checkBoxFindPivots.Text = "find pivots";
+            this.checkBoxFindPivots.UseVisualStyleBackColor = true;
+            this.checkBoxFindPivots.CheckedChanged += new System.EventHandler(this.checkBoxFindCoordinates_CheckedChanged);
+            // 
+            // checkBoxRemovePivot
+            // 
+            this.checkBoxRemovePivot.AutoSize = true;
+            this.checkBoxRemovePivot.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkBoxRemovePivot.Location = new System.Drawing.Point(6, 68);
+            this.checkBoxRemovePivot.Name = "checkBoxRemovePivot";
+            this.checkBoxRemovePivot.Size = new System.Drawing.Size(92, 17);
+            this.checkBoxRemovePivot.TabIndex = 7;
+            this.checkBoxRemovePivot.Text = "remove pivots";
+            this.checkBoxRemovePivot.UseVisualStyleBackColor = true;
+            this.checkBoxRemovePivot.CheckStateChanged += new System.EventHandler(this.CheckBoxRemovePixel_CheckStateChanged);
             // 
             // groupBoxSpriteSize
             // 
@@ -258,19 +285,19 @@
             this.buttonAddListItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonAddListItem.Location = new System.Drawing.Point(384, 12);
             this.buttonAddListItem.Name = "buttonAddListItem";
-            this.buttonAddListItem.Size = new System.Drawing.Size(186, 33);
-            this.buttonAddListItem.TabIndex = 8;
-            this.buttonAddListItem.Text = "add spritesheet";
+            this.buttonAddListItem.Size = new System.Drawing.Size(186, 34);
+            this.buttonAddListItem.TabIndex = 1;
+            this.buttonAddListItem.Text = "add sprites";
             this.buttonAddListItem.UseVisualStyleBackColor = true;
             this.buttonAddListItem.Click += new System.EventHandler(this.buttonAddListItem_Click);
             // 
             // buttonExit
             // 
             this.buttonExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonExit.Location = new System.Drawing.Point(384, 384);
+            this.buttonExit.Location = new System.Drawing.Point(384, 410);
             this.buttonExit.Name = "buttonExit";
-            this.buttonExit.Size = new System.Drawing.Size(186, 32);
-            this.buttonExit.TabIndex = 9;
+            this.buttonExit.Size = new System.Drawing.Size(186, 24);
+            this.buttonExit.TabIndex = 13;
             this.buttonExit.Text = "exit";
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
@@ -291,31 +318,31 @@
             this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox.Location = new System.Drawing.Point(12, 145);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(360, 269);
+            this.pictureBox.Size = new System.Drawing.Size(360, 286);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
             this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
             this.pictureBox.DragLeave += new System.EventHandler(this.PictureBox_DragLeave);
             // 
-            // buttonCoordinatesToSpriteSheet
+            // buttonPivotToSpriteSheet
             // 
-            this.buttonCoordinatesToSpriteSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCoordinatesToSpriteSheet.Location = new System.Drawing.Point(384, 100);
-            this.buttonCoordinatesToSpriteSheet.Name = "buttonCoordinatesToSpriteSheet";
-            this.buttonCoordinatesToSpriteSheet.Size = new System.Drawing.Size(186, 33);
-            this.buttonCoordinatesToSpriteSheet.TabIndex = 15;
-            this.buttonCoordinatesToSpriteSheet.Text = "coordinates to spritesheet";
-            this.buttonCoordinatesToSpriteSheet.UseVisualStyleBackColor = true;
-            this.buttonCoordinatesToSpriteSheet.Click += new System.EventHandler(this.buttonCoordinatesToSpriteSheet_Click);
+            this.buttonPivotToSpriteSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPivotToSpriteSheet.Location = new System.Drawing.Point(384, 371);
+            this.buttonPivotToSpriteSheet.Name = "buttonPivotToSpriteSheet";
+            this.buttonPivotToSpriteSheet.Size = new System.Drawing.Size(186, 34);
+            this.buttonPivotToSpriteSheet.TabIndex = 12;
+            this.buttonPivotToSpriteSheet.Text = "pivots to sprite";
+            this.buttonPivotToSpriteSheet.UseVisualStyleBackColor = true;
+            this.buttonPivotToSpriteSheet.Click += new System.EventHandler(this.buttonCoordinatesToSpriteSheet_Click);
             // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(582, 426);
-            this.Controls.Add(this.buttonCoordinatesToSpriteSheet);
+            this.ClientSize = new System.Drawing.Size(582, 443);
+            this.Controls.Add(this.buttonPivotToSpriteSheet);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonAddListItem);
             this.Controls.Add(this.groupBoxOptions);
@@ -324,7 +351,7 @@
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.pictureBox);
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(598, 465);
+            this.MinimumSize = new System.Drawing.Size(598, 482);
             this.Name = "MainWindow";
             this.Text = "Pixelfinder";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
@@ -334,6 +361,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).EndInit();
             this.groupBoxOptions.ResumeLayout(false);
+            this.groupBoxAlpha.ResumeLayout(false);
+            this.groupBoxAlpha.PerformLayout();
             this.groupBoxPixelOptions.ResumeLayout(false);
             this.groupBoxPixelOptions.PerformLayout();
             this.groupBoxSpriteSize.ResumeLayout(false);
@@ -351,10 +380,10 @@
         private System.Windows.Forms.Button buttonStartPixelfind;
         private System.Windows.Forms.NumericUpDown numericUpDownSpriteWidth;
         private System.Windows.Forms.NumericUpDown numericUpDownSpriteHeight;
-        private System.Windows.Forms.Button buttonSelectPixelColor;
+        private System.Windows.Forms.Button buttonSelectPivotColor;
         private System.Windows.Forms.GroupBox groupBoxOptions;
         private System.Windows.Forms.Button buttonAddListItem;
-        private System.Windows.Forms.CheckBox checkBoxRemovePixel;
+        private System.Windows.Forms.CheckBox checkBoxRemovePivot;
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.GroupBox groupBoxSpriteSize;
         private System.Windows.Forms.Label labelSpriteSizeY;
@@ -364,8 +393,10 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox checkBoxChangeAlpha;
         private System.Windows.Forms.Button buttonAlphaToColor;
-        private System.Windows.Forms.CheckBox checkBoxFindCoordinates;
-        private System.Windows.Forms.Button buttonCoordinatesToSpriteSheet;
+        private System.Windows.Forms.CheckBox checkBoxFindPivots;
+        private System.Windows.Forms.Button buttonPivotToSpriteSheet;
+        private System.Windows.Forms.GroupBox groupBoxAlpha;
+        private System.Windows.Forms.CheckBox checkBoxRemoveAlpha;
     }
 }
 

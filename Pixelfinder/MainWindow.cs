@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 
 namespace Pixelfinder
 {
@@ -17,6 +13,7 @@ namespace Pixelfinder
     {
 
         private List<Image> imagesList = new List<Image>();
+        private bool removeAlpha = false;
         private bool changeAlpha = false;
         private bool removePixel = false;
         private bool findCoordinates = false;
@@ -32,9 +29,6 @@ namespace Pixelfinder
             InitializeTooltips();
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.AllowDrop = true;
-            buttonSelectPixelColor.BackColor = targetColor;
-            buttonAlphaToColor.BackColor = changeAlphaTo;
-
 
         }
         private void InitializeTooltips()
@@ -46,7 +40,7 @@ namespace Pixelfinder
             toolTip1.ShowAlways = true;      // Der Tooltip wird auch dann angezeigt, wenn das Formular nicht aktiv ist
 
             // Tooltip-Text festlegen
-            toolTip1.SetToolTip(this.checkBoxRemovePixel, "Regeln");
+            toolTip1.SetToolTip(this.checkBoxRemovePivot, "Regeln");
         }
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -265,67 +259,72 @@ namespace Pixelfinder
         }
 
 
-        private void startPixelfind_Click(object sender, EventArgs e)
+        private void startOperation_Click(object sender, EventArgs e)
         {
-            if (imagesList.Count > 0 && (changeAlpha || removePixel || findCoordinates))
+            // Prüft, ob Bilder vorhanden sind und ob eine Operation ausgewählt wurde
+            if (imagesList.Count > 0 && (changeAlpha || removePixel || findCoordinates || removeAlpha))
             {
                 Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
-                List<string> messages = new List<string>();
+                List<string> messages = new List<string>();  // Liste zum Speichern von Nachrichten für das Log
 
+                // Iteriert über jedes Bild in der Liste
                 foreach (Image img in imagesList)
                 {
-                    string imagePath = img.Tag.ToString();
+                    string imagePath = img.Tag.ToString();  // Speichert den Pfad des Bildes
                     try
                     {
-                        Bitmap bitmap = new Bitmap(imagePath);
-                        bitmap.Tag = img.Tag;
+                        Bitmap bitmap = new Bitmap(imagePath);  // Erstellt ein Bitmap-Objekt aus dem Bildpfad
+                        bitmap.Tag = img.Tag;  // Setzt das Tag des Bitmaps
 
-                        stopwatch.Restart();
+                        stopwatch.Restart();  // Startet die Stoppuhr neu
 
-                        var (coordinates, errorImagePaths) = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha, findCoordinates);
+                        // Führt die Pixelbearbeitung durch und sammelt Koordinaten und fehlerhafte Bildpfade
+                        var (coordinates, errorImagePaths) = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha, findCoordinates, removeAlpha);
 
-                        stopwatch.Stop();
+                        stopwatch.Stop();  // Stoppt die Stoppuhr
 
-                        string message = $"Processing time for {imagePath}: {stopwatch.ElapsedMilliseconds} ms";
-                        messages.Add(message);
+                        string message = $"Verarbeitungszeit für {imagePath}: {stopwatch.ElapsedMilliseconds} ms";
+                        messages.Add(message);  // Fügt die Nachricht der Liste hinzu
 
+                        // Speichert Koordinaten, wenn die Option ausgewählt wurde und Koordinaten gefunden wurden
                         if (findCoordinates && coordinates.Any())
                         {
                             SaveCoordinatesToFile(imagePath, coordinates, messages);
                         }
 
+                        // Fügt Fehlermeldungen zur Liste hinzu, wenn fehlerhafte Bildpfade vorhanden sind
                         if (errorImagePaths.Any())
                         {
                             foreach (var errorPath in errorImagePaths)
                             {
-                                messages.Add($"Error found in image at path: {errorPath}");
+                                messages.Add($"Fehler im Bild am Pfad gefunden: {errorPath}");
                             }
                         }
 
-                        bitmap.Dispose();
+                        bitmap.Dispose();  // Gibt die Ressourcen des Bitmap-Objekts frei
                     }
                     catch (Exception ex)
                     {
-                        messages.Add($"Error loading image: {imagePath}. Error: {ex.Message}");
+                        messages.Add($"Fehler beim Laden des Bildes: {imagePath}. Fehler: {ex.Message}");
                     }
                 }
-                messages.Add("Finished");
+                messages.Add("Beendet");  // Fügt eine Abschlussnachricht hinzu
 
-                LogForm logForm = new LogForm();
-                logForm.AddMessagesToListBox(messages);
-                logForm.ShowDialog();
+                LogForm logForm = new LogForm();  // Erstellt ein neues LogForm-Objekt
+                logForm.AddMessagesToListBox(messages);  // Fügt die Nachrichten zur ListBox hinzu
+                logForm.ShowDialog();  // Zeigt das LogForm-Fenster an
             }
             else
             {
+                // Zeigt Fehlermeldungen, wenn keine Bilder vorhanden sind oder keine Option ausgewählt wurde
                 if (imagesList.Count == 0)
                 {
-                    MessageBox.Show("There are no images in the list.");
+                    MessageBox.Show("Es sind keine Bilder in der Liste.");
                 }
                 else
-                    MessageBox.Show("Please select an option.");
+                    MessageBox.Show("Bitte wählen Sie eine Option aus.");
             }
         }
-
 
 
         private void buttonAlphaToColor_Click(object sender, EventArgs e)
@@ -344,7 +343,6 @@ namespace Pixelfinder
                 // Die ausgewählte Farbe verwenden
                 Color selectedColor = colorDialogAlpha.Color;
                 changeAlphaTo = selectedColor;
-                buttonAlphaToColor.BackColor = selectedColor;
                 checkBoxChangeAlpha.Checked = true;
             }
         }
@@ -365,8 +363,6 @@ namespace Pixelfinder
                 // Die ausgewählte Farbe verwenden
                 Color selectedColor = colorDialog.Color;
                 targetColor = selectedColor;
-                buttonSelectPixelColor.BackColor = selectedColor;
-                checkBoxFindCoordinates.Checked = true;
 
             }
         }
@@ -442,7 +438,7 @@ namespace Pixelfinder
 
         private void CheckBoxRemovePixel_CheckStateChanged(object sender, EventArgs e)
         {
-            if (checkBoxRemovePixel.Checked)
+            if (checkBoxRemovePivot.Checked)
             {
                 removePixel = true;
             }
@@ -456,15 +452,33 @@ namespace Pixelfinder
             if (checkBoxChangeAlpha.Checked)
             {
                 changeAlpha = true;
+                removeAlpha = false;
+                checkBoxRemoveAlpha.Checked = false;
             }
             else
             {
                 changeAlpha = false;
             }
+            Console.WriteLine("pressed change alpha" + changeAlpha);
+
+        }
+        private void checkBoxRemoveAlpha_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxRemoveAlpha.Checked)
+            {
+                removeAlpha = true;
+                changeAlpha = false;
+                checkBoxChangeAlpha.Checked = false;
+            }
+            else
+            {
+                removeAlpha = false;
+            }
+            Console.WriteLine("pressed remove alpha"+ removeAlpha);
         }
         private void checkBoxFindCoordinates_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxFindCoordinates.Checked)
+            if (checkBoxFindPivots.Checked)
             {
                 findCoordinates = true;
             }
@@ -505,7 +519,7 @@ namespace Pixelfinder
             openFileDialog.Filter = "Bitmap Images (*.png)|*.png";
             openFileDialog.Title = "Select an Image File";
 
-            // Open the dialog for the bitmap file
+            // Öffnet das Dialogfenster für die Bitmap-Datei
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string bitmapPath = openFileDialog.FileName;
@@ -514,40 +528,40 @@ namespace Pixelfinder
                 openFileDialog.Filter = "Text Files (*.txt)|*.txt";
                 openFileDialog.Title = "Select a Text File with Coordinates";
 
-                // Open the dialog for the text file containing coordinates
+                // Öffnet das Dialogfenster für die Textdatei, die Koordinaten enthält
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string textFilePath = openFileDialog.FileName;
                     List<Point> coordinates = ReadCoordinatesFromTextFile(textFilePath);
 
-                    // Assuming the sprite size needs to be provided
+                    // Größe des Sprites festlegen
                     Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
 
                     ColorDialog colorDialog = new ColorDialog();
-                    int[] customColors = new int[] { ColorTranslator.ToOle(Color.FromArgb(255, 0, 255)) }; // Magenta
+                    int[] customColors = new int[] { ColorTranslator.ToOle(Color.FromArgb(255, 0, 255)) }; // Magenta als preset
                     colorDialog.CustomColors = customColors;
-                    colorDialog.Color = Color.FromArgb(255, 0, 255); // Default color set to Magenta
+                    colorDialog.Color = Color.FromArgb(255, 0, 255); // Standardfarbe auf Magenta gesetzt
 
-                    // Initialize colorToDraw with a default value
+                    // Initialisiert colorToDraw mit einem Standardwert
                     Color colorToDraw = Color.FromArgb(255, 0, 255);
 
-                    // Show dialog to allow user to change color
+                    // Zeigt das Dialogfenster an, um dem Benutzer zu ermöglichen, die Farbe zu ändern
                     if (colorDialog.ShowDialog() == DialogResult.OK)
                     {
-                        colorToDraw = colorDialog.Color; // Update color to draw if user chooses a new color
+                        colorToDraw = colorDialog.Color; // Aktualisiert die zu zeichnende Farbe, falls der Benutzer eine neue wählt
                     }
 
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    // Apply the color to the specified coordinates in the bitmap
+                    // wendet die Farbe auf die Coordinaten an
                     FindPixel.ChangePixelInSpriteSheet(bitmap, spriteSize, colorToDraw, coordinates);
 
                     stopwatch.Stop();
                     long processingTime = stopwatch.ElapsedMilliseconds;
 
-                    // Optionally save or display the modified bitmap
-                    string modifiedPath = Path.Combine(Path.GetDirectoryName(bitmapPath), "Modified_" + Path.GetFileName(bitmapPath));
+                    // speichert das Bild
+                    string modifiedPath = Path.Combine(Path.GetDirectoryName(bitmapPath), "Pivots_" + Path.GetFileName(bitmapPath));
                     bitmap.Save(modifiedPath);
                     bitmap.Dispose();
 
@@ -567,23 +581,25 @@ namespace Pixelfinder
 
         private static List<Point> ReadCoordinatesFromTextFile(string filePath)
         {
-            List<Point> coordinates = new List<Point>();
-            string[] lines = File.ReadAllLines(filePath);
+            List<Point> coordinates = new List<Point>();  // Erstellt eine Liste für Koordinatenpunkte
+            string[] lines = File.ReadAllLines(filePath); // Liest alle Zeilen aus der Datei
 
+            // Durchläuft jede Zeile in der Datei
             foreach (string line in lines)
             {
-                string[] parts = line.Trim().Split(',');
-                if (parts.Length == 2)
+                string[] parts = line.Trim().Split(','); // Teilt die Zeile an den Kommas und entfernt Leerzeichen
+                if (parts.Length == 2) // Überprüft, ob die Zeile genau zwei Teile hat
                 {
+                    // Versucht, die Teile der Zeile als Koordinaten x und y zu interpretieren
                     if (int.TryParse(parts[0], out int x) && int.TryParse(parts[1], out int y))
                     {
-                        coordinates.Add(new Point(x, y));
-                        Console.WriteLine("coords"+ x +","+ y);  
+                        coordinates.Add(new Point(x, y)); // Fügt den Punkt zur Liste hinzu
+                        Console.WriteLine("coords" + x + "," + y);  // Gibt die Koordinaten in der Konsole aus
                     }
                 }
             }
 
-            return coordinates;
+            return coordinates; // Gibt die Liste der Koordinaten zurück
         }
     }
 }

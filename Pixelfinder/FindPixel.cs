@@ -14,7 +14,7 @@ namespace Pixelfinder
 
 
         // Diese Methode findet Pixel einer bestimmten Farbe in einem Bitmap und kann optional diese Pixel auch entfernen.
-        public static (List<string> resultsList, List<string> errorImagePaths) FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, Color changeAlphaTo, bool removePixel = false, bool changeAlpha = false, bool findCoordinates = false)
+        public static (List<string> resultsList, List<string> errorImagePaths) FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, Color changeAlphaTo, bool removePixel = false, bool changeAlpha = false, bool findCoordinates = false, bool removeAlpha = false)
         {
             // Überprüft, ob die Größe eines einzelnen Sprites kleiner oder gleich der Größe des gesamten Bitmaps ist.
             if (spriteSize.X > bitmap.Width || spriteSize.Y > bitmap.Height)
@@ -60,15 +60,22 @@ namespace Pixelfinder
             }
             if (changeAlpha)
             {
+
                 ChangeAlphaToColor(pixelData, changeAlphaTo);
             }
+            else if (removeAlpha)
+            {
+                Color transparent = Color.FromArgb(0,0,0,0);
+                ChangeAlphaToColor(pixelData, transparent);
+            }
+            Console.WriteLine("remove: "+ removeAlpha + " change: " + changeAlpha);
 
             // Kopiert die veränderten Pixeldaten zurück ins Bitmap.
             Marshal.Copy(pixelData, 0, bitmapData.Scan0, pixelData.Length);
             bitmap.UnlockBits(bitmapData);
 
             // Optional: Speichert das veränderte Bitmap.
-            if (removePixel || changeAlpha)
+            if (removePixel || changeAlpha || removeAlpha)
             {
                 SaveModifiedBitmap(bitmap);
             }
@@ -125,17 +132,24 @@ namespace Pixelfinder
         // Diese Methode speichert das veränderte Bitmap unter einem neuen Dateinamen.
         public static void SaveModifiedBitmap(Bitmap bitmap, string modifiedText = "_modified")
         {
+            // Prüft, ob das Tag des Bitmaps einen gültigen Speicherpfad enthält
             if (bitmap.Tag == null || string.IsNullOrEmpty(bitmap.Tag.ToString()))
             {
                 throw new InvalidOperationException("The bitmap tag does not contain a valid storage path.");
             }
 
+            // Holt den ursprünglichen Pfad des Bildes aus dem Tag
             string originalPath = bitmap.Tag.ToString();
+            // Bestimmt das Verzeichnis des Originalbildes
             string directory = Path.GetDirectoryName(originalPath);
+            // Extrahiert den Dateinamen ohne Erweiterung
             string filename = Path.GetFileNameWithoutExtension(originalPath);
+            // Extrahiert die Dateierweiterung
             string extension = Path.GetExtension(originalPath);
+            // Erstellt den neuen Dateinamen mit dem Zusatztext
             string newFileName = Path.Combine(directory, filename + modifiedText + extension);
 
+            // Speichert das Bitmap unter dem neuen Dateinamen als PNG
             bitmap.Save(newFileName, ImageFormat.Png);
         }
 
@@ -257,27 +271,29 @@ namespace Pixelfinder
                 }
             }
         }
+
+
         public static void ChangePixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, List<Point> points)
         {
-            // Obtain the size of the spritesheet
+            // Ermittelt die Größe des Spritesheets
             Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
 
-            // Lock the bitmap's bits
+            // Sperrt die Bitmap-Daten für den Schreib- und Lesezugriff
             BitmapData bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
 
-            // Get the address of the first line
+            // Erhält die Adresse der ersten Zeile
             IntPtr ptr = bitmapData.Scan0;
 
-            // Declare an array to hold the bytes of the bitmap
+            // Deklariert ein Array, um die Bytes der Bitmap zu halten
             int bytes = Math.Abs(bitmapData.Stride) * bitmap.Height;
             byte[] rgbValues = new byte[bytes];
 
-            // Copy the RGB values into the array
+            // Kopiert die RGB-Werte in das Array
             Marshal.Copy(ptr, rgbValues, 0, bytes);
 
-            int depth = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8; // bytes per pixel
+            int depth = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8; // Bytes pro Pixel
 
-            // Calculate the number of sprites
+            // Berechnet die Anzahl der Sprites
             Point spriteAmount = new Point(bitmap.Width / spriteSize.X, bitmap.Height / spriteSize.Y);
             int pointListPosition = 0;
 
@@ -291,10 +307,10 @@ namespace Pixelfinder
                         int pixelY = (spriteSize.Y * y) + points[pointListPosition].Y;
                         int position = (pixelY * bitmapData.Stride) + (pixelX * depth);
 
-                        rgbValues[position] = targetColor.B; // Blue
-                        rgbValues[position + 1] = targetColor.G; // Green
-                        rgbValues[position + 2] = targetColor.R; // Red
-                        if (depth == 4) // If PixelFormat is 32bppArgb, also set the alpha value
+                        rgbValues[position] = targetColor.B; // Blau
+                        rgbValues[position + 1] = targetColor.G; // Grün
+                        rgbValues[position + 2] = targetColor.R; // Rot
+                        if (depth == 4) // Wenn das PixelFormat 32bppArgb ist, wird auch der Alphawert gesetzt
                         {
                             rgbValues[position + 3] = targetColor.A; // Alpha
                         }
@@ -303,10 +319,10 @@ namespace Pixelfinder
                 }
             }
 
-            // Copy the RGB values back to the bitmap
+            // Kopiert die RGB-Werte zurück in die Bitmap
             Marshal.Copy(rgbValues, 0, ptr, bytes);
 
-            // Unlock the bits
+            // Entsperren der Bitmap-Daten
             bitmap.UnlockBits(bitmapData);
         }
     }
