@@ -147,7 +147,7 @@
             this.buttonSelectPixelColor.Size = new System.Drawing.Size(17, 17);
             this.buttonSelectPixelColor.TabIndex = 6;
             this.buttonSelectPixelColor.UseVisualStyleBackColor = true;
-            this.buttonSelectPixelColor.Click += new System.EventHandler(this.button1_Click);
+            this.buttonSelectPixelColor.Click += new System.EventHandler(this.buttonSelectPixelColor_Click);
             // 
             // groupBoxOptions
             // 

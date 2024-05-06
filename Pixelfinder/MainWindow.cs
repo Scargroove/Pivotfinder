@@ -58,7 +58,7 @@ namespace Pixelfinder
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
 
-            listBox.BackColor = Color.LightGray;
+           
             HandleDragEnter(e);
 
         }
@@ -77,7 +77,7 @@ namespace Pixelfinder
 
         private void listBox_DragEnter(object sender, DragEventArgs e)
         {
-            listBox.BackColor = Color.LightGray; 
+            
             HandleDragEnter(e);
 
         }
@@ -96,7 +96,7 @@ namespace Pixelfinder
 
         private void PictureBox_DragEnter(object sender, DragEventArgs e)
         {
-            listBox.BackColor = Color.LightGray;
+            
             HandleDragEnter(e);
         }
 
@@ -120,13 +120,32 @@ namespace Pixelfinder
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                bool allFilesAreImages = files.All(file => IsImageFile(file));
+
+                bool allFilesAreImages = true;
+                foreach (string file in files)
+                {
+                    if (!IsImageFile(file))
+                    {
+                        allFilesAreImages = false;
+                        break;
+                    }
+                }
+
+
                 if (allFilesAreImages)
                 {
+                    listBox.BackColor = Color.LightGray; // Hintergrund färben, wenn alle Dateien Bilder sind
                     e.Effect = DragDropEffects.Copy;
+                }
+                else
+                {
+                    listBox.BackColor = SystemColors.Window; // Hintergrund zurücksetzen, wenn mindestens eine ungültige Datei gefunden wurde
+                    e.Effect = DragDropEffects.None;
                 }
             }
         }
+
+
         private void HandleDragDrop(DragEventArgs e)
         {
             // Die gezogenen Daten als Bild laden
@@ -299,7 +318,7 @@ namespace Pixelfinder
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonSelectPixelColor_Click(object sender, EventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
 
