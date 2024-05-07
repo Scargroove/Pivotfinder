@@ -52,6 +52,7 @@
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.buttonPivotToSpriteSheet = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
             this.groupBoxOptions.SuspendLayout();
@@ -321,7 +322,7 @@
             this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox.Location = new System.Drawing.Point(12, 145);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(360, 286);
+            this.pictureBox.Size = new System.Drawing.Size(360, 294);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
@@ -339,12 +340,22 @@
             this.buttonPivotToSpriteSheet.UseVisualStyleBackColor = true;
             this.buttonPivotToSpriteSheet.Click += new System.EventHandler(this.buttonCoordinatesToSpriteSheet_Click);
             // 
+            // progressBar
+            // 
+            this.progressBar.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.progressBar.Location = new System.Drawing.Point(0, 446);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(582, 18);
+            this.progressBar.Step = 1;
+            this.progressBar.TabIndex = 14;
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(582, 443);
+            this.ClientSize = new System.Drawing.Size(582, 464);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.buttonPivotToSpriteSheet);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonAddListItem);
@@ -400,6 +411,7 @@
         private System.Windows.Forms.Button buttonPivotToSpriteSheet;
         private System.Windows.Forms.GroupBox groupBoxAlpha;
         private System.Windows.Forms.CheckBox checkBoxRemoveAlpha;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 

@@ -343,77 +343,53 @@ namespace Pixelfinder
         // Startet die Bildverarbeitung basierend auf den ausgewählten Optionen.
         private void startOperation_Click(object sender, EventArgs e)
         {
-            // Prüft, ob Bilder vorhanden sind und ob eine Operation ausgewählt wurde
             if (imagesList.Count > 0 && (changeAlpha || removePixel || findCoordinates || removeAlpha))
             {
-                Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
-                List<string> messages = new List<string>();  // Liste zum Speichern von Nachrichten für das Log
+                progressBar.Maximum = imagesList.Count;
+                progressBar.Value = 0;
 
-                // Iteriert über jedes Bild in der Liste
+                Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
+                List<string> messages = new List<string>();
+
                 foreach (Image img in imagesList)
                 {
-                    string imagePath = img.Tag.ToString();  // Speichert den Pfad des Bildes
+                    string imagePath = img.Tag.ToString();
                     try
                     {
-                        Bitmap bitmap = new Bitmap(imagePath);  // Erstellt ein Bitmap-Objekt aus dem Bildpfad
-                        bitmap.Tag = img.Tag;  // Setzt das Tag des Bitmaps
+                        Bitmap bitmap = new Bitmap(imagePath);
+                        bitmap.Tag = img.Tag;
 
-                        stopwatch.Restart();  // Startet die Stoppuhr neu
-
-                        // Führt die Pixelbearbeitung durch und sammelt Koordinaten und fehlerhafte Bildpfade
+                        stopwatch.Restart();
                         var (coordinates, errorImagePaths) = ModifyImage.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha, findCoordinates, removeAlpha);
+                        stopwatch.Stop();
 
-                        stopwatch.Stop();  // Stoppt die Stoppuhr
-
-                        string modifiedPath = "Image modified and saved successfully in: " + Path.Combine(Path.GetDirectoryName(imagePath), Path.GetFileNameWithoutExtension(imagePath) + "_modified.png");
-                        string message = $"Proessing time: {stopwatch.ElapsedMilliseconds} ms";
+                        string message = $"Processing time: {stopwatch.ElapsedMilliseconds} ms";
                         messages.Add(imagePath);
-                        messages.Add(message);  // Fügt die Nachricht der Liste hinzu
-                        if (removeAlpha || removePixel || changeAlpha)
-                        {
-                            messages.Add(modifiedPath);  // Fügt die Nachricht der Liste hinzu
-                        }
+                        messages.Add(message);
 
+                        bitmap.Dispose();
 
+                        // ProgressBar aktualisieren
+                        progressBar.Value++;
 
-                        // Fügt Fehlermeldungen zur Liste hinzu, wenn fehlerhafte Bildpfade vorhanden sind
-                        if (errorImagePaths.Any() && findCoordinates)
-                        {
-                            foreach (var errorPath in errorImagePaths)
-                            {
-                                messages.Add($"Error: Multiple pivots found in: {errorPath}, saving pivots in textfile canceld.");
-                            }
-                        }
-                        // Speichert Koordinaten, wenn die Option ausgewählt wurde und Koordinaten gefunden wurden
-                        else if (findCoordinates && coordinates.Any())
-                        {
-                            SaveCoordinatesToFile(imagePath, coordinates, messages);
-                        }
-                        messages.Add("");
-                        bitmap.Dispose();  // Gibt die Ressourcen des Bitmap-Objekts frei
+                        // Optional: Log-Form aktualisieren oder Nachrichten anzeigen
                     }
                     catch (Exception ex)
                     {
                         messages.Add($"Error loading image: {imagePath}. Error: {ex.Message}");
                     }
-
                 }
-                messages.Add("Operations finished.");  // Fügt eine Abschlussnachricht hinzu
 
-                LogForm logForm = new LogForm();  // Erstellt ein neues LogForm-Objekt
-                logForm.AddMessagesToListBox(messages);  // Fügt die Nachrichten zur ListBox hinzu
-                logForm.ShowDialog();  // Zeigt das LogForm-Fenster an
+                messages.Add("Operations finished.");
+                LogForm logForm = new LogForm();
+                logForm.AddMessagesToListBox(messages);
+                logForm.ShowDialog();
             }
             else
             {
-                // Zeigt Fehlermeldungen, wenn keine Bilder vorhanden sind oder keine Option ausgewählt wurde
-                if (imagesList.Count == 0)
-                {
-                    MessageBox.Show("There are no images in the list.");
-                }
-                else
-                    MessageBox.Show("Please select an option.");
+                MessageBox.Show("There are no images in the list or no option selected.");
             }
+            progressBar.Value = 0;
         }
 
         // Fügt ein Bild zur PictureBox und zur internen Bilderliste hinzu.
