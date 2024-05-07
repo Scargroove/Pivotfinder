@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3BBD601E-FB66-4FB9-A5E5-4F1C333B24F7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Pixelfinder</RootNamespace>
-    <AssemblyName>Pixelfinder</AssemblyName>
+    <RootNamespace>Pivotfinder</RootNamespace>
+    <AssemblyName>Pivotfinder</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

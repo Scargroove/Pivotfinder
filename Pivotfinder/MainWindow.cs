@@ -499,7 +499,7 @@ namespace Pixelfinder
             if (imagesList.Count == 0)
             {
                 pictureBox.Image = null;
-                pictureBox.BackgroundImage = Pixelfinder.Properties.Resources.ImageBoxBackground;
+                pictureBox.BackgroundImage = Pivotfinder.Properties.Resources.ImageBoxBackground;
                 pictureBox.BackgroundImageLayout = ImageLayout.Center;
             }
             else
