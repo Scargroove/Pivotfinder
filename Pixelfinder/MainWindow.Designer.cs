@@ -231,9 +231,9 @@
             this.checkBoxFindPivots.AutoSize = true;
             this.checkBoxFindPivots.Location = new System.Drawing.Point(6, 46);
             this.checkBoxFindPivots.Name = "checkBoxFindPivots";
-            this.checkBoxFindPivots.Size = new System.Drawing.Size(74, 17);
+            this.checkBoxFindPivots.Size = new System.Drawing.Size(125, 17);
             this.checkBoxFindPivots.TabIndex = 6;
-            this.checkBoxFindPivots.Text = "find pivots";
+            this.checkBoxFindPivots.Text = "save pivots to textfile";
             this.checkBoxFindPivots.UseVisualStyleBackColor = true;
             this.checkBoxFindPivots.CheckedChanged += new System.EventHandler(this.checkBoxFindCoordinates_CheckedChanged);
             // 
@@ -247,7 +247,7 @@
             this.checkBoxRemovePivot.TabIndex = 7;
             this.checkBoxRemovePivot.Text = "remove pivots";
             this.checkBoxRemovePivot.UseVisualStyleBackColor = true;
-            this.checkBoxRemovePivot.CheckStateChanged += new System.EventHandler(this.CheckBoxRemovePixel_CheckStateChanged);
+            this.checkBoxRemovePivot.CheckStateChanged += new System.EventHandler(this.checkBoxRemovePixel_CheckStateChanged);
             // 
             // groupBoxSpriteSize
             // 

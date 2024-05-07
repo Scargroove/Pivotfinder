@@ -9,11 +9,10 @@ using System.Windows.Forms;
 
 namespace Pixelfinder
 {
-    internal class FindPixel
+    internal class ModifyImage
     {
 
-
-        // Diese Methode findet Pixel einer bestimmten Farbe in einem Bitmap und kann optional diese Pixel auch entfernen.
+        // Findet Pixel einer bestimmten Farbe in einem Bitmap und kann optional diese Pixel auch entfernen.
         public static (List<string> resultsList, List<string> errorImagePaths) FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, Color changeAlphaTo, bool removePixel = false, bool changeAlpha = false, bool findCoordinates = false, bool removeAlpha = false)
         {
             // Überprüft, ob die Größe eines einzelnen Sprites kleiner oder gleich der Größe des gesamten Bitmaps ist.
@@ -85,7 +84,7 @@ namespace Pixelfinder
             return (resultsList, errorImagePaths);
         }
 
-        // Diese Hilfsmethode sucht das Pixel mit der Ziel-Farbe in einem einzelnen Sprite.
+        // Sucht das Pixel mit der Ziel-Farbe in einem einzelnen Sprite.
         private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false, bool findCoordinates = false, string imagePath = "")
         {
             Point result = new Point(0, 0);
@@ -107,8 +106,6 @@ namespace Pixelfinder
                         {
                             if (foundPixelCount > 0)
                             {
-                                // Warnung ausgeben, dass mehr als ein Pixel gefunden wurde.
-                                MessageBox.Show($"Multiple pixels found in {imagePath}. Only one pixel should exist.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 result = new Point(-1, -1); // falsche Werte setzen.
                                 return result; // Abbrechen und ungültiges Ergebnis zurückgeben.
                             }
@@ -128,8 +125,7 @@ namespace Pixelfinder
             return result;
         }
 
-
-        // Diese Methode speichert das veränderte Bitmap unter einem neuen Dateinamen.
+        // Speichert das veränderte Bitmap unter einem neuen Dateinamen.
         public static void SaveModifiedBitmap(Bitmap bitmap, string modifiedText = "_modified")
         {
             // Prüft, ob das Tag des Bitmaps einen gültigen Speicherpfad enthält
@@ -153,41 +149,41 @@ namespace Pixelfinder
             bitmap.Save(newFileName, ImageFormat.Png);
         }
 
-        // Diese Methode ersetzt ein gefundenes Pixel durch die dominante Farbe der benachbarten Pixel, falls erforderlich.
+        // Ersetzt ein gefundenes Pixel durch die dominante Farbe der benachbarten Pixel, falls erforderlich.
         private static void ReplacePixelWithDominantNeighboringColor(byte[] pixelData, int stride, Point spriteSize, int position)
         {
             int[] neighboringColors = new int[4];
             int y = position / stride;
             int x = (position % stride) / 4;
 
-            // Überprüfen der benachbarten Pixel und Sammeln ihrer Farben
-            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // oben
-            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // unten
-            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // links
-            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // rechts
+            // Check neighboring pixels and gather their colors
+            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // top
+            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // bottom
+            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // left
+            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // right
 
-            // Gruppierung der Farben und Überprüfung auf dominante Gruppen
-            var colorGroups = neighboringColors.GroupBy(c => c);
-            var dominantGroup = colorGroups.FirstOrDefault(g => g.Count() >= 3)
-                                ?? colorGroups.FirstOrDefault(g => g.Count() == 2);
+            // Group colors and check for a dominant group
+            var colorGroups = neighboringColors.GroupBy(c => c).ToList();
+            var dominantGroup = colorGroups.OrderByDescending(g => g.Count()).FirstOrDefault();
 
-            if (dominantGroup == null && colorGroups.Count() > 0) // Keine dominante Gruppe gefunden
+            if (dominantGroup == null && colorGroups.Count() > 0) // No dominant group found
             {
-                // Berechnung des Durchschnittsfarbwerts
+                // Calculate the average color value
                 int averageColor = CalculateAverageColor(neighboringColors);
-                // Wähle die Farbe, die dem Durchschnittswert am nächsten liegt
+                // Choose the color closest to the average
                 int nearestColor = FindNearestColor(neighboringColors, averageColor);
                 BitConverter.GetBytes(nearestColor).CopyTo(pixelData, position);
             }
             else if (dominantGroup != null)
             {
-                // Setze die dominante Farbe, falls vorhanden
+                // Set the dominant color, if available
                 int newColor = dominantGroup.Key;
                 BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
             }
         }
 
-        // Diese Methode berechnet den Durchschnittswert der Farben in einem Array.
+
+        // Berechnet den Durchschnittswert der Farben in einem Array.
         private static int CalculateAverageColor(int[] colors)
         {
             int r = 0, g = 0, b = 0; // Variablen zur Speicherung der summierten Farbkomponenten Rot, Grün, Blau.
@@ -214,7 +210,7 @@ namespace Pixelfinder
             return (r << 16) | (g << 8) | b;
         }
 
-        // Diese Methode findet die Farbe, die einer Ziel-Farbe am nächsten liegt, aus einem Array von Farben.
+        // Findet die Farbe, die einer Ziel-Farbe am nächsten liegt, aus einem Array von Farben.
         private static int FindNearestColor(int[] colors, int targetColor)
         {
             int minDistance = int.MaxValue; // Variable zur Speicherung der kleinsten gefundenen Distanz.
@@ -235,7 +231,7 @@ namespace Pixelfinder
             return nearestColor; // Rückgabe der Farbe mit der geringsten Distanz zur Ziel-Farbe.
         }
 
-        // Diese Methode berechnet die Distanz zwischen zwei Farben im RGB-Farbraum.
+        // Berechnet die Distanz zwischen zwei Farben im RGB-Farbraum.
         private static int ColorDistance(int color1, int color2)
         {
             // Extrahieren der Rot-, Grün- und Blau-Komponenten der ersten Farbe.
@@ -252,6 +248,7 @@ namespace Pixelfinder
             return (r2 - r1) * (r2 - r1) + (g2 - g1) * (g2 - g1) + (b2 - b1) * (b2 - b1);
         }
 
+        // Setzt alle Alpha-Werte zwischen 1 und 254 auf einen anderen Wert.
         private static void ChangeAlphaToColor(byte[] pixelData, Color targetColor)
         {
             // Durchlaufe alle Pixel im Bild
@@ -272,8 +269,8 @@ namespace Pixelfinder
             }
         }
 
-
-        public static void ChangePixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, List<Point> points)
+        // Setzt Pixel in der gewünschten Farbe auf die Koordinaten der Liste.
+        public static void SetPixelFromList(Bitmap bitmap, Point spriteSize, Color targetColor, List<Point> points)
         {
             // Ermittelt die Größe des Spritesheets
             Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
@@ -325,6 +322,7 @@ namespace Pixelfinder
             // Entsperren der Bitmap-Daten
             bitmap.UnlockBits(bitmapData);
         }
+    
     }
 }
 

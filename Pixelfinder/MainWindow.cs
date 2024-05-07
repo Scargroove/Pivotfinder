@@ -22,7 +22,7 @@ namespace Pixelfinder
         private Color changeAlphaTo = Color.FromArgb(255, 0, 0, 0);
 
 
-
+        // Initialisiert das Hauptfenster und die GUI-Komponenten.
         public MainWindow()
         {
             InitializeComponent();
@@ -31,6 +31,8 @@ namespace Pixelfinder
             pictureBox.AllowDrop = true;
 
         }
+
+        // Konfiguriert Tooltips für verschiedene Steuerelemente im Hauptfenster.
         private void InitializeTooltips()
         {
             // Konfigurieren des ToolTip
@@ -40,8 +42,10 @@ namespace Pixelfinder
             toolTip1.ShowAlways = true;      // Der Tooltip wird auch dann angezeigt, wenn das Formular nicht aktiv ist
 
             // Tooltip-Text festlegen
-            toolTip1.SetToolTip(this.checkBoxRemovePivot, "Regeln");
+            toolTip1.SetToolTip(this.checkBoxRemovePivot, "Removes the pivotpoint by changing it to the color of the dominant neighbour pixel. For more Information see the Readme.");
         }
+
+        // Behandelt Tastatureingaben, insbesondere das Löschen von Bildern aus der Liste.
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -52,7 +56,7 @@ namespace Pixelfinder
             }
         }
 
-
+        // Behandelt das Ereignis, wenn Dateien in das Formular gezogen werden.
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
 
@@ -60,12 +64,15 @@ namespace Pixelfinder
             HandleDragEnter(e);
 
         }
+
+        // Behandelt das Ereignis, wenn gezogene Dateien das Formular verlassen.
         private void Form1_DragLeave(object sender, EventArgs e)
         {
             listBox.BackColor = SystemColors.Window;
 
         }
 
+        // Behandelt das Ablegen von Dateien im Hauptfenster nach dem Ziehen.
         private void Form1_DragDrop(object sender, DragEventArgs e)
         {
             HandleDragDrop(e);
@@ -73,6 +80,7 @@ namespace Pixelfinder
 
         }
 
+        // Behandelt das Ziehen von Dateien über die ListBox.
         private void listBox_DragEnter(object sender, DragEventArgs e)
         {
             
@@ -80,11 +88,14 @@ namespace Pixelfinder
 
         }
 
+        // Behandelt das Verlassen gezogener Dateien aus der ListBox
         private void listBox_DragLeave(object sender, EventArgs e)
         {
             listBox.BackColor = SystemColors.Window; 
 
         }
+
+        // Behandelt das Ablegen von Dateien in der ListBox.
         private void listBox_DragDrop(object sender, DragEventArgs e)
         {
             HandleDragDrop(e);
@@ -92,18 +103,21 @@ namespace Pixelfinder
 
         }
 
+        // Behandelt das Ziehen von Dateien über das PictureBox-Steuerelement.
         private void PictureBox_DragEnter(object sender, DragEventArgs e)
         {
             
             HandleDragEnter(e);
         }
 
+        // Behandelt das Verlassen gezogener Dateien aus dem PictureBox.
         private void PictureBox_DragLeave(object sender, EventArgs e)
         {
             listBox.BackColor = SystemColors.Window;
 
         }
 
+        // Behandelt das Ablegen von Dateien im PictureBox.
         private void PictureBox_DragDrop(object sender, DragEventArgs e)
         {
             HandleDragDrop(e);
@@ -111,8 +125,7 @@ namespace Pixelfinder
 
         }
 
-
-
+        // Prüft die Ziehdaten und bestimmt, ob sie akzeptiert werden können.
         private void HandleDragEnter(DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -143,7 +156,7 @@ namespace Pixelfinder
             }
         }
 
-
+        // Verarbeitet das Ablegen von Dateien im Hauptfenster und lädt die Bilder.
         private void HandleDragDrop(DragEventArgs e)
         {
             // Die gezogenen Daten als Bild laden
@@ -155,41 +168,14 @@ namespace Pixelfinder
             this.Activate();
         }
 
-
-
-        private void AddImageToPictureBoxAndList(Image img)
-        {
-            // Bild in die PictureBox anzeigen
-            pictureBox.Image = img;
-
-            // Hintergrundbild ausblenden (auf null setzen)
-            pictureBox.BackgroundImage = null;
-
-            // Bild zur Liste hinzufügen
-            imagesList.Add(img);
-
-            // ListBox aktualisieren, um die Liste der hinzugefügten Bilder anzuzeigen
-            UpdateListBox();
-        }
-
-        private void UpdateListBox()
-        {
-            // ListBox leeren und die Liste der Bilder neu hinzufügen
-            listBox.Items.Clear();
-            foreach (Image img in imagesList)
-            {
-                // Den Dateipfad des Bildes holen und zur ListBox hinzufügen
-                listBox.Items.Add((string)img.Tag);
-            }
-        }
-
-        // Methode zur Überprüfung, ob die Datei eine Bilddatei ist
+        // Überprüft, ob eine Datei ein unterstütztes Bildformat hat.
         private bool IsImageFile(string fileName)
         {
             string ext = System.IO.Path.GetExtension(fileName).ToLower();
             return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext == ".bmp";
         }
 
+        // Überprüft, ob ein Bild bereits in der Liste vorhanden ist.
         private bool IsImageDuplicate(string filePath)
         {
             foreach (Image img in imagesList)
@@ -204,6 +190,7 @@ namespace Pixelfinder
             return false;
         }
 
+        // Zeigt das ausgewählte Bild in der PictureBox an.
         private void listBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listBox.SelectedIndex != -1)
@@ -215,118 +202,14 @@ namespace Pixelfinder
                 pictureBox.Image = selectedImage;
             }
         }
-        private void RemoveSelectedImage()
-        {
-            // Überprüfen, ob ein Bild in der ListBox ausgewählt ist
-            int selectedIndex = listBox.SelectedIndex;
 
-            // Wenn kein Bild ausgewählt ist, das letzte Bild in der Liste löschen
-            if (selectedIndex == -1 && imagesList.Count > 0)
-            {
-                selectedIndex = imagesList.Count - 1; // Letztes Element der Liste
-            }
-
-            if (selectedIndex != -1)
-            {
-                // Bildressourcen freigeben
-                Image imageToRemove = imagesList[selectedIndex];
-                imageToRemove.Dispose();
-
-                // Das ausgewählte Bild aus der ListBox und der Liste entfernen
-                imagesList.RemoveAt(selectedIndex);
-
-                // ListBox aktualisieren, um die Liste der verbleibenden Bilder anzuzeigen
-                UpdateListBox();
-
-                // Wenn keine Bilder mehr in der Liste sind, die PictureBox zurücksetzen
-                if (imagesList.Count == 0)
-                {
-                    pictureBox.Image = null;
-                    pictureBox.BackgroundImage = Pixelfinder.Properties.Resources.ImageBoxBackground;
-                    pictureBox.BackgroundImageLayout = ImageLayout.Center;
-                }
-                else
-                {
-                    // Das erste verbleibende Bild anzeigen
-                    pictureBox.Image = imagesList[0];
-                }
-            }
-        }
-
+        // Löscht das ausgewählte Bild aus der Liste.
         private void buttonDeleteListItem_Click(object sender, EventArgs e)
         {
             RemoveSelectedImage();
         }
 
-
-        private void startOperation_Click(object sender, EventArgs e)
-        {
-            // Prüft, ob Bilder vorhanden sind und ob eine Operation ausgewählt wurde
-            if (imagesList.Count > 0 && (changeAlpha || removePixel || findCoordinates || removeAlpha))
-            {
-                Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
-                List<string> messages = new List<string>();  // Liste zum Speichern von Nachrichten für das Log
-
-                // Iteriert über jedes Bild in der Liste
-                foreach (Image img in imagesList)
-                {
-                    string imagePath = img.Tag.ToString();  // Speichert den Pfad des Bildes
-                    try
-                    {
-                        Bitmap bitmap = new Bitmap(imagePath);  // Erstellt ein Bitmap-Objekt aus dem Bildpfad
-                        bitmap.Tag = img.Tag;  // Setzt das Tag des Bitmaps
-
-                        stopwatch.Restart();  // Startet die Stoppuhr neu
-
-                        // Führt die Pixelbearbeitung durch und sammelt Koordinaten und fehlerhafte Bildpfade
-                        var (coordinates, errorImagePaths) = FindPixel.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha, findCoordinates, removeAlpha);
-
-                        stopwatch.Stop();  // Stoppt die Stoppuhr
-
-                        string message = $"Verarbeitungszeit für {imagePath}: {stopwatch.ElapsedMilliseconds} ms";
-                        messages.Add(message);  // Fügt die Nachricht der Liste hinzu
-
-                        // Speichert Koordinaten, wenn die Option ausgewählt wurde und Koordinaten gefunden wurden
-                        if (findCoordinates && coordinates.Any())
-                        {
-                            SaveCoordinatesToFile(imagePath, coordinates, messages);
-                        }
-
-                        // Fügt Fehlermeldungen zur Liste hinzu, wenn fehlerhafte Bildpfade vorhanden sind
-                        if (errorImagePaths.Any())
-                        {
-                            foreach (var errorPath in errorImagePaths)
-                            {
-                                messages.Add($"Fehler im Bild am Pfad gefunden: {errorPath}");
-                            }
-                        }
-
-                        bitmap.Dispose();  // Gibt die Ressourcen des Bitmap-Objekts frei
-                    }
-                    catch (Exception ex)
-                    {
-                        messages.Add($"Fehler beim Laden des Bildes: {imagePath}. Fehler: {ex.Message}");
-                    }
-                }
-                messages.Add("Beendet");  // Fügt eine Abschlussnachricht hinzu
-
-                LogForm logForm = new LogForm();  // Erstellt ein neues LogForm-Objekt
-                logForm.AddMessagesToListBox(messages);  // Fügt die Nachrichten zur ListBox hinzu
-                logForm.ShowDialog();  // Zeigt das LogForm-Fenster an
-            }
-            else
-            {
-                // Zeigt Fehlermeldungen, wenn keine Bilder vorhanden sind oder keine Option ausgewählt wurde
-                if (imagesList.Count == 0)
-                {
-                    MessageBox.Show("Es sind keine Bilder in der Liste.");
-                }
-                else
-                    MessageBox.Show("Bitte wählen Sie eine Option aus.");
-            }
-        }
-
-
+        // Öffnet einen Dialog zur Auswahl einer Farbe, die für Alpha-Werte verwendet werden soll.
         private void buttonAlphaToColor_Click(object sender, EventArgs e)
         {
             ColorDialog colorDialogAlpha = new ColorDialog();
@@ -347,6 +230,7 @@ namespace Pixelfinder
             }
         }
 
+        // Öffnet einen Dialog zur Auswahl einer Farbe, die als Zielfarbe für Pixeloperationen dient.
         private void buttonSelectPixelColor_Click(object sender, EventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
@@ -366,50 +250,225 @@ namespace Pixelfinder
 
             }
         }
-        private void SaveCoordinatesToFile(string imagePath, List<string> coordinates, List<string> messages)
+
+        // Aktiviert oder deaktiviert die Entfernung von Pixeln basierend auf dem Zustand des entsprechenden Kontrollkästchens.
+        private void checkBoxRemovePixel_CheckStateChanged(object sender, EventArgs e)
         {
-            // Dateinamen des Bildes ohne Erweiterung extrahieren
-            string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(imagePath);
-
-            // Pfad für die Textdatei erstellen (gleicher Ordner wie die Bilddatei)
-            string directory = System.IO.Path.GetDirectoryName(imagePath);
-            string textureFilePath = System.IO.Path.Combine(directory, fileNameWithoutExtension + ".txt");
-
-            try
+            if (checkBoxRemovePivot.Checked)
             {
-                // Textdatei öffnen oder erstellen, um die Koordinaten zu schreiben
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(textureFilePath))
-                {
-                    // Koordinaten in die Textdatei schreiben
-                    foreach (string coordinate in coordinates)
-                    {
-                        file.WriteLine(coordinate);
-                    }
-                }
-
-                // Erfolgsmeldung zur Liste hinzufügen
-                messages.Add($"Coordinates saved in {textureFilePath}.");
+                removePixel = true;
             }
-            catch (Exception ex)
+            else
             {
-                // Fehlermeldung zur Liste hinzufügen, wenn das Speichern fehlschlägt
-                messages.Add($"Error saving coordinates to {textureFilePath}: {ex.Message}");
+                removePixel = false;
             }
         }
 
+        // Aktiviert oder deaktiviert die Änderung von Alpha-Werten basierend auf dem Zustand des entsprechenden Kontrollkästchens.
+        private void checkBoxChangeAlpha_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxChangeAlpha.Checked)
+            {
+                changeAlpha = true;
+                removeAlpha = false;
+                checkBoxRemoveAlpha.Checked = false;
+            }
+            else
+            {
+                changeAlpha = false;
+            }
+        }
 
+        // Aktiviert oder deaktiviert die Entfernung von Alpha-Werten basierend auf dem Zustand des entsprechenden Kontrollkästchens.
+        private void checkBoxRemoveAlpha_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxRemoveAlpha.Checked)
+            {
+                removeAlpha = true;
+                changeAlpha = false;
+                checkBoxChangeAlpha.Checked = false;
+            }
+            else
+            {
+                removeAlpha = false;
+            }
+        }
+
+        // Aktiviert oder deaktiviert die Suche nach Koordinaten basierend auf dem Zustand des entsprechenden Kontrollkästchens.
+        private void checkBoxFindCoordinates_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxFindPivots.Checked)
+            {
+                findCoordinates = true;
+            }
+            else
+            {
+                findCoordinates= false;
+            }
+        }
+
+        // Öffnet einen Dialog zur Auswahl von Bildern, die zur Liste hinzugefügt werden sollen.
         private void buttonAddListItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image files (*.jpg;*.jpeg;*.png;*.gif;*.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
-            openFileDialog.Multiselect = true; // Ermöglicht die Auswahl mehrerer Dateien
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                // Laden der ausgewählten Bilder
-                LoadImages(openFileDialog.FileNames);
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Image files (*.jpg;*.jpeg;*.png;*.gif;*.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+                openFileDialog.Multiselect = true; // Ermöglicht die Auswahl mehrerer Dateien
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Laden der ausgewählten Bilder
+                    LoadImages(openFileDialog.FileNames);
+                }
+            }
+
+        // Beendet die Anwendung.
+        private void buttonExit_Click(object sender, EventArgs e)
+        {
+            ExitApplication();
+        }
+
+        // Wendet Pixeloperationen auf ein Bild basierend auf einer Liste von Koordinaten an.
+        private void buttonCoordinatesToSpriteSheet_Click(object sender, EventArgs e)
+        {
+            ApplyPixelsFromFile();
+        }
+
+        // Startet die Bildverarbeitung basierend auf den ausgewählten Optionen.
+        private void startOperation_Click(object sender, EventArgs e)
+    {
+        // Prüft, ob Bilder vorhanden sind und ob eine Operation ausgewählt wurde
+        if (imagesList.Count > 0 && (changeAlpha || removePixel || findCoordinates || removeAlpha))
+        {
+            Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
+            List<string> messages = new List<string>();  // Liste zum Speichern von Nachrichten für das Log
+
+            // Iteriert über jedes Bild in der Liste
+            foreach (Image img in imagesList)
+            {
+                string imagePath = img.Tag.ToString();  // Speichert den Pfad des Bildes
+                try
+                {
+                    Bitmap bitmap = new Bitmap(imagePath);  // Erstellt ein Bitmap-Objekt aus dem Bildpfad
+                    bitmap.Tag = img.Tag;  // Setzt das Tag des Bitmaps
+
+                    stopwatch.Restart();  // Startet die Stoppuhr neu
+
+                    // Führt die Pixelbearbeitung durch und sammelt Koordinaten und fehlerhafte Bildpfade
+                    var (coordinates, errorImagePaths) = ModifyImage.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha, findCoordinates, removeAlpha);
+
+                    stopwatch.Stop();  // Stoppt die Stoppuhr
+
+                    string message = $"Proessing time for {imagePath}: {stopwatch.ElapsedMilliseconds} ms";
+                    messages.Add(message);  // Fügt die Nachricht der Liste hinzu
+
+                    // Fügt Fehlermeldungen zur Liste hinzu, wenn fehlerhafte Bildpfade vorhanden sind
+                    if (errorImagePaths.Any() && findCoordinates)
+                    {
+                        foreach (var errorPath in errorImagePaths)
+                        {
+                            messages.Add($"Error: Multiple pivots found in: {errorPath}, saving pivots in textfile canceld.");
+                        }
+                    }
+                    // Speichert Koordinaten, wenn die Option ausgewählt wurde und Koordinaten gefunden wurden
+                    else if (findCoordinates && coordinates.Any())
+                    {
+                        SaveCoordinatesToFile(imagePath, coordinates, messages);
+                    }
+
+
+                    bitmap.Dispose();  // Gibt die Ressourcen des Bitmap-Objekts frei
+                }
+                catch (Exception ex)
+                {
+                    messages.Add($"Error loading image: {imagePath}. Error: {ex.Message}");
+                }
+            }
+            messages.Add("Operations finished.");  // Fügt eine Abschlussnachricht hinzu
+
+            LogForm logForm = new LogForm();  // Erstellt ein neues LogForm-Objekt
+            logForm.AddMessagesToListBox(messages);  // Fügt die Nachrichten zur ListBox hinzu
+            logForm.ShowDialog();  // Zeigt das LogForm-Fenster an
+        }
+        else
+        {
+            // Zeigt Fehlermeldungen, wenn keine Bilder vorhanden sind oder keine Option ausgewählt wurde
+            if (imagesList.Count == 0)
+            {
+                MessageBox.Show("There are no images in the list.");
+            }
+            else
+                MessageBox.Show("Please select an option.");
+        }
+    }
+
+        // Fügt ein Bild zur PictureBox und zur internen Bilderliste hinzu.
+        private void AddImageToPictureBoxAndList(Image img)
+        {
+            // Bild in die PictureBox anzeigen
+            pictureBox.Image = img;
+
+            // Hintergrundbild ausblenden (auf null setzen)
+            pictureBox.BackgroundImage = null;
+
+            // Bild zur Liste hinzufügen
+            imagesList.Add(img);
+
+            // ListBox aktualisieren, um die Liste der hinzugefügten Bilder anzuzeigen
+            UpdateListBox();
+        }
+
+        // Aktualisiert die ListBox, um die aktuelle Liste der Bilder anzuzeigen.
+        private void UpdateListBox()
+        {
+            // ListBox leeren und die Liste der Bilder neu hinzufügen
+            listBox.Items.Clear();
+            foreach (Image img in imagesList)
+            {
+                // Den Dateipfad des Bildes holen und zur ListBox hinzufügen
+                listBox.Items.Add((string)img.Tag);
             }
         }
+
+        // Entfernt das ausgewählte Bild aus der ListBox und der internen Bilderliste.
+        private void RemoveSelectedImage()
+    {
+        // Überprüfen, ob ein Bild in der ListBox ausgewählt ist
+        int selectedIndex = listBox.SelectedIndex;
+
+        // Wenn kein Bild ausgewählt ist, das letzte Bild in der Liste löschen
+        if (selectedIndex == -1 && imagesList.Count > 0)
+        {
+            selectedIndex = imagesList.Count - 1; // Letztes Element der Liste
+        }
+
+        if (selectedIndex != -1)
+        {
+            // Bildressourcen freigeben
+            Image imageToRemove = imagesList[selectedIndex];
+            imageToRemove.Dispose();
+
+            // Das ausgewählte Bild aus der ListBox und der Liste entfernen
+            imagesList.RemoveAt(selectedIndex);
+
+            // ListBox aktualisieren, um die Liste der verbleibenden Bilder anzuzeigen
+            UpdateListBox();
+
+            // Wenn keine Bilder mehr in der Liste sind, die PictureBox zurücksetzen
+            if (imagesList.Count == 0)
+            {
+                pictureBox.Image = null;
+                pictureBox.BackgroundImage = Pixelfinder.Properties.Resources.ImageBoxBackground;
+                pictureBox.BackgroundImageLayout = ImageLayout.Center;
+            }
+            else
+            {
+                // Das erste verbleibende Bild anzeigen
+                pictureBox.Image = imagesList[0];
+            }
+        }
+    }
+
+        // Lädt Bilder von den angegebenen Dateipfaden und fügt sie zur Anwendung hinzu.
         private void LoadImages(string[] fileNames)
         {
             foreach (string file in fileNames)
@@ -431,71 +490,18 @@ namespace Pixelfinder
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Fehler beim Laden des Bildes: " + ex.Message);
+                    MessageBox.Show("Error loading image: " + ex.Message);
                 }
             }
         }
 
-        private void CheckBoxRemovePixel_CheckStateChanged(object sender, EventArgs e)
-        {
-            if (checkBoxRemovePivot.Checked)
-            {
-                removePixel = true;
-            }
-            else
-            {
-                removePixel = false;
-            }
-        }
-        private void checkBoxChangeAlpha_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxChangeAlpha.Checked)
-            {
-                changeAlpha = true;
-                removeAlpha = false;
-                checkBoxRemoveAlpha.Checked = false;
-            }
-            else
-            {
-                changeAlpha = false;
-            }
-            Console.WriteLine("pressed change alpha" + changeAlpha);
-
-        }
-        private void checkBoxRemoveAlpha_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxRemoveAlpha.Checked)
-            {
-                removeAlpha = true;
-                changeAlpha = false;
-                checkBoxChangeAlpha.Checked = false;
-            }
-            else
-            {
-                removeAlpha = false;
-            }
-            Console.WriteLine("pressed remove alpha"+ removeAlpha);
-        }
-        private void checkBoxFindCoordinates_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxFindPivots.Checked)
-            {
-                findCoordinates = true;
-            }
-            else
-            {
-                findCoordinates= false;
-            }
-        }
-
-        private void buttonExit_Click(object sender, EventArgs e)
-        {
-            ExitApplication();
-        }
+        // Behandelt das Schließen des Hauptfensters und führt Bereinigungsoperationen durch.
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             ExitApplication();
         }
+       
+        // Führt die notwendigen Schritte zum ordnungsgemäßen Beenden der Anwendung durch.
         private void ExitApplication()
         {
             // Alle Bilder in der imagesList freigeben
@@ -509,10 +515,7 @@ namespace Pixelfinder
             System.Windows.Forms.Application.Exit();
         }
 
-        private void buttonCoordinatesToSpriteSheet_Click(object sender, EventArgs e)
-        {
-            ApplyPixelsFromFile();
-        }
+        // Wendet Pixeländerungen auf ein Bild basierend auf einer Datei mit Koordinaten an.
         public void ApplyPixelsFromFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -555,7 +558,7 @@ namespace Pixelfinder
                     stopwatch.Start();
 
                     // wendet die Farbe auf die Coordinaten an
-                    FindPixel.ChangePixelInSpriteSheet(bitmap, spriteSize, colorToDraw, coordinates);
+                    ModifyImage.SetPixelFromList(bitmap, spriteSize, colorToDraw, coordinates);
 
                     stopwatch.Stop();
                     long processingTime = stopwatch.ElapsedMilliseconds;
@@ -578,7 +581,39 @@ namespace Pixelfinder
             }
         }
 
+        // Speichert Koordinaten in einer Datei ab.
+        private void SaveCoordinatesToFile(string imagePath, List<string> coordinates, List<string> messages)
+        {
+            // Dateinamen des Bildes ohne Erweiterung extrahieren
+            string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(imagePath);
 
+            // Pfad für die Textdatei erstellen (gleicher Ordner wie die Bilddatei)
+            string directory = System.IO.Path.GetDirectoryName(imagePath);
+            string textureFilePath = System.IO.Path.Combine(directory, fileNameWithoutExtension + ".txt");
+
+            try
+            {
+                // Textdatei öffnen oder erstellen, um die Koordinaten zu schreiben
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(textureFilePath))
+                {
+                    // Koordinaten in die Textdatei schreiben
+                    foreach (string coordinate in coordinates)
+                    {
+                        file.WriteLine(coordinate);
+                    }
+                }
+
+                // Erfolgsmeldung zur Liste hinzufügen
+                messages.Add($"Coordinates saved in {textureFilePath}.");
+            }
+            catch (Exception ex)
+            {
+                // Fehlermeldung zur Liste hinzufügen, wenn das Speichern fehlschlägt
+                messages.Add($"Error saving coordinates to {textureFilePath}: {ex.Message}");
+            }
+        }
+
+        // Liest Koordinatenpunkte aus einer Textdatei.
         private static List<Point> ReadCoordinatesFromTextFile(string filePath)
         {
             List<Point> coordinates = new List<Point>();  // Erstellt eine Liste für Koordinatenpunkte
@@ -601,5 +636,6 @@ namespace Pixelfinder
 
             return coordinates; // Gibt die Liste der Koordinaten zurück
         }
+        
     }
 }
