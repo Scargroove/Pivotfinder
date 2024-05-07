@@ -343,53 +343,84 @@ namespace Pixelfinder
         // Startet die Bildverarbeitung basierend auf den ausgewählten Optionen.
         private void startOperation_Click(object sender, EventArgs e)
         {
+            // Prüft, ob Bilder vorhanden sind und ob eine Operation ausgewählt wurde
             if (imagesList.Count > 0 && (changeAlpha || removePixel || findCoordinates || removeAlpha))
             {
                 progressBar.Maximum = imagesList.Count;
                 progressBar.Value = 0;
 
                 Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
-                List<string> messages = new List<string>();
+                List<string> messages = new List<string>();  // Liste zum Speichern von Nachrichten für das Log
 
+                // Iteriert über jedes Bild in der Liste
                 foreach (Image img in imagesList)
                 {
-                    string imagePath = img.Tag.ToString();
+                    string imagePath = img.Tag.ToString();  // Speichert den Pfad des Bildes
                     try
                     {
-                        Bitmap bitmap = new Bitmap(imagePath);
-                        bitmap.Tag = img.Tag;
+                        Bitmap bitmap = new Bitmap(imagePath);  // Erstellt ein Bitmap-Objekt aus dem Bildpfad
+                        bitmap.Tag = img.Tag;  // Setzt das Tag des Bitmaps
 
-                        stopwatch.Restart();
+                        stopwatch.Restart();  // Startet die Stoppuhr neu
+
+                        // Führt die Pixelbearbeitung durch und sammelt Koordinaten und fehlerhafte Bildpfade
                         var (coordinates, errorImagePaths) = ModifyImage.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha, findCoordinates, removeAlpha);
-                        stopwatch.Stop();
 
-                        string message = $"Processing time: {stopwatch.ElapsedMilliseconds} ms";
+                        stopwatch.Stop();  // Stoppt die Stoppuhr
+
+                        string modifiedPath = "Image modified and saved successfully in: " + Path.Combine(Path.GetDirectoryName(imagePath), Path.GetFileNameWithoutExtension(imagePath) + "_modified.png");
+                        string message = $"Proessing time: {stopwatch.ElapsedMilliseconds} ms";
                         messages.Add(imagePath);
-                        messages.Add(message);
+                        messages.Add(message);  // Fügt die Nachricht der Liste hinzu
+                        if (removeAlpha || removePixel || changeAlpha)
+                        {
+                            messages.Add(modifiedPath);  // Fügt die Nachricht der Liste hinzu
+                        }
 
-                        bitmap.Dispose();
+
+
+                        // Fügt Fehlermeldungen zur Liste hinzu, wenn fehlerhafte Bildpfade vorhanden sind
+                        if (errorImagePaths.Any() && findCoordinates)
+                        {
+                            foreach (var errorPath in errorImagePaths)
+                            {
+                                messages.Add($"Error: Multiple pivots found in: {errorPath}, saving pivots in textfile canceld.");
+                            }
+                        }
+                        // Speichert Koordinaten, wenn die Option ausgewählt wurde und Koordinaten gefunden wurden
+                        else if (findCoordinates && coordinates.Any())
+                        {
+                            SaveCoordinatesToFile(imagePath, coordinates, messages);
+                        }
+                        messages.Add("");
+                        bitmap.Dispose();  // Gibt die Ressourcen des Bitmap-Objekts frei
 
                         // ProgressBar aktualisieren
                         progressBar.Value++;
-
-                        // Optional: Log-Form aktualisieren oder Nachrichten anzeigen
                     }
                     catch (Exception ex)
                     {
                         messages.Add($"Error loading image: {imagePath}. Error: {ex.Message}");
                     }
-                }
 
-                messages.Add("Operations finished.");
-                LogForm logForm = new LogForm();
-                logForm.AddMessagesToListBox(messages);
-                logForm.ShowDialog();
+                }
+                messages.Add("Operations finished.");  // Fügt eine Abschlussnachricht hinzu
+
+                LogForm logForm = new LogForm();  // Erstellt ein neues LogForm-Objekt
+                logForm.AddMessagesToListBox(messages);  // Fügt die Nachrichten zur ListBox hinzu
+                logForm.ShowDialog();  // Zeigt das LogForm-Fenster an
+                progressBar.Value = 0;
             }
             else
             {
-                MessageBox.Show("There are no images in the list or no option selected.");
+                // Zeigt Fehlermeldungen, wenn keine Bilder vorhanden sind oder keine Option ausgewählt wurde
+                if (imagesList.Count == 0)
+                {
+                    MessageBox.Show("There are no images in the list.");
+                }
+                else
+                    MessageBox.Show("Please select an option.");
             }
-            progressBar.Value = 0;
         }
 
         // Fügt ein Bild zur PictureBox und zur internen Bilderliste hinzu.
@@ -438,25 +469,34 @@ namespace Pixelfinder
                         imagesList.Remove(imageToRemove); // Aus der Liste entfernen
                     }
                 }
-
-                // ListBox aktualisieren
-                UpdateListBox();
-
-                // PictureBox zurücksetzen, wenn keine Bilder mehr vorhanden sind
-                if (imagesList.Count == 0)
+            }
+            else if (imagesList.Any())
+            {
+                // Kein Bild ausgewählt, das zuletzt hinzugefügte Bild löschen
+                var lastAddedImage = imagesList.LastOrDefault();
+                if (lastAddedImage != null)
                 {
-                    pictureBox.Image = null;
-                    pictureBox.BackgroundImage = Pixelfinder.Properties.Resources.ImageBoxBackground;
-                    pictureBox.BackgroundImageLayout = ImageLayout.Center;
-                }
-                else
-                {
-                    // Das erste verbleibende Bild anzeigen
-                    pictureBox.Image = imagesList[0];
+                    lastAddedImage.Dispose();
+                    imagesList.Remove(lastAddedImage);
                 }
             }
-        }
 
+            // ListBox aktualisieren
+            UpdateListBox();
+
+            // PictureBox zurücksetzen, aktualisieren oder das letzte Bild in der Liste anzeigen
+            if (imagesList.Count == 0)
+            {
+                pictureBox.Image = null;
+                pictureBox.BackgroundImage = Pixelfinder.Properties.Resources.ImageBoxBackground;
+                pictureBox.BackgroundImageLayout = ImageLayout.Center;
+            }
+            else
+            {
+                // Das letzte verbleibende Bild in der Liste anzeigen
+                pictureBox.Image = imagesList.Last();
+            }
+        }
 
         // Lädt Bilder von den angegebenen Dateipfaden ind den Speicher und fügt sie zur Anwendung hinzu.
         private void LoadImages(string[] fileNames)
@@ -494,7 +534,6 @@ namespace Pixelfinder
                 }
             }
         }
-
 
         // Behandelt das Schließen des Hauptfensters und führt Bereinigungsoperationen durch.
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -637,6 +676,7 @@ namespace Pixelfinder
 
             return coordinates; // Gibt die Liste der Koordinaten zurück
         }
+
 
     }
 }

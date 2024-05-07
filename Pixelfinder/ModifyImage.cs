@@ -107,7 +107,7 @@ namespace Pixelfinder
                                 // Bei Gruppierung von 4 oder weniger Pivots wird der erste zurückgegeben, der gefunden wurde.
                                 // Falls keine Gruppierung, wird ein falscher Wert zurückgegeben.
                                 result = FindPixelGroupInSprite(pixelData, stride, spriteSize, targetColorInt, startPos);
-                                 
+
                                 return result; // Abbrechen und ungültiges Ergebnis zurückgeben.
                             }
 
@@ -116,7 +116,7 @@ namespace Pixelfinder
 
                         if (removePixel)
                         {
-                            ReplacePixelWithDominantNeighboringColor(pixelData, stride, spriteSize, position, targetColorInt);
+                            ReplacePixelWithDominantOrNearestAverageColor(pixelData, stride, spriteSize, position, targetColorInt);
                         }
                         foundPixelCount++; // Inkrementieren des Zählers für gefundene Pixel.
                     }
@@ -125,30 +125,32 @@ namespace Pixelfinder
 
             return result;
         }
+
+        // Sucht nach Gruppen der Pixel und gibt die Koordinate des ersten Pixel zurück, wenn es eine Gruppe unter 4 ist.
         private static Point FindPixelGroupInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos)
         {
-            int width = spriteSize.X;
-            int height = spriteSize.Y;
-            bool[,] visited = new bool[height, width];
-            Point result = new Point(-1, -1); // Fehlerpunkt als Standardwert.
+            int width = spriteSize.X; // Breite des Sprites
+            int height = spriteSize.Y; // Höhe des Sprites
+            bool[,] visited = new bool[height, width]; // Array zum Speichern der besuchten Pixel
+            Point result = new Point(-1, -1); // Fehlerpunkt als Standardwert, wenn keine passende Gruppe gefunden wird
 
-            Func<int, int, List<Point>> dfs = null;
+            Func<int, int, List<Point>> dfs = null; // Funktion für die Tiefensuche
             dfs = (x, y) =>
             {
-                List<Point> component = new List<Point>();
-                if (x < 0 || x >= width || y < 0 || y >= height || visited[y, x])
+                List<Point> component = new List<Point>(); // Liste der Punkte in der aktuellen Komponente
+                if (x < 0 || x >= width || y < 0 || y >= height || visited[y, x]) // Überprüfung der Grenzen und ob bereits besucht
                     return component;
 
-                int position = ((startPos.Y + y) * stride) + ((startPos.X + x) * 4);
-                int color = BitConverter.ToInt32(pixelData, position);
-                visited[y, x] = true;
+                int position = ((startPos.Y + y) * stride) + ((startPos.X + x) * 4); // Berechnung der Position im Byte-Array
+                int color = BitConverter.ToInt32(pixelData, position); // Umwandlung von Byte-Daten in einen Integer-Wert für die Farbe
+                visited[y, x] = true; // Markierung des Punktes als besucht
 
-                if (color == targetColorInt)
+                if (color == targetColorInt) // Überprüfung, ob die Farbe mit der Ziel-Farbe übereinstimmt
                 {
-                    component.Add(new Point(x, y));
-                    foreach (var dir in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) })
+                    component.Add(new Point(x, y)); // Hinzufügen des Punktes zur Komponente
+                    foreach (var dir in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) }) // Erkundung in vier Richtungen
                     {
-                        component.AddRange(dfs(x + dir.Item1, y + dir.Item2));
+                        component.AddRange(dfs(x + dir.Item1, y + dir.Item2)); // Rekursiver Aufruf der Tiefensuche
                     }
                 }
                 return component;
@@ -158,26 +160,26 @@ namespace Pixelfinder
             {
                 for (int x = 0; x < width; x++)
                 {
-                    if (!visited[y, x])
+                    if (!visited[y, x]) // Überprüfung, ob der Punkt noch nicht besucht wurde
                     {
-                        var component = dfs(x, y);
-                        if (component.Count > 0 && component.Count <= 4)
+                        var component = dfs(x, y); // Start der Tiefensuche von diesem Punkt
+                        if (component.Count > 0 && component.Count <= 4) // Überprüfung der Größe der Komponente
                         {
-                            var minX = component.Min(p => p.X);
-                            var minY = component.Min(p => p.Y);
-                            // Korrektur: Addition von startPos.X und startPos.Y für die Rückgabe
-                            return new Point(minX, minY);
+                            var minX = component.Min(p => p.X); // Berechnung des kleinsten X-Wertes
+                            var minY = component.Min(p => p.Y); // Berechnung des kleinsten Y-Wertes
+                                                                // Rückgabe des ersten gefundenen Punktes der Komponente mit Anpassung durch startPos
+                            return new Point(minX + startPos.X, minY + startPos.Y);
                         }
-                        else if (component.Count > 4)
+                        else if (component.Count > 4) // Falls die Komponente zu groß ist
                         {
-                            // Rückgabe eines Fehlerpunkts mit Berücksichtigung der startPos
+                            // Rückgabe eines Fehlerpunkts
                             return new Point(-1, -1);
                         }
                     }
                 }
             }
 
-            return result;
+            return result; // Rückgabe des Ergebnis-Punktes, wenn keine geeignete Komponente gefunden wurde
         }
 
         // Speichert das veränderte Bitmap unter einem neuen Dateinamen.
@@ -204,98 +206,80 @@ namespace Pixelfinder
             bitmap.Save(newFileName, ImageFormat.Png);
         }
 
-        // Ersetzt ein gefundenes Pixel durch die dominante Farbe der benachbarten Pixel, falls erforderlich.
-        private static void ReplacePixelWithDominantNeighboringColor(byte[] pixelData, int stride, Point spriteSize, int position, int targetColorInt)
+        private static void ReplacePixelWithDominantOrNearestAverageColor(byte[] pixelData, int stride, Point spriteSize, int position, int targetColorInt)
         {
             int[] neighboringColors = new int[4];
             int y = position / stride;
             int x = (position % stride) / 4;
 
-            // Überprüfen der benachbarten Pixel und Sammeln ihrer Farben
+            // Erfassen der Farben der umliegenden Pixel
             if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // oben
             if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // unten
             if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // links
             if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // rechts
 
-            // Filtere die targetColor aus den benachbarten Farben heraus
+            // Filtern der Ziel-Farbe aus den umgebenden Farben
             var filteredColors = neighboringColors.Where(color => color != targetColorInt).ToArray();
 
-            // Erstelle eine Gruppierung der benachbarten Farben, die nicht die targetColor sind
-            var colorGroups = filteredColors.GroupBy(color => color).OrderByDescending(group => group.Count());
+            // Gruppieren der Farben, um die dominante Farbe zu ermitteln
+            var groupedColors = filteredColors.GroupBy(color => color)
+                                              .Select(group => new { Color = group.Key, Count = group.Count() })
+                                              .OrderByDescending(group => group.Count);
 
-            // Versuche die erste Farbgruppe zu finden, die die meisten Elemente hat
-            var dominantGroup = colorGroups.FirstOrDefault();
+            // Bestimme die dominante Farbe, falls vorhanden
+            var dominantColor = groupedColors.FirstOrDefault(group => group.Count >= 2);
 
-            int colorToSet = dominantGroup != null ? dominantGroup.Key : CalculateAverageColor(neighboringColors);
+            int colorToSet;
+            if (dominantColor != null)
+            {
+                // Verwende die dominante Farbe, wenn eine gefunden wurde
+                colorToSet = dominantColor.Color;
+            }
+            else
+            {
+                // Keine dominante Farbe gefunden, berechne den Durchschnitt und finde die nächstgelegene Farbe
+                int averageColor = CalculateAverageColor(filteredColors);
+                colorToSet = filteredColors.OrderBy(color => ColorDistance(averageColor, color)).FirstOrDefault();
+            }
 
-            // Setze die neue Farbe, falls eine dominante Gruppe vorhanden ist, oder die berechnete Durchschnittsfarbe
+            // Setzen der ausgewählten Farbe am aktuellen Pixel
             BitConverter.GetBytes(colorToSet).CopyTo(pixelData, position);
         }
 
-        // Berechnet den Durchschnittswert der Farben in einem Array.
         private static int CalculateAverageColor(int[] colors)
         {
-            int r = 0, g = 0, b = 0; // Variablen zur Speicherung der summierten Farbkomponenten Rot, Grün, Blau.
-            int count = 0; // Zähler für die Anzahl der Farben im Array.
-
-            // Durchlaufen jedes Farbwertes im übergebenen Array.
+            int r = 0, g = 0, b = 0;
+            int count = 0;
             foreach (int color in colors)
             {
-                r += (color >> 16) & 0xFF; // Extrahieren und Aufsummieren der Rot-Komponente.
-                g += (color >> 8) & 0xFF;  // Extrahieren und Aufsummieren der Grün-Komponente.
-                b += color & 0xFF;         // Extrahieren und Aufsummieren der Blau-Komponente.
-                count++;                   // Inkrementieren des Zählers.
+                r += (color >> 16) & 0xFF;
+                g += (color >> 8) & 0xFF;
+                b += color & 0xFF;
+                count++;
             }
-
-            // Vermeidung der Division durch Null, falls das Array leer ist.
             if (count > 0)
             {
-                r /= count; // Berechnen des Durchschnitts für Rot.
-                g /= count; // Berechnen des Durchschnitts für Grün.
-                b /= count; // Berechnen des Durchschnitts für Blau.
+                r /= count;
+                g /= count;
+                b /= count;
             }
-
-            // Rückgabe des Durchschnittswerts als eine einzige Farbe im ARGB-Format.
             return (r << 16) | (g << 8) | b;
         }
 
-        // Findet die Farbe, die einer Ziel-Farbe am nächsten liegt, aus einem Array von Farben.
-        private static int FindNearestColor(int[] colors, int targetColor)
-        {
-            int minDistance = int.MaxValue; // Variable zur Speicherung der kleinsten gefundenen Distanz.
-            int nearestColor = 0;           // Variable zur Speicherung der Farbe mit der kleinsten Distanz.
-
-            // Durchlaufen aller Farben im Array.
-            foreach (int color in colors)
-            {
-                int distance = ColorDistance(color, targetColor); // Berechnen der Distanz zur Ziel-Farbe.
-
-                // Aktualisieren der minimalen Distanz und der nächsten Farbe, falls die aktuelle Distanz kleiner ist.
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    nearestColor = color;
-                }
-            }
-            return nearestColor; // Rückgabe der Farbe mit der geringsten Distanz zur Ziel-Farbe.
-        }
-
-        // Berechnet die Distanz zwischen zwei Farben im RGB-Farbraum.
         private static int ColorDistance(int color1, int color2)
         {
-            // Extrahieren der Rot-, Grün- und Blau-Komponenten der ersten Farbe.
             int r1 = (color1 >> 16) & 0xFF;
             int g1 = (color1 >> 8) & 0xFF;
             int b1 = color1 & 0xFF;
 
-            // Extrahieren der Rot-, Grün- und Blau-Komponenten der zweiten Farbe.
             int r2 = (color2 >> 16) & 0xFF;
             int g2 = (color2 >> 8) & 0xFF;
             int b2 = color2 & 0xFF;
 
-            // Berechnen des quadratischen Abstands zwischen den Farben im RGB-Raum.
-            return (r2 - r1) * (r2 - r1) + (g2 - g1) * (g2 - g1) + (b2 - b1) * (b2 - b1);
+            return (r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2);
         }
+
+
 
         // Setzt alle Alpha-Werte zwischen 1 und 254 auf einen anderen Wert.
         private static void ChangeAlphaToColor(byte[] pixelData, Color targetColor)
