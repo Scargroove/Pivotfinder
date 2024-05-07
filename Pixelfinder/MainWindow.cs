@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -42,7 +43,14 @@ namespace Pixelfinder
             toolTip1.ShowAlways = true;      // Der Tooltip wird auch dann angezeigt, wenn das Formular nicht aktiv ist
 
             // Tooltip-Text festlegen
-            toolTip1.SetToolTip(this.checkBoxRemovePivot, "Removes the pivotpoint by changing it to the color of the dominant neighbour pixel. For more Information see the Readme.");
+
+            toolTip1.SetToolTip(this.checkBoxChangeAlpha, "Change pixels with alpha values from 1 to 254 to black (default color with RGB 0, 0, 0). Users can select a different color if preferred.");
+            toolTip1.SetToolTip(this.checkBoxRemoveAlpha, "Make pixels with alpha values from 1 to 254 fully transparent.");
+            toolTip1.SetToolTip(this.checkBoxFindPivots, "Identify pivot points using magenta (default color with RGB 255, 0, 255) and the sprite size (default size 128x128). Users can select a different color or sprite size if preferred.");
+            toolTip1.SetToolTip(this.checkBoxRemovePivot, "Removes the pivot-point by changing it to the color of the dominant neighboring pixel.");
+            toolTip1.SetToolTip(this.buttonPivotToSpriteSheet, "Draws the pivots from a .txt file onto an image, using the specified sprite size and pivot color options.");
+            toolTip1.SetToolTip(this.buttonSelectPivotColor, "Selects the color to identify the pivot points.");
+
         }
 
         // Behandelt Tastatureingaben, insbesondere das Löschen von Bildern aus der Liste.
@@ -357,12 +365,20 @@ namespace Pixelfinder
                     var (coordinates, errorImagePaths) = ModifyImage.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha, findCoordinates, removeAlpha);
 
                     stopwatch.Stop();  // Stoppt die Stoppuhr
-
-                    string message = $"Proessing time for {imagePath}: {stopwatch.ElapsedMilliseconds} ms";
+                    
+                    string modifiedPath = "Image modified and saved successfully in: " + Path.Combine(Path.GetDirectoryName(imagePath), Path.GetFileNameWithoutExtension(imagePath) + "_modified.png" );
+                    string message = $"Proessing time: {stopwatch.ElapsedMilliseconds} ms";
+                    messages.Add(imagePath);
                     messages.Add(message);  // Fügt die Nachricht der Liste hinzu
+                    if (removeAlpha || removePixel || changeAlpha)
+                    {
+                        messages.Add(modifiedPath);  // Fügt die Nachricht der Liste hinzu
+                    }
+                       
 
-                    // Fügt Fehlermeldungen zur Liste hinzu, wenn fehlerhafte Bildpfade vorhanden sind
-                    if (errorImagePaths.Any() && findCoordinates)
+
+                        // Fügt Fehlermeldungen zur Liste hinzu, wenn fehlerhafte Bildpfade vorhanden sind
+                        if (errorImagePaths.Any() && findCoordinates)
                     {
                         foreach (var errorPath in errorImagePaths)
                         {
@@ -374,14 +390,14 @@ namespace Pixelfinder
                     {
                         SaveCoordinatesToFile(imagePath, coordinates, messages);
                     }
-
-
+                    messages.Add("");
                     bitmap.Dispose();  // Gibt die Ressourcen des Bitmap-Objekts frei
                 }
                 catch (Exception ex)
                 {
                     messages.Add($"Error loading image: {imagePath}. Error: {ex.Message}");
                 }
+
             }
             messages.Add("Operations finished.");  // Fügt eine Abschlussnachricht hinzu
 
@@ -468,24 +484,34 @@ namespace Pixelfinder
         }
     }
 
-        // Lädt Bilder von den angegebenen Dateipfaden und fügt sie zur Anwendung hinzu.
+        // Lädt Bilder von den angegebenen Dateipfaden ind den Speicher und fügt sie zur Anwendung hinzu.
         private void LoadImages(string[] fileNames)
         {
             foreach (string file in fileNames)
             {
                 try
                 {
-                    // Überprüfen, ob das Bild bereits in der Liste vorhanden ist
                     if (!IsImageDuplicate(file))
                     {
-                        // Bild aus der Datei laden
-                        Image img = Image.FromFile(file);
+                        // Öffne einen Dateistream zum Lesen der Bilddatei
+                        using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+                        {
+                            // Kopiere Bilddaten in einen MemoryStream
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                fs.CopyTo(ms);
+                                ms.Seek(0, SeekOrigin.Begin); // Spule den Stream zurück zum Anfang
 
-                        // Den Dateipfad als Tag zum Bildobjekt hinzufügen
-                        img.Tag = file;
+                                // Lade das Bild aus dem MemoryStream
+                                Image img = Image.FromStream(ms);
 
-                        // Bild zur PictureBox und zur Liste hinzufügen
-                        AddImageToPictureBoxAndList(img);
+                                // Weise den Dateipfad der Tag-Eigenschaft zu, um ihn später referenzieren zu können
+                                img.Tag = file;
+
+                                // Füge das Bild der PictureBox und der Liste hinzu
+                                AddImageToPictureBoxAndList(img);
+                            }
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -494,6 +520,7 @@ namespace Pixelfinder
                 }
             }
         }
+
 
         // Behandelt das Schließen des Hauptfensters und führt Bereinigungsoperationen durch.
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -519,17 +546,17 @@ namespace Pixelfinder
         public void ApplyPixelsFromFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Bitmap Images (*.png)|*.png";
+            openFileDialog.Filter = "Images (*.png)|*.png";
             openFileDialog.Title = "Select an Image File";
 
-            // Öffnet das Dialogfenster für die Bitmap-Datei
+            // Öffnet das Dialogfenster für die Image-Datei
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string bitmapPath = openFileDialog.FileName;
                 Bitmap bitmap = new Bitmap(bitmapPath);
 
                 openFileDialog.Filter = "Text Files (*.txt)|*.txt";
-                openFileDialog.Title = "Select a Text File with Coordinates";
+                openFileDialog.Title = "Select a Text File with pivot-points.";
 
                 // Öffnet das Dialogfenster für die Textdatei, die Koordinaten enthält
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -570,7 +597,7 @@ namespace Pixelfinder
 
                     List<string> messages = new List<string>
             {
-                $"Bitmap modified and saved successfully at {modifiedPath}.",
+                $"Image modified and saved successfully at {modifiedPath}.",
                 $"Processing time: {processingTime} ms"
             };
 

@@ -54,7 +54,6 @@ namespace Pixelfinder
                             errorImagePaths.Add(bitmap.Tag.ToString());
                         }
                     }
-
                 }
             }
             if (changeAlpha)
@@ -156,32 +155,42 @@ namespace Pixelfinder
             int y = position / stride;
             int x = (position % stride) / 4;
 
-            // Check neighboring pixels and gather their colors
-            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // top
-            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // bottom
-            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // left
-            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // right
+            // Überprüfen der benachbarten Pixel und Sammeln ihrer Farben
+            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // oben
+            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // unten
+            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // links
+            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // rechts
 
-            // Group colors and check for a dominant group
-            var colorGroups = neighboringColors.GroupBy(c => c).ToList();
-            var dominantGroup = colorGroups.OrderByDescending(g => g.Count()).FirstOrDefault();
+            // Erstelle eine Gruppierung der benachbarten Farben
+            // Dabei wird 'GroupBy' verwendet, um Farben zusammenzufassen, die gleich sind
+            var colorGroups = neighboringColors.GroupBy(color => color);
 
-            if (dominantGroup == null && colorGroups.Count() > 0) // No dominant group found
+            // Versuche die erste Farbgruppe zu finden, die mindestens 3 Elemente hat
+            // Dies prüft auf eine dominante Gruppe von Farben
+            var dominantGroup = colorGroups.FirstOrDefault(group => group.Count() >= 3);
+
+            // Wenn keine Gruppe mit mindestens 3 Elementen gefunden wurde,
+            // suche stattdessen nach einer Gruppe mit genau 2 Elementen
+            if (dominantGroup == null)
             {
-                // Calculate the average color value
+                dominantGroup = colorGroups.FirstOrDefault(group => group.Count() == 2);
+            }
+
+            if (dominantGroup == null && colorGroups.Count() > 0) // Keine dominante Gruppe gefunden
+            {
+                // Berechnung des Durchschnittsfarbwerts
                 int averageColor = CalculateAverageColor(neighboringColors);
-                // Choose the color closest to the average
+                // Wähle die Farbe, die dem Durchschnittswert am nächsten liegt
                 int nearestColor = FindNearestColor(neighboringColors, averageColor);
                 BitConverter.GetBytes(nearestColor).CopyTo(pixelData, position);
             }
             else if (dominantGroup != null)
             {
-                // Set the dominant color, if available
+                // Setze die dominante Farbe, falls vorhanden
                 int newColor = dominantGroup.Key;
                 BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
             }
         }
-
 
         // Berechnet den Durchschnittswert der Farben in einem Array.
         private static int CalculateAverageColor(int[] colors)
@@ -294,24 +303,42 @@ namespace Pixelfinder
             Point spriteAmount = new Point(bitmap.Width / spriteSize.X, bitmap.Height / spriteSize.Y);
             int pointListPosition = 0;
 
+            // Schleife über jede Zeile im Sprite-Raster
             for (int y = 0; y < spriteAmount.Y; y++)
             {
+                // Schleife über jede Spalte im aktuellen Raster der Zeile
                 for (int x = 0; x < spriteAmount.X; x++)
                 {
+                    // Überprüfe, ob der Punkt nicht am Ursprung (0,0) liegt
                     if (points[pointListPosition].X != 0 && points[pointListPosition].Y != 0)
                     {
+                        // Berechne die X-Koordinate des Pixels in der Bitmap
                         int pixelX = (spriteSize.X * x) + points[pointListPosition].X;
+
+                        // Berechne die Y-Koordinate des Pixels in der Bitmap
                         int pixelY = (spriteSize.Y * y) + points[pointListPosition].Y;
+
+                        // Berechne die Position des Pixels im eindimensionalen Array 'rgbValues', das die Bitmap-Daten enthält
                         int position = (pixelY * bitmapData.Stride) + (pixelX * depth);
 
-                        rgbValues[position] = targetColor.B; // Blau
-                        rgbValues[position + 1] = targetColor.G; // Grün
-                        rgbValues[position + 2] = targetColor.R; // Rot
-                        if (depth == 4) // Wenn das PixelFormat 32bppArgb ist, wird auch der Alphawert gesetzt
+                        // Setze den Blauanteil des Pixels
+                        rgbValues[position] = targetColor.B;
+
+                        // Setze den Grünanteil des Pixels
+                        rgbValues[position + 1] = targetColor.G;
+
+                        // Setze den Rotanteil des Pixels
+                        rgbValues[position + 2] = targetColor.R;
+
+                        // Überprüfe, ob das Bildformat 32 Bits pro Pixel hat (RGBA), um den Alphawert zu setzen
+                        if (depth == 4)
                         {
-                            rgbValues[position + 3] = targetColor.A; // Alpha
+                            // Setze den Alphawert (Transparenz) des Pixels
+                            rgbValues[position + 3] = targetColor.A;
                         }
                     }
+
+                    // Erhöhe die Position in der Liste der Punkte
                     pointListPosition++;
                 }
             }

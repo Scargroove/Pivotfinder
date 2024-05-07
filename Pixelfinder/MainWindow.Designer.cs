@@ -146,7 +146,7 @@
             // 
             // buttonSelectPivotColor
             // 
-            this.buttonSelectPivotColor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonSelectPivotColor.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.buttonSelectPivotColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.buttonSelectPivotColor.Location = new System.Drawing.Point(6, 17);
             this.buttonSelectPivotColor.Name = "buttonSelectPivotColor";
@@ -184,6 +184,7 @@
             // checkBoxRemoveAlpha
             // 
             this.checkBoxRemoveAlpha.AutoSize = true;
+            this.checkBoxRemoveAlpha.Cursor = System.Windows.Forms.Cursors.Hand;
             this.checkBoxRemoveAlpha.Location = new System.Drawing.Point(6, 43);
             this.checkBoxRemoveAlpha.Name = "checkBoxRemoveAlpha";
             this.checkBoxRemoveAlpha.Size = new System.Drawing.Size(90, 17);
@@ -195,6 +196,7 @@
             // checkBoxChangeAlpha
             // 
             this.checkBoxChangeAlpha.AutoSize = true;
+            this.checkBoxChangeAlpha.Cursor = System.Windows.Forms.Cursors.Hand;
             this.checkBoxChangeAlpha.Location = new System.Drawing.Point(6, 19);
             this.checkBoxChangeAlpha.Name = "checkBoxChangeAlpha";
             this.checkBoxChangeAlpha.Size = new System.Drawing.Size(103, 17);
@@ -229,6 +231,7 @@
             // checkBoxFindPivots
             // 
             this.checkBoxFindPivots.AutoSize = true;
+            this.checkBoxFindPivots.Cursor = System.Windows.Forms.Cursors.Hand;
             this.checkBoxFindPivots.Location = new System.Drawing.Point(6, 46);
             this.checkBoxFindPivots.Name = "checkBoxFindPivots";
             this.checkBoxFindPivots.Size = new System.Drawing.Size(125, 17);
