@@ -31,6 +31,7 @@ namespace Pixelfinder
             pictureBox.AllowDrop = true;
 
         }
+       
 
         // Konfiguriert Tooltips für verschiedene Steuerelemente im Hauptfenster.
         private void InitializeTooltips()
@@ -72,7 +73,6 @@ namespace Pixelfinder
                 e.Handled = true;  // Markiert das Ereignis als behandelt
             }
         }
-
 
         // Behandelt das Ereignis, wenn Dateien in das Formular gezogen werden.
         private void Form1_DragEnter(object sender, DragEventArgs e)

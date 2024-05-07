@@ -45,7 +45,17 @@ namespace Pixelfinder
                     {
                         if (result.X != -1 && result.Y != -1)
                         {
-                            resultsList.Add(result.X + "," + result.Y);
+                            if(result.X == 0 && result.Y == 0)
+                            {
+                                resultsList.Add(result.X + "," + result.Y);
+
+                            }
+                            else
+                            {
+                                resultsList.Add((result.X + 1) + "," + (result.Y + 1));
+
+                            }
+
                         }
                         else
                         {
@@ -108,7 +118,7 @@ namespace Pixelfinder
                                 // Falls keine Gruppierung, wird ein falscher Wert zurückgegeben.
                                 result = FindPixelGroupInSprite(pixelData, stride, spriteSize, targetColorInt, startPos);
 
-                                return result; // Abbrechen und ungültiges Ergebnis zurückgeben.
+                                return result; 
                             }
 
                             result = new Point(x, y);
@@ -168,7 +178,7 @@ namespace Pixelfinder
                             var minX = component.Min(p => p.X); // Berechnung des kleinsten X-Wertes
                             var minY = component.Min(p => p.Y); // Berechnung des kleinsten Y-Wertes
                                                                 // Rückgabe des ersten gefundenen Punktes der Komponente mit Anpassung durch startPos
-                            return new Point(minX + startPos.X, minY + startPos.Y);
+                            return new Point(minX, minY);
                         }
                         else if (component.Count > 4) // Falls die Komponente zu groß ist
                         {
@@ -354,6 +364,10 @@ namespace Pixelfinder
 
                         // Berechne die Y-Koordinate des Pixels in der Bitmap
                         int pixelY = (spriteSize.Y * y) + points[pointListPosition].Y;
+
+                        // Offset
+                        pixelX = pixelX - 1;
+                        pixelY = pixelY - 1;
 
                         // Berechne die Position des Pixels im eindimensionalen Array 'rgbValues', das die Bitmap-Daten enthält
                         int position = (pixelY * bitmapData.Stride) + (pixelX * depth);

@@ -154,7 +154,7 @@
             this.buttonSelectPivotColor.Name = "buttonSelectPivotColor";
             this.buttonSelectPivotColor.Size = new System.Drawing.Size(162, 24);
             this.buttonSelectPivotColor.TabIndex = 5;
-            this.buttonSelectPivotColor.Text = "pivot color";
+            this.buttonSelectPivotColor.Text = "set pivot color";
             this.buttonSelectPivotColor.UseVisualStyleBackColor = true;
             this.buttonSelectPivotColor.Click += new System.EventHandler(this.buttonSelectPixelColor_Click);
             // 
@@ -368,7 +368,7 @@
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(598, 482);
             this.Name = "MainWindow";
-            this.Text = "Pixelfinder";
+            this.Text = "Pivotfinder";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
