@@ -116,7 +116,7 @@ namespace Pixelfinder
 
                         if (removePixel)
                         {
-                            ReplacePixelWithDominantNeighboringColor(pixelData, stride, spriteSize, position);
+                            ReplacePixelWithDominantNeighboringColor(pixelData, stride, spriteSize, position, targetColorInt);
                         }
                         foundPixelCount++; // Inkrementieren des Zählers für gefundene Pixel.
                     }
@@ -205,7 +205,7 @@ namespace Pixelfinder
         }
 
         // Ersetzt ein gefundenes Pixel durch die dominante Farbe der benachbarten Pixel, falls erforderlich.
-        private static void ReplacePixelWithDominantNeighboringColor(byte[] pixelData, int stride, Point spriteSize, int position)
+        private static void ReplacePixelWithDominantNeighboringColor(byte[] pixelData, int stride, Point spriteSize, int position, int targetColorInt)
         {
             int[] neighboringColors = new int[4];
             int y = position / stride;
@@ -217,35 +217,19 @@ namespace Pixelfinder
             if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // links
             if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // rechts
 
-            // Erstelle eine Gruppierung der benachbarten Farben
-            // Dabei wird 'GroupBy' verwendet, um Farben zusammenzufassen, die gleich sind
-            var colorGroups = neighboringColors.GroupBy(color => color);
+            // Filtere die targetColor aus den benachbarten Farben heraus
+            var filteredColors = neighboringColors.Where(color => color != targetColorInt).ToArray();
 
-            // Versuche die erste Farbgruppe zu finden, die mindestens 3 Elemente hat
-            // Dies prüft auf eine dominante Gruppe von Farben
-            var dominantGroup = colorGroups.FirstOrDefault(group => group.Count() >= 3);
+            // Erstelle eine Gruppierung der benachbarten Farben, die nicht die targetColor sind
+            var colorGroups = filteredColors.GroupBy(color => color).OrderByDescending(group => group.Count());
 
-            // Wenn keine Gruppe mit mindestens 3 Elementen gefunden wurde,
-            // suche stattdessen nach einer Gruppe mit genau 2 Elementen
-            if (dominantGroup == null)
-            {
-                dominantGroup = colorGroups.FirstOrDefault(group => group.Count() == 2);
-            }
+            // Versuche die erste Farbgruppe zu finden, die die meisten Elemente hat
+            var dominantGroup = colorGroups.FirstOrDefault();
 
-            if (dominantGroup == null && colorGroups.Count() > 0) // Keine dominante Gruppe gefunden
-            {
-                // Berechnung des Durchschnittsfarbwerts
-                int averageColor = CalculateAverageColor(neighboringColors);
-                // Wähle die Farbe, die dem Durchschnittswert am nächsten liegt
-                int nearestColor = FindNearestColor(neighboringColors, averageColor);
-                BitConverter.GetBytes(nearestColor).CopyTo(pixelData, position);
-            }
-            else if (dominantGroup != null)
-            {
-                // Setze die dominante Farbe, falls vorhanden
-                int newColor = dominantGroup.Key;
-                BitConverter.GetBytes(newColor).CopyTo(pixelData, position);
-            }
+            int colorToSet = dominantGroup != null ? dominantGroup.Key : CalculateAverageColor(neighboringColors);
+
+            // Setze die neue Farbe, falls eine dominante Gruppe vorhanden ist, oder die berechnete Durchschnittsfarbe
+            BitConverter.GetBytes(colorToSet).CopyTo(pixelData, position);
         }
 
         // Berechnet den Durchschnittswert der Farben in einem Array.
