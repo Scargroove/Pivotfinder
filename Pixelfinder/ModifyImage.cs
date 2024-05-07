@@ -5,7 +5,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace Pixelfinder
 {
@@ -63,10 +62,9 @@ namespace Pixelfinder
             }
             else if (removeAlpha)
             {
-                Color transparent = Color.FromArgb(0,0,0,0);
+                Color transparent = Color.FromArgb(0, 0, 0, 0);
                 ChangeAlphaToColor(pixelData, transparent);
             }
-            Console.WriteLine("remove: "+ removeAlpha + " change: " + changeAlpha);
 
             // Kopiert die veränderten Pixeldaten zurück ins Bitmap.
             Marshal.Copy(pixelData, 0, bitmapData.Scan0, pixelData.Length);
@@ -105,7 +103,11 @@ namespace Pixelfinder
                         {
                             if (foundPixelCount > 0)
                             {
-                                result = new Point(-1, -1); // falsche Werte setzen.
+                                // Falls mehrere Pivots gefunden wurden, wird auf Gruppierung beding durch upscaling gesucht.
+                                // Bei Gruppierung von 4 oder weniger Pivots wird der erste zurückgegeben, der gefunden wurde.
+                                // Falls keine Gruppierung, wird ein falscher Wert zurückgegeben.
+                                result = FindPixelGroupInSprite(pixelData, stride, spriteSize, targetColorInt, startPos);
+                                 
                                 return result; // Abbrechen und ungültiges Ergebnis zurückgeben.
                             }
 
@@ -117,6 +119,60 @@ namespace Pixelfinder
                             ReplacePixelWithDominantNeighboringColor(pixelData, stride, spriteSize, position);
                         }
                         foundPixelCount++; // Inkrementieren des Zählers für gefundene Pixel.
+                    }
+                }
+            }
+
+            return result;
+        }
+        private static Point FindPixelGroupInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos)
+        {
+            int width = spriteSize.X;
+            int height = spriteSize.Y;
+            bool[,] visited = new bool[height, width];
+            Point result = new Point(-1, -1); // Fehlerpunkt als Standardwert.
+
+            Func<int, int, List<Point>> dfs = null;
+            dfs = (x, y) =>
+            {
+                List<Point> component = new List<Point>();
+                if (x < 0 || x >= width || y < 0 || y >= height || visited[y, x])
+                    return component;
+
+                int position = ((startPos.Y + y) * stride) + ((startPos.X + x) * 4);
+                int color = BitConverter.ToInt32(pixelData, position);
+                visited[y, x] = true;
+
+                if (color == targetColorInt)
+                {
+                    component.Add(new Point(x, y));
+                    foreach (var dir in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) })
+                    {
+                        component.AddRange(dfs(x + dir.Item1, y + dir.Item2));
+                    }
+                }
+                return component;
+            };
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    if (!visited[y, x])
+                    {
+                        var component = dfs(x, y);
+                        if (component.Count > 0 && component.Count <= 4)
+                        {
+                            var minX = component.Min(p => p.X);
+                            var minY = component.Min(p => p.Y);
+                            // Korrektur: Addition von startPos.X und startPos.Y für die Rückgabe
+                            return new Point(minX, minY);
+                        }
+                        else if (component.Count > 4)
+                        {
+                            // Rückgabe eines Fehlerpunkts mit Berücksichtigung der startPos
+                            return new Point(-1, -1);
+                        }
                     }
                 }
             }
@@ -349,7 +405,7 @@ namespace Pixelfinder
             // Entsperren der Bitmap-Daten
             bitmap.UnlockBits(bitmapData);
         }
-    
+
     }
 }
 
