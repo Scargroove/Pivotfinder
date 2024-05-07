@@ -72,6 +72,7 @@
             this.listBox.Location = new System.Drawing.Point(12, 12);
             this.listBox.MinimumSize = new System.Drawing.Size(250, 56);
             this.listBox.Name = "listBox";
+            this.listBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBox.Size = new System.Drawing.Size(360, 121);
             this.listBox.TabIndex = 0;
             this.listBox.SelectedIndexChanged += new System.EventHandler(this.listBox_SelectedIndexChanged);

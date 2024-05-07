@@ -58,7 +58,7 @@ namespace Pixelfinder
             base.OnKeyDown(e);
             if (e.KeyCode == Keys.Delete)
             {
-                RemoveSelectedImage();
+                RemoveSelectedImages();
                 e.Handled = true;  // Markiert das Ereignis als behandelt
             }
         }
@@ -213,7 +213,7 @@ namespace Pixelfinder
         // Löscht das ausgewählte Bild aus der Liste.
         private void buttonDeleteListItem_Click(object sender, EventArgs e)
         {
-            RemoveSelectedImage();
+            RemoveSelectedImages();
         }
 
         // Öffnet einen Dialog zur Auswahl einer Farbe, die für Alpha-Werte verwendet werden soll.
@@ -421,30 +421,28 @@ namespace Pixelfinder
         }
 
         // Entfernt das ausgewählte Bild aus der ListBox und der internen Bilderliste.
-        private void RemoveSelectedImage()
+        private void RemoveSelectedImages()
         {
-            // Überprüfen, ob ein Bild in der ListBox ausgewählt ist
-            int selectedIndex = listBox.SelectedIndex;
+            // Erstellen einer Liste, um die zu löschenden Bilder zu speichern
+            var selectedItems = listBox.SelectedItems.Cast<string>().ToList();
 
-            // Wenn kein Bild ausgewählt ist, das letzte Bild in der Liste löschen
-            if (selectedIndex == -1 && imagesList.Count > 0)
+            if (selectedItems.Count > 0)
             {
-                selectedIndex = imagesList.Count - 1; // Letztes Element der Liste
-            }
+                foreach (var selectedItem in selectedItems)
+                {
+                    // Bild anhand des Tags finden
+                    var imageToRemove = imagesList.FirstOrDefault(img => img.Tag.ToString() == selectedItem);
+                    if (imageToRemove != null)
+                    {
+                        imageToRemove.Dispose(); // Freigeben der Ressourcen
+                        imagesList.Remove(imageToRemove); // Aus der Liste entfernen
+                    }
+                }
 
-            if (selectedIndex != -1)
-            {
-                // Bildressourcen freigeben
-                Image imageToRemove = imagesList[selectedIndex];
-                imageToRemove.Dispose();
-
-                // Das ausgewählte Bild aus der ListBox und der Liste entfernen
-                imagesList.RemoveAt(selectedIndex);
-
-                // ListBox aktualisieren, um die Liste der verbleibenden Bilder anzuzeigen
+                // ListBox aktualisieren
                 UpdateListBox();
 
-                // Wenn keine Bilder mehr in der Liste sind, die PictureBox zurücksetzen
+                // PictureBox zurücksetzen, wenn keine Bilder mehr vorhanden sind
                 if (imagesList.Count == 0)
                 {
                     pictureBox.Image = null;
@@ -458,6 +456,7 @@ namespace Pixelfinder
                 }
             }
         }
+
 
         // Lädt Bilder von den angegebenen Dateipfaden ind den Speicher und fügt sie zur Anwendung hinzu.
         private void LoadImages(string[] fileNames)
