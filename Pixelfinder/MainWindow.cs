@@ -56,12 +56,23 @@ namespace Pixelfinder
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            if (e.KeyCode == Keys.Delete)
+
+            // Behandeln des Löschens von Bildern, wenn die Entf-Taste gedrückt wird
+            if (e.KeyCode == Keys.Delete && listBox.SelectedItems.Count > 0)
             {
                 RemoveSelectedImages();
                 e.Handled = true;  // Markiert das Ereignis als behandelt
             }
+            // Behandeln des Auswählens aller Elemente, wenn Strg+A gedrückt wird
+            else if (e.Control && e.KeyCode == Keys.A)
+            {
+                for (int i = 0; i < listBox.Items.Count; i++)
+                    listBox.SetSelected(i, true);
+
+                e.Handled = true;  // Markiert das Ereignis als behandelt
+            }
         }
+
 
         // Behandelt das Ereignis, wenn Dateien in das Formular gezogen werden.
         private void Form1_DragEnter(object sender, DragEventArgs e)
