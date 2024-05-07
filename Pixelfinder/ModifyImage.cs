@@ -206,6 +206,7 @@ namespace Pixelfinder
             bitmap.Save(newFileName, ImageFormat.Png);
         }
 
+        // Ersetzt die gesuchten Pixel mit Farben in der Nähe oder Durchschnittsfarben wenn es alle verschiedene sind.
         private static void ReplacePixelWithDominantOrNearestAverageColor(byte[] pixelData, int stride, Point spriteSize, int position, int targetColorInt)
         {
             int[] neighboringColors = new int[4];
@@ -246,40 +247,52 @@ namespace Pixelfinder
             BitConverter.GetBytes(colorToSet).CopyTo(pixelData, position);
         }
 
+        // Berechnet den Durchschnittswert der Farben in einem Array von Farb-Integer-Werten.
         private static int CalculateAverageColor(int[] colors)
         {
+            // Initialisiere die Summe der Rot-, Grün- und Blauwerte.
             int r = 0, g = 0, b = 0;
+            // Zähler für die Anzahl der verarbeiteten Farben.
             int count = 0;
+            // Durchlaufe jedes Farb-Integer im Array.
             foreach (int color in colors)
             {
+                // Extrahiere den Rotanteil der Farbe und addiere ihn zur Summe.
                 r += (color >> 16) & 0xFF;
+                // Extrahiere den Grünanteil der Farbe und addiere ihn zur Summe.
                 g += (color >> 8) & 0xFF;
+                // Extrahiere den Blauanteil der Farbe und addiere ihn zur Summe.
                 b += color & 0xFF;
+                // Erhöhe den Zähler um eins für jede verarbeitete Farbe.
                 count++;
             }
+            // Teile die Summen durch die Anzahl der Farben, um den Durchschnitt zu berechnen.
             if (count > 0)
             {
                 r /= count;
                 g /= count;
                 b /= count;
             }
+            // Kombiniere die Durchschnittswerte von Rot, Grün und Blau zu einem einzigen Farb-Integer.
             return (r << 16) | (g << 8) | b;
         }
 
+        // Berechnet die Distanz zwischen zwei Farben, basierend auf ihren RGB-Werten.
         private static int ColorDistance(int color1, int color2)
         {
+            // Extrahiere die RGB-Komponenten der ersten Farbe.
             int r1 = (color1 >> 16) & 0xFF;
             int g1 = (color1 >> 8) & 0xFF;
             int b1 = color1 & 0xFF;
 
+            // Extrahiere die RGB-Komponenten der zweiten Farbe.
             int r2 = (color2 >> 16) & 0xFF;
             int g2 = (color2 >> 8) & 0xFF;
             int b2 = color2 & 0xFF;
 
+            // Berechne das quadratische Abstandsmaß zwischen den beiden Farben.
             return (r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2);
         }
-
-
 
         // Setzt alle Alpha-Werte zwischen 1 und 254 auf einen anderen Wert.
         private static void ChangeAlphaToColor(byte[] pixelData, Color targetColor)
