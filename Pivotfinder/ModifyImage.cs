@@ -12,7 +12,7 @@ namespace Pixelfinder
     {
 
         // Findet Pixel einer bestimmten Farbe in einem Bitmap und kann optional diese Pixel auch entfernen.
-        public static (List<string> resultsList, List<string> errorImagePaths) FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, Color changeAlphaTo, bool removePixel = false, bool changeAlpha = false, bool findCoordinates = false, bool removeAlpha = false)
+        public static (List<string> resultsList, List<string> errorImagePaths) FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, Color changeAlphaTo, bool removePixel = false, bool changeAlphaToFullOpaque = false, bool findCoordinates = false, bool changeAlphaToFullTransparent = false, bool setNewAlphaColor = false, Point alphaRange = default)
         {
             // Überprüft, ob die Größe eines einzelnen Sprites kleiner oder gleich der Größe des gesamten Bitmaps ist.
             if (spriteSize.X > bitmap.Width || spriteSize.Y > bitmap.Height)
@@ -65,23 +65,19 @@ namespace Pixelfinder
                     }
                 }
             }
-            if (changeAlpha)
+            if (changeAlphaToFullOpaque || changeAlphaToFullTransparent)
             {
 
-                ChangeAlpha(pixelData, changeAlphaTo);
+                ChangeAlpha(pixelData, changeAlphaTo,alphaRange,changeAlphaToFullTransparent,changeAlphaToFullOpaque,setNewAlphaColor);
             }
-            else if (removeAlpha)
-            {
-                Color transparent = Color.FromArgb(0, 0, 0, 0);
-                ChangeAlpha(pixelData, transparent);
-            }
+     
 
             // Kopiert die veränderten Pixeldaten zurück ins Bitmap.
             Marshal.Copy(pixelData, 0, bitmapData.Scan0, pixelData.Length);
             bitmap.UnlockBits(bitmapData);
 
             // Optional: Speichert das veränderte Bitmap.
-            if (removePixel || changeAlpha || removeAlpha)
+            if (removePixel || changeAlphaToFullOpaque || changeAlphaToFullTransparent)
             {
                 SaveModifiedBitmap(bitmap);
             }
@@ -304,8 +300,7 @@ namespace Pixelfinder
             return (r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2);
         }
 
-        // Setzt alle Alpha-Werte zwischen 1 und 254 auf einen anderen Wert.
-        private static void ChangeAlpha(byte[] pixelData, Color targetColor)
+        private static void ChangeAlpha(byte[] pixelData, Color targetColor, Point alphaRange, bool changeToFullTransparent, bool changeToFullOpaque, bool changeColor)
         {
             // Durchlaufe alle Pixel im Bild
             for (int i = 0; i < pixelData.Length; i += 4)
@@ -315,18 +310,35 @@ namespace Pixelfinder
                 byte green = pixelData[i + 1];
                 byte red = pixelData[i + 2];
                 byte alpha = pixelData[i + 3];
+                byte newAlpha;
 
-                // Wenn der Alpha-Wert nicht 255 ist oder Alpha 0 ist, aber eine Farbe hat
-                if (alpha != 255 && (alpha != 0 || (red != 0 || green != 0 || blue != 0)))
+                if (alpha >= alphaRange.X && alpha <= alphaRange.Y)
                 {
-                    // Die Farbkomponenten auf die Ziel-Farbe setzen
-                    pixelData[i] = targetColor.B;
-                    pixelData[i + 1] = targetColor.G;
-                    pixelData[i + 2] = targetColor.R;
-                    pixelData[i + 3] = targetColor.A;
+                    if (changeToFullOpaque)
+                    {
+                        newAlpha = 255;
+                    }
+                    else if (changeToFullTransparent)
+                    {
+                        newAlpha = 0;
+                    }
+                    else
+                    {
+                        newAlpha = alpha;
+                    }
+
+                    if (changeColor)
+                    {
+                        pixelData[i] = targetColor.B;
+                        pixelData[i + 1] = targetColor.G;
+                        pixelData[i + 2] = targetColor.R;
+                    }
+
+                    pixelData[i + 3] = newAlpha;
                 }
             }
         }
+
 
 
         // Setzt Pixel in der gewünschten Farbe auf die Koordinaten der Liste.

@@ -13,14 +13,14 @@ namespace Pixelfinder
     {
 
         private List<Image> imagesList = new List<Image>();
-        private bool removeAlpha = false;
-        private bool changeAlpha = false;
+        private bool changeAplhaToFullTransparent = false;
+        private bool changeAlphaToFullOpaque = false;
         private bool removePixel = false;
         private bool findCoordinates = false;
+        private bool setNewAlphaColor = false;
         private Stopwatch stopwatch = new Stopwatch();
         private Color targetColor = Color.FromArgb(255, 255, 0, 255);
         private Color changeAlphaTo = Color.FromArgb(255, 0, 0, 0);
-
 
         // Initialisiert das Hauptfenster und die GUI-Komponenten.
         public MainWindow()
@@ -44,12 +44,13 @@ namespace Pixelfinder
 
             // Tooltip-Text festlegen
 
-            toolTip1.SetToolTip(this.checkBoxChangeAlpha, "Change pixels with alpha values from 1 to 254 to black (default color with RGB 0, 0, 0). Users can select a different color if preferred.");
-            toolTip1.SetToolTip(this.checkBoxRemoveAlpha, "Make pixels with alpha values from 1 to 254 fully transparent.");
-            toolTip1.SetToolTip(this.checkBoxFindPivots, "Identify pivot points using magenta (default color with RGB 255, 0, 255) and the sprite size (default size 128x128). Users can select a different color or sprite size if preferred.");
+            toolTip1.SetToolTip(this.checkBoxChangeAlpha, "Change pixels with alpha values int the scope to be fully opaque. Users can select a different color if preferred.");
+            toolTip1.SetToolTip(this.checkBoxRemoveAlpha, "Change pixels with alpha values in the scope to be fully tansparent. Users can select a different color if preferred.");
+            toolTip1.SetToolTip(this.checkBoxFindPivots, "Identify pivot points using the pivot color and the sprite size. Users can select a different color or sprite size if preferred.");
             toolTip1.SetToolTip(this.checkBoxRemovePivot, "Removes the pivot-point by changing it to the color of the dominant neighboring pixel.");
             toolTip1.SetToolTip(this.buttonPivotToSpriteSheet, "Draws the pivots from a .txt file onto an image, using the specified sprite size and pivot color options.");
             toolTip1.SetToolTip(this.buttonSelectPivotColor, "Selects the color to identify the pivot points.");
+            toolTip1.SetToolTip(this.buttonAlphaToColor, "Changes the alpha values in scope to a Color if selected.");
 
         }
 
@@ -244,7 +245,7 @@ namespace Pixelfinder
                 // Die ausgewählte Farbe verwenden
                 Color selectedColor = colorDialogAlpha.Color;
                 changeAlphaTo = selectedColor;
-                checkBoxChangeAlpha.Checked = true;
+                checkBoxSetNewAlphaColor.Checked = true;
             }
         }
 
@@ -269,6 +270,18 @@ namespace Pixelfinder
             }
         }
 
+        private void checkBoxSetNewAlphaColor_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxSetNewAlphaColor.Checked)
+            {
+                setNewAlphaColor = true;
+            }
+            else
+            {
+                setNewAlphaColor= false;
+            }
+        }
+
         // Aktiviert oder deaktiviert die Entfernung von Pixeln basierend auf dem Zustand des entsprechenden Kontrollkästchens.
         private void checkBoxRemovePixel_CheckStateChanged(object sender, EventArgs e)
         {
@@ -287,13 +300,13 @@ namespace Pixelfinder
         {
             if (checkBoxChangeAlpha.Checked)
             {
-                changeAlpha = true;
-                removeAlpha = false;
+                changeAlphaToFullOpaque = true;
+                changeAplhaToFullTransparent = false;
                 checkBoxRemoveAlpha.Checked = false;
             }
             else
             {
-                changeAlpha = false;
+                changeAlphaToFullOpaque = false;
             }
         }
 
@@ -302,13 +315,13 @@ namespace Pixelfinder
         {
             if (checkBoxRemoveAlpha.Checked)
             {
-                removeAlpha = true;
-                changeAlpha = false;
+                changeAplhaToFullTransparent = true;
+                changeAlphaToFullOpaque = false;
                 checkBoxChangeAlpha.Checked = false;
             }
             else
             {
-                removeAlpha = false;
+                changeAplhaToFullTransparent = false;
             }
         }
 
@@ -355,12 +368,13 @@ namespace Pixelfinder
         private void startOperation_Click(object sender, EventArgs e)
         {
             // Prüft, ob Bilder vorhanden sind und ob eine Operation ausgewählt wurde
-            if (imagesList.Count > 0 && (changeAlpha || removePixel || findCoordinates || removeAlpha))
+            if (imagesList.Count > 0 && (changeAlphaToFullOpaque || removePixel || findCoordinates || changeAplhaToFullTransparent))
             {
                 progressBar.Maximum = imagesList.Count;
                 progressBar.Value = 0;
 
                 Point spriteSize = new Point((int)numericUpDownSpriteWidth.Value, (int)numericUpDownSpriteHeight.Value);
+                Point alphaRange = new Point((int)numericUpDownAlphaFrom.Value, (int)numericUpDownAlphaTo.Value);
                 List<string> messages = new List<string>();  // Liste zum Speichern von Nachrichten für das Log
 
                 // Iteriert über jedes Bild in der Liste
@@ -375,7 +389,7 @@ namespace Pixelfinder
                         stopwatch.Restart();  // Startet die Stoppuhr neu
 
                         // Führt die Pixelbearbeitung durch und sammelt Koordinaten und fehlerhafte Bildpfade
-                        var (coordinates, errorImagePaths) = ModifyImage.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlpha, findCoordinates, removeAlpha);
+                        var (coordinates, errorImagePaths) = ModifyImage.FindPixelInSpriteSheet(bitmap, spriteSize, targetColor, changeAlphaTo, removePixel, changeAlphaToFullOpaque, findCoordinates, changeAplhaToFullTransparent, setNewAlphaColor, alphaRange);
 
                         stopwatch.Stop();  // Stoppt die Stoppuhr
 
@@ -383,7 +397,7 @@ namespace Pixelfinder
                         string message = $"Proessing time: {stopwatch.ElapsedMilliseconds} ms";
                         messages.Add(imagePath);
                         messages.Add(message);  // Fügt die Nachricht der Liste hinzu
-                        if (removeAlpha || removePixel || changeAlpha)
+                        if (changeAplhaToFullTransparent || removePixel || changeAlphaToFullOpaque)
                         {
                             messages.Add(modifiedPath);  // Fügt die Nachricht der Liste hinzu
                         }
@@ -615,7 +629,7 @@ namespace Pixelfinder
                     long processingTime = stopwatch.ElapsedMilliseconds;
 
                     // speichert das Bild
-                    string modifiedPath = Path.Combine(Path.GetDirectoryName(bitmapPath), "Pivots_" + Path.GetFileName(bitmapPath));
+                    string modifiedPath = Path.Combine(Path.GetDirectoryName(bitmapPath), "pivots_" + Path.GetFileName(bitmapPath));
                     bitmap.Save(modifiedPath);
                     bitmap.Dispose();
 
@@ -688,6 +702,6 @@ namespace Pixelfinder
             return coordinates; // Gibt die Liste der Koordinaten zurück
         }
 
-
+       
     }
 }
