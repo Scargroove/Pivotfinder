@@ -10,90 +10,86 @@ namespace Pixelfinder
 {
     internal class ModifyImage
     {
-
-        // Findet Pixel einer bestimmten Farbe in einem Bitmap und kann optional diese Pixel auch entfernen.
+        // Finds pixels of a specified color in a bitmap and can optionally remove these pixels.
         public static (List<string> resultsList, List<string> errorImagePaths) FindPixelInSpriteSheet(Bitmap bitmap, Point spriteSize, Color targetColor, Color changeAlphaTo, bool removePixel = false, bool changeAlphaToFullOpaque = false, bool findCoordinates = false, bool changeAlphaToFullTransparent = false, bool setNewAlphaColor = false, Point alphaRange = default)
         {
-            // Überprüft, ob die Größe eines einzelnen Sprites kleiner oder gleich der Größe des gesamten Bitmaps ist.
+            // Ensure that the size of a single sprite is less than or equal to the size of the entire bitmap.
             if (spriteSize.X > bitmap.Width || spriteSize.Y > bitmap.Height)
             {
                 throw new ArgumentException("The sprite size must not be larger than the spritesheet size.");
             }
 
-            // Konvertiert die Ziel-Farbe in ein ARGB-Integer-Format für einfache Vergleiche.
+            // Convert the target color to ARGB integer format for easy comparisons.
             int targetColorInt = targetColor.ToArgb();
 
-            // Berechnet die Anzahl der Sprites in X- und Y-Richtung auf dem Spritesheet.
+            // Calculate the number of sprites horizontally and vertically on the spritesheet.
             Point spriteAmount = new Point(bitmap.Width / spriteSize.X, bitmap.Height / spriteSize.Y);
 
             List<string> resultsList = new List<string>();
-            List<string> errorImagePaths = new List<string>(); // Liste der Bildpfade mit dem Fehler
+            List<string> errorImagePaths = new List<string>(); // List of image paths with errors
 
-            // Sperren des Bitmaps im Speicher für schnellen Zugriff.
+            // Lock the bitmap in memory for quick access.
             BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
             byte[] pixelData = new byte[bitmapData.Stride * bitmapData.Height];
             Marshal.Copy(bitmapData.Scan0, pixelData, 0, pixelData.Length);
 
-            // Durchläuft jedes Sprite auf dem Spritesheet.
+            // Iterate over each sprite on the spritesheet.
             for (int y = 0; y < spriteAmount.Y; y++)
             {
                 for (int x = 0; x < spriteAmount.X; x++)
                 {
-                    // Findet die Position des gesuchten Pixels im Sprite.
+                    // Find the position of the desired pixel within the sprite.
                     Point result = FindPixelInSprite(pixelData, bitmapData.Stride, spriteSize, targetColorInt, new Point(spriteSize.X * x, spriteSize.Y * y), removePixel, findCoordinates, bitmap.Tag.ToString());
                     if (findCoordinates)
                     {
                         if (result.X != -1 && result.Y != -1)
                         {
-                            if(result.X == 0 && result.Y == 0)
+                            if (result.X == 0 && result.Y == 0)
                             {
                                 resultsList.Add(result.X + "," + result.Y);
-
                             }
                             else
                             {
                                 resultsList.Add((result.X + 1) + "," + (result.Y + 1));
-
                             }
-
                         }
                         else
                         {
-                            // Fehler: Mehrere Pixel gefunden
+                            // Error: Multiple pixels found
                             errorImagePaths.Add(bitmap.Tag.ToString());
                         }
                     }
                 }
             }
+
+            // Change alpha values if required
             if (changeAlphaToFullOpaque || changeAlphaToFullTransparent)
             {
-
-                ChangeAlpha(pixelData, changeAlphaTo,alphaRange,changeAlphaToFullTransparent,changeAlphaToFullOpaque,setNewAlphaColor);
+                ChangeAlpha(pixelData, changeAlphaTo, alphaRange, changeAlphaToFullTransparent, changeAlphaToFullOpaque, setNewAlphaColor);
             }
-     
 
-            // Kopiert die veränderten Pixeldaten zurück ins Bitmap.
+            // Copy the modified pixel data back into the bitmap.
             Marshal.Copy(pixelData, 0, bitmapData.Scan0, pixelData.Length);
             bitmap.UnlockBits(bitmapData);
 
-            // Optional: Speichert das veränderte Bitmap.
+            // Optionally, save the modified bitmap.
             if (removePixel || changeAlphaToFullOpaque || changeAlphaToFullTransparent)
             {
                 SaveModifiedBitmap(bitmap);
             }
 
-            // Gibt das Bitmap-Speicher frei.
+            // Release bitmap memory.
             bitmap.Dispose();
             return (resultsList, errorImagePaths);
         }
 
-        // Sucht das Pixel mit der Ziel-Farbe in einem einzelnen Sprite.
+        // Searches for the pixel with the target color in a single sprite.
         private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false, bool findCoordinates = false, string imagePath = "")
         {
             Point result = new Point(0, 0);
-            int foundPixelCount = 0; // Zähler für die Anzahl der gefundenen Pixel.
+            int foundPixelCount = 0; // Counter for the number of found pixels.
 
-            // Durchsucht das Sprite Pixel für Pixel.
+            // Search each pixel within the sprite.
             for (int y = 0; y < spriteSize.Y; y++)
             {
                 int rowStart = (startPos.Y + y) * stride + startPos.X * 4;
@@ -105,16 +101,15 @@ namespace Pixelfinder
 
                     if (color == targetColorInt)
                     {
-                        if (findCoordinates == true)
+                        if (findCoordinates)
                         {
                             if (foundPixelCount > 0)
                             {
-                                // Falls mehrere Pivots gefunden wurden, wird auf Gruppierung beding durch upscaling gesucht.
-                                // Bei Gruppierung von 4 oder weniger Pivots wird der erste zurückgegeben, der gefunden wurde.
-                                // Falls keine Gruppierung, wird ein falscher Wert zurückgegeben.
+                                // If multiple pivots are found, search for grouping due to upscaling.
+                                // Return the first found point if grouped within 4 or fewer pivots.
+                                // Otherwise, return an incorrect value.
                                 result = FindPixelGroupInSprite(pixelData, stride, spriteSize, targetColorInt, startPos);
-
-                                return result; 
+                                return result;
                             }
 
                             result = new Point(x, y);
@@ -124,7 +119,7 @@ namespace Pixelfinder
                         {
                             ReplacePixelWithDominantOrNearestAverageColor(pixelData, stride, spriteSize, position, targetColorInt);
                         }
-                        foundPixelCount++; // Inkrementieren des Zählers für gefundene Pixel.
+                        foundPixelCount++; // Increment the count for found pixels.
                     }
                 }
             }
@@ -132,31 +127,31 @@ namespace Pixelfinder
             return result;
         }
 
-        // Sucht nach Gruppen der Pixel und gibt die Koordinate des ersten Pixel zurück, wenn es eine Gruppe unter 4 ist.
+        // Searches for groups of pixels and returns the coordinate of the first pixel if the group is under 4.
         private static Point FindPixelGroupInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos)
         {
-            int width = spriteSize.X; // Breite des Sprites
-            int height = spriteSize.Y; // Höhe des Sprites
-            bool[,] visited = new bool[height, width]; // Array zum Speichern der besuchten Pixel
-            Point result = new Point(-1, -1); // Fehlerpunkt als Standardwert, wenn keine passende Gruppe gefunden wird
+            int width = spriteSize.X; // Width of the sprite
+            int height = spriteSize.Y; // Height of the sprite
+            bool[,] visited = new bool[height, width]; // Array to store visited pixels
+            Point result = new Point(-1, -1); // Default error point if no suitable group is found
 
-            Func<int, int, List<Point>> dfs = null; // Funktion für die Tiefensuche
+            Func<int, int, List<Point>> dfs = null; // Function for depth-first search
             dfs = (x, y) =>
             {
-                List<Point> component = new List<Point>(); // Liste der Punkte in der aktuellen Komponente
-                if (x < 0 || x >= width || y < 0 || y >= height || visited[y, x]) // Überprüfung der Grenzen und ob bereits besucht
+                List<Point> component = new List<Point>(); // List of points in the current component
+                if (x < 0 || x >= width || y < 0 || y >= height || visited[y, x]) // Check bounds and if already visited
                     return component;
 
-                int position = ((startPos.Y + y) * stride) + ((startPos.X + x) * 4); // Berechnung der Position im Byte-Array
-                int color = BitConverter.ToInt32(pixelData, position); // Umwandlung von Byte-Daten in einen Integer-Wert für die Farbe
-                visited[y, x] = true; // Markierung des Punktes als besucht
+                int position = ((startPos.Y + y) * stride) + ((startPos.X + x) * 4); // Calculate position in byte array
+                int color = BitConverter.ToInt32(pixelData, position); // Convert byte data to integer color
+                visited[y, x] = true; // Mark point as visited
 
-                if (color == targetColorInt) // Überprüfung, ob die Farbe mit der Ziel-Farbe übereinstimmt
+                if (color == targetColorInt) // Check if color matches the target color
                 {
-                    component.Add(new Point(x, y)); // Hinzufügen des Punktes zur Komponente
-                    foreach (var dir in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) }) // Erkundung in vier Richtungen
+                    component.Add(new Point(x, y)); // Add point to component
+                    foreach (var dir in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) }) // Explore in four directions
                     {
-                        component.AddRange(dfs(x + dir.Item1, y + dir.Item2)); // Rekursiver Aufruf der Tiefensuche
+                        component.AddRange(dfs(x + dir.Item1, y + dir.Item2)); // Recursive DFS call
                     }
                 }
                 return component;
@@ -166,146 +161,146 @@ namespace Pixelfinder
             {
                 for (int x = 0; x < width; x++)
                 {
-                    if (!visited[y, x]) // Überprüfung, ob der Punkt noch nicht besucht wurde
+                    if (!visited[y, x]) // Check if point has not been visited yet
                     {
-                        var component = dfs(x, y); // Start der Tiefensuche von diesem Punkt
-                        if (component.Count > 0 && component.Count <= 4) // Überprüfung der Größe der Komponente
+                        var component = dfs(x, y); // Start DFS from this point
+                        if (component.Count > 0 && component.Count <= 4) // Check component size
                         {
-                            var minX = component.Min(p => p.X); // Berechnung des kleinsten X-Wertes
-                            var minY = component.Min(p => p.Y); // Berechnung des kleinsten Y-Wertes
-                                                                // Rückgabe des ersten gefundenen Punktes der Komponente mit Anpassung durch startPos
+                            var minX = component.Min(p => p.X); // Find smallest X value
+                            var minY = component.Min(p => p.Y); // Find smallest Y value
+                            // Return the first found point of the component adjusted by startPos
                             return new Point(minX, minY);
                         }
-                        else if (component.Count > 4) // Falls die Komponente zu groß ist
+                        else if (component.Count > 4) // If component is too large
                         {
-                            // Rückgabe eines Fehlerpunkts
+                            // Return an error point
                             return new Point(-1, -1);
                         }
                     }
                 }
             }
 
-            return result; // Rückgabe des Ergebnis-Punktes, wenn keine geeignete Komponente gefunden wurde
+            return result; // Return result point if no suitable component is found
         }
 
-        // Speichert das veränderte Bitmap unter einem neuen Dateinamen.
+        // Saves the modified bitmap under a new filename.
         public static void SaveModifiedBitmap(Bitmap bitmap, string modifiedText = "_modified")
         {
-            // Prüft, ob das Tag des Bitmaps einen gültigen Speicherpfad enthält
+            // Check if the bitmap tag contains a valid storage path
             if (bitmap.Tag == null || string.IsNullOrEmpty(bitmap.Tag.ToString()))
             {
                 throw new InvalidOperationException("The bitmap tag does not contain a valid storage path.");
             }
 
-            // Holt den ursprünglichen Pfad des Bildes aus dem Tag
+            // Retrieve the original path of the image from the tag
             string originalPath = bitmap.Tag.ToString();
-            // Bestimmt das Verzeichnis des Originalbildes
+            // Get the directory of the original image
             string directory = Path.GetDirectoryName(originalPath);
-            // Extrahiert den Dateinamen ohne Erweiterung
+            // Extract the filename without extension
             string filename = Path.GetFileNameWithoutExtension(originalPath);
-            // Extrahiert die Dateierweiterung
+            // Extract the file extension
             string extension = Path.GetExtension(originalPath);
-            // Erstellt den neuen Dateinamen mit dem Zusatztext
+            // Create the new filename with the additional text
             string newFileName = Path.Combine(directory, filename + modifiedText + extension);
 
-            // Speichert das Bitmap unter dem neuen Dateinamen als PNG
+            // Save the bitmap under the new filename as a PNG
             bitmap.Save(newFileName, ImageFormat.Png);
         }
 
-        // Ersetzt die gesuchten Pixel mit Farben in der Nähe oder Durchschnittsfarben wenn es alle verschiedene sind.
+        // Replaces the searched pixel with nearby colors or average colors if all are different.
         private static void ReplacePixelWithDominantOrNearestAverageColor(byte[] pixelData, int stride, Point spriteSize, int position, int targetColorInt)
         {
             int[] neighboringColors = new int[4];
             int y = position / stride;
             int x = (position % stride) / 4;
 
-            // Erfassen der Farben der umliegenden Pixel
-            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // oben
-            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // unten
-            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // links
-            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // rechts
+            // Capture the colors of the surrounding pixels
+            if (y > 0) neighboringColors[0] = BitConverter.ToInt32(pixelData, position - stride); // Top
+            if (y < spriteSize.Y - 1) neighboringColors[1] = BitConverter.ToInt32(pixelData, position + stride); // Bottom
+            if (x > 0) neighboringColors[2] = BitConverter.ToInt32(pixelData, position - 4); // Left
+            if (x < spriteSize.X - 1) neighboringColors[3] = BitConverter.ToInt32(pixelData, position + 4); // Right
 
-            // Filtern der Ziel-Farbe aus den umgebenden Farben
+            // Filter out the target color from the surrounding colors
             var filteredColors = neighboringColors.Where(color => color != targetColorInt).ToArray();
 
-            // Gruppieren der Farben, um die dominante Farbe zu ermitteln
+            // Group colors to determine the dominant color
             var groupedColors = filteredColors.GroupBy(color => color)
                                               .Select(group => new { Color = group.Key, Count = group.Count() })
                                               .OrderByDescending(group => group.Count);
 
-            // Bestimme die dominante Farbe, falls vorhanden
+            // Determine the dominant color if available
             var dominantColor = groupedColors.FirstOrDefault(group => group.Count >= 2);
 
             int colorToSet;
             if (dominantColor != null)
             {
-                // Verwende die dominante Farbe, wenn eine gefunden wurde
+                // Use the dominant color if one is found
                 colorToSet = dominantColor.Color;
             }
             else
             {
-                // Keine dominante Farbe gefunden, berechne den Durchschnitt und finde die nächstgelegene Farbe
+                // No dominant color found, calculate the average and find the nearest color
                 int averageColor = CalculateAverageColor(filteredColors);
                 colorToSet = filteredColors.OrderBy(color => ColorDistance(averageColor, color)).FirstOrDefault();
             }
 
-            // Setzen der ausgewählten Farbe am aktuellen Pixel
+            // Set the selected color at the current pixel
             BitConverter.GetBytes(colorToSet).CopyTo(pixelData, position);
         }
 
-        // Berechnet den Durchschnittswert der Farben in einem Array von Farb-Integer-Werten.
+        // Calculates the average value of colors in an array of integer color values.
         private static int CalculateAverageColor(int[] colors)
         {
-            // Initialisiere die Summe der Rot-, Grün- und Blauwerte.
+            // Initialize sum of red, green, and blue values.
             int r = 0, g = 0, b = 0;
-            // Zähler für die Anzahl der verarbeiteten Farben.
+            // Counter for the number of processed colors.
             int count = 0;
-            // Durchlaufe jedes Farb-Integer im Array.
+            // Iterate over each color integer in the array.
             foreach (int color in colors)
             {
-                // Extrahiere den Rotanteil der Farbe und addiere ihn zur Summe.
+                // Extract the red component and add it to the sum.
                 r += (color >> 16) & 0xFF;
-                // Extrahiere den Grünanteil der Farbe und addiere ihn zur Summe.
+                // Extract the green component and add it to the sum.
                 g += (color >> 8) & 0xFF;
-                // Extrahiere den Blauanteil der Farbe und addiere ihn zur Summe.
+                // Extract the blue component and add it to the sum.
                 b += color & 0xFF;
-                // Erhöhe den Zähler um eins für jede verarbeitete Farbe.
+                // Increment the counter by one for each processed color.
                 count++;
             }
-            // Teile die Summen durch die Anzahl der Farben, um den Durchschnitt zu berechnen.
+            // Divide the sums by the number of colors to calculate the average.
             if (count > 0)
             {
                 r /= count;
                 g /= count;
                 b /= count;
             }
-            // Kombiniere die Durchschnittswerte von Rot, Grün und Blau zu einem einzigen Farb-Integer.
+            // Combine the average red, green, and blue values into a single color integer.
             return (r << 16) | (g << 8) | b;
         }
 
-        // Berechnet die Distanz zwischen zwei Farben, basierend auf ihren RGB-Werten.
+        // Calculates the distance between two colors based on their RGB values.
         private static int ColorDistance(int color1, int color2)
         {
-            // Extrahiere die RGB-Komponenten der ersten Farbe.
+            // Extract the RGB components of the first color.
             int r1 = (color1 >> 16) & 0xFF;
             int g1 = (color1 >> 8) & 0xFF;
             int b1 = color1 & 0xFF;
 
-            // Extrahiere die RGB-Komponenten der zweiten Farbe.
+            // Extract the RGB components of the second color.
             int r2 = (color2 >> 16) & 0xFF;
             int g2 = (color2 >> 8) & 0xFF;
             int b2 = color2 & 0xFF;
 
-            // Berechne das quadratische Abstandsmaß zwischen den beiden Farben.
+            // Calculate the squared distance between the two colors.
             return (r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2);
         }
 
         private static void ChangeAlpha(byte[] pixelData, Color targetColor, Point alphaRange, bool changeToFullTransparent, bool changeToFullOpaque, bool changeColor)
         {
-            // Durchlaufe alle Pixel im Bild
+            // Iterate over all pixels in the image
             for (int i = 0; i < pixelData.Length; i += 4)
             {
-                // Blaue, Grüne, Rote Komponenten und den Alpha-Wert des Pixels abrufen
+                // Retrieve the blue, green, and red components and the alpha value of the pixel
                 byte blue = pixelData[i];
                 byte green = pixelData[i + 1];
                 byte red = pixelData[i + 2];
@@ -339,85 +334,80 @@ namespace Pixelfinder
             }
         }
 
-
-
-        // Setzt Pixel in der gewünschten Farbe auf die Koordinaten der Liste.
+        // Sets pixels in the desired color at coordinates specified in a list.
         public static void SetPixelFromList(Bitmap bitmap, Point spriteSize, Color targetColor, List<Point> points)
         {
-            // Ermittelt die Größe des Spritesheets
+            // Determine the size of the spritesheet
             Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
 
-            // Sperrt die Bitmap-Daten für den Schreib- und Lesezugriff
+            // Lock bitmap data for read and write access
             BitmapData bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
 
-            // Erhält die Adresse der ersten Zeile
+            // Get the address of the first line
             IntPtr ptr = bitmapData.Scan0;
 
-            // Deklariert ein Array, um die Bytes der Bitmap zu halten
+            // Declare an array to hold the bitmap bytes
             int bytes = Math.Abs(bitmapData.Stride) * bitmap.Height;
             byte[] rgbValues = new byte[bytes];
 
-            // Kopiert die RGB-Werte in das Array
+            // Copy the RGB values into the array
             Marshal.Copy(ptr, rgbValues, 0, bytes);
 
-            int depth = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8; // Bytes pro Pixel
+            int depth = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8; // Bytes per pixel
 
-            // Berechnet die Anzahl der Sprites
+            // Calculate the number of sprites
             Point spriteAmount = new Point(bitmap.Width / spriteSize.X, bitmap.Height / spriteSize.Y);
             int pointListPosition = 0;
 
-            // Schleife über jede Zeile im Sprite-Raster
+            // Loop over each row in the sprite grid
             for (int y = 0; y < spriteAmount.Y; y++)
             {
-                // Schleife über jede Spalte im aktuellen Raster der Zeile
+                // Loop over each column in the current grid row
                 for (int x = 0; x < spriteAmount.X; x++)
                 {
-                    // Überprüfe, ob der Punkt nicht am Ursprung (0,0) liegt
+                    // Check if the point is not at the origin (0,0)
                     if (points[pointListPosition].X != 0 && points[pointListPosition].Y != 0)
                     {
-                        // Berechne die X-Koordinate des Pixels in der Bitmap
+                        // Calculate the X-coordinate of the pixel in the bitmap
                         int pixelX = (spriteSize.X * x) + points[pointListPosition].X;
 
-                        // Berechne die Y-Koordinate des Pixels in der Bitmap
+                        // Calculate the Y-coordinate of the pixel in the bitmap
                         int pixelY = (spriteSize.Y * y) + points[pointListPosition].Y;
 
                         // Offset
                         pixelX = pixelX - 1;
                         pixelY = pixelY - 1;
 
-                        // Berechne die Position des Pixels im eindimensionalen Array 'rgbValues', das die Bitmap-Daten enthält
+                        // Calculate the pixel position in the one-dimensional array `rgbValues` that contains the bitmap data
                         int position = (pixelY * bitmapData.Stride) + (pixelX * depth);
 
-                        // Setze den Blauanteil des Pixels
+                        // Set the blue component of the pixel
                         rgbValues[position] = targetColor.B;
 
-                        // Setze den Grünanteil des Pixels
+                        // Set the green component of the pixel
                         rgbValues[position + 1] = targetColor.G;
 
-                        // Setze den Rotanteil des Pixels
+                        // Set the red component of the pixel
                         rgbValues[position + 2] = targetColor.R;
 
-                        // Überprüfe, ob das Bildformat 32 Bits pro Pixel hat (RGBA), um den Alphawert zu setzen
+                        // Check if the image format is 32 bits per pixel (RGBA) to set the alpha value
                         if (depth == 4)
                         {
-                            // Setze den Alphawert (Transparenz) des Pixels
+                            // Set the alpha value (transparency) of the pixel
                             rgbValues[position + 3] = targetColor.A;
                         }
                     }
 
-                    // Erhöhe die Position in der Liste der Punkte
+                    // Increase the position in the list of points
                     pointListPosition++;
                 }
             }
 
-            // Kopiert die RGB-Werte zurück in die Bitmap
+            // Copy the RGB values back into the bitmap
             Marshal.Copy(rgbValues, 0, ptr, bytes);
 
-            // Entsperren der Bitmap-Daten
+            // Unlock bitmap data
             bitmap.UnlockBits(bitmapData);
         }
-
     }
 }
-
-
