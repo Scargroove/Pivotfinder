@@ -146,9 +146,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ImageBoxBackground.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="Resources\icon.png" />
     <Content Include="Sprite-0001.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
