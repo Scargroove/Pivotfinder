@@ -31,7 +31,6 @@ A modified copy with the suffix _modified is created.
 Set Alpha to Fully Transparent
 
 Sets all pixels in the specified area of the spritesheet to fully transparent (alpha=0), either retaining or changing the color if specified.
-
 Result:
 A modified copy with the suffix _modified is created.
 
@@ -40,7 +39,6 @@ A modified copy with the suffix _modified is created.
 Set Alpha to Fully Opaque
 
 Sets all pixels in the specified area of the spritesheet to fully opaque (alpha=255), either retaining or changing the color if specified.
-
 Result:
 A modified copy with the suffix _modified is created.
 
@@ -49,6 +47,5 @@ A modified copy with the suffix _modified is created.
 Pivots to Sprite
 
 The reverse operation of "Save Pivots to Text File":
-
 Choose a spritesheet, a text file, and the color in which the pivots should be set.
 At the end, a copy with the prefix pivots_ is created.
