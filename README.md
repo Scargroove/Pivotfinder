@@ -1,7 +1,10 @@
 PivotFinder
+
 PivotFinder is a tool designed to align anchor points (pivots) for sprites in a spritesheet and store the coordinates in a text file. This file can then be read by a game engine to determine where objects, such as weapons, should be displayed. Additionally, the tool enables the removal of anchor points, changing of alpha values, and reapplying pivots to a spritesheet.
 
+
 Key Features
+
 
 Save Pivots to Text File
 
@@ -12,6 +15,8 @@ If more pixels are present or they're too far apart, the operation is aborted.
 Result:
 The coordinates are saved line by line in a text file (x,y). If no pivot is found, the value 0,0 is written. Coordinates start at 1,1.
 
+
+
 Remove Pivots
 
 Removes marked areas and replaces them with a new pixel matching the surrounding color environment. The following rules are used:
@@ -21,6 +26,8 @@ Average Color: If all neighboring pixels have different colors, the pixel closes
 Result:
 A modified copy with the suffix _modified is created.
 
+
+
 Set Alpha to Fully Transparent
 
 Sets all pixels in the specified area of the spritesheet to fully transparent (alpha=0), either retaining or changing the color if specified.
@@ -28,12 +35,16 @@ Sets all pixels in the specified area of the spritesheet to fully transparent (a
 Result:
 A modified copy with the suffix _modified is created.
 
+
+
 Set Alpha to Fully Opaque
 
 Sets all pixels in the specified area of the spritesheet to fully opaque (alpha=255), either retaining or changing the color if specified.
 
 Result:
 A modified copy with the suffix _modified is created.
+
+
 
 Pivots to Sprite
 
