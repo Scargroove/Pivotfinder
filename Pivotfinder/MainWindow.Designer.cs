@@ -213,7 +213,7 @@
             this.buttonAlphaToColor.Name = "buttonAlphaToColor";
             this.buttonAlphaToColor.Size = new System.Drawing.Size(58, 24);
             this.buttonAlphaToColor.TabIndex = 9;
-            this.buttonAlphaToColor.Text = "set color";
+            this.buttonAlphaToColor.Text = "color";
             this.buttonAlphaToColor.UseVisualStyleBackColor = true;
             this.buttonAlphaToColor.Click += new System.EventHandler(this.buttonAlphaToColor_Click);
             // 

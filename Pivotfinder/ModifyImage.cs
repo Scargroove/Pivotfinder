@@ -68,12 +68,12 @@ namespace Pixelfinder
             if (changeAlpha)
             {
 
-                ChangeAlphaToColor(pixelData, changeAlphaTo);
+                ChangeAlpha(pixelData, changeAlphaTo);
             }
             else if (removeAlpha)
             {
                 Color transparent = Color.FromArgb(0, 0, 0, 0);
-                ChangeAlphaToColor(pixelData, transparent);
+                ChangeAlpha(pixelData, transparent);
             }
 
             // Kopiert die veränderten Pixeldaten zurück ins Bitmap.
@@ -305,16 +305,19 @@ namespace Pixelfinder
         }
 
         // Setzt alle Alpha-Werte zwischen 1 und 254 auf einen anderen Wert.
-        private static void ChangeAlphaToColor(byte[] pixelData, Color targetColor)
+        private static void ChangeAlpha(byte[] pixelData, Color targetColor)
         {
             // Durchlaufe alle Pixel im Bild
             for (int i = 0; i < pixelData.Length; i += 4)
             {
-                // Alpha-Wert des Pixels abrufen
+                // Blaue, Grüne, Rote Komponenten und den Alpha-Wert des Pixels abrufen
+                byte blue = pixelData[i];
+                byte green = pixelData[i + 1];
+                byte red = pixelData[i + 2];
                 byte alpha = pixelData[i + 3];
 
-                // auf Alpha-Wert prüfen
-                if (alpha != 0 && alpha != 255)
+                // Wenn der Alpha-Wert nicht 255 ist oder Alpha 0 ist, aber eine Farbe hat
+                if (alpha != 255 && (alpha != 0 || (red != 0 || green != 0 || blue != 0)))
                 {
                     // Die Farbkomponenten auf die Ziel-Farbe setzen
                     pixelData[i] = targetColor.B;
@@ -324,6 +327,7 @@ namespace Pixelfinder
                 }
             }
         }
+
 
         // Setzt Pixel in der gewünschten Farbe auf die Koordinaten der Liste.
         public static void SetPixelFromList(Bitmap bitmap, Point spriteSize, Color targetColor, List<Point> points)
