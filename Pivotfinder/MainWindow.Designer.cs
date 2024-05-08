@@ -242,7 +242,7 @@
             0,
             0});
             this.numericUpDownAlphaFrom.Name = "numericUpDownAlphaFrom";
-            this.numericUpDownAlphaFrom.Size = new System.Drawing.Size(40, 20);
+            this.numericUpDownAlphaFrom.Size = new System.Drawing.Size(46, 20);
             this.numericUpDownAlphaFrom.TabIndex = 11;
             // 
             // numericUpDownAlphaTo
@@ -254,7 +254,7 @@
             0,
             0});
             this.numericUpDownAlphaTo.Name = "numericUpDownAlphaTo";
-            this.numericUpDownAlphaTo.Size = new System.Drawing.Size(40, 20);
+            this.numericUpDownAlphaTo.Size = new System.Drawing.Size(46, 20);
             this.numericUpDownAlphaTo.TabIndex = 12;
             // 
             // checkBoxRemoveAlpha
