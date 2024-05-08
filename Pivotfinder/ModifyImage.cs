@@ -86,8 +86,11 @@ namespace Pixelfinder
         // Searches for the pixel with the target color in a single sprite.
         private static Point FindPixelInSprite(byte[] pixelData, int stride, Point spriteSize, int targetColorInt, Point startPos, bool removePixel = false, bool findCoordinates = false, string imagePath = "")
         {
+            Point multipleResult = new Point(0,0);
             Point result = new Point(0, 0);
             int foundPixelCount = 0; // Counter for the number of found pixels.
+            bool foundMultiplePixel = false;
+            
 
             // Search each pixel within the sprite.
             for (int y = 0; y < spriteSize.Y; y++)
@@ -103,13 +106,14 @@ namespace Pixelfinder
                     {
                         if (findCoordinates)
                         {
-                            if (foundPixelCount > 0)
+                            if (foundPixelCount > 0 && !foundMultiplePixel)
                             {
                                 // If multiple pivots are found, search for grouping due to upscaling.
                                 // Return the first found point if grouped within 4 or fewer pivots.
                                 // Otherwise, return an incorrect value.
-                                result = FindPixelGroupInSprite(pixelData, stride, spriteSize, targetColorInt, startPos);
-                                return result;
+                                multipleResult = FindPixelGroupInSprite(pixelData, stride, spriteSize, targetColorInt, startPos);
+                                foundMultiplePixel = true;
+                                
                             }
 
                             result = new Point(x, y);
@@ -123,7 +127,10 @@ namespace Pixelfinder
                     }
                 }
             }
-
+            if (foundMultiplePixel)
+            {
+                return multipleResult;
+            }
             return result;
         }
 
@@ -295,15 +302,13 @@ namespace Pixelfinder
             return (r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2);
         }
 
+        // Changes alpha values of the image.
         private static void ChangeAlpha(byte[] pixelData, Color targetColor, Point alphaRange, bool changeToFullTransparent, bool changeToFullOpaque, bool changeColor)
         {
             // Iterate over all pixels in the image
             for (int i = 0; i < pixelData.Length; i += 4)
             {
-                // Retrieve the blue, green, and red components and the alpha value of the pixel
-                byte blue = pixelData[i];
-                byte green = pixelData[i + 1];
-                byte red = pixelData[i + 2];
+                
                 byte alpha = pixelData[i + 3];
                 byte newAlpha;
 
