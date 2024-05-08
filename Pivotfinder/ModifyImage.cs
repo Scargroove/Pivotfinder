@@ -113,7 +113,7 @@ namespace Pixelfinder
                                 // Otherwise, return an incorrect value.
                                 multipleResult = FindPixelGroupInSprite(pixelData, stride, spriteSize, targetColorInt, startPos);
                                 foundMultiplePixel = true;
-                                
+                               
                             }
 
                             result = new Point(x, y);
