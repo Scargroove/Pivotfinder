@@ -172,7 +172,7 @@ namespace Pixelfinder
         private bool IsImageFile(string fileName)
         {
             string ext = System.IO.Path.GetExtension(fileName).ToLower();
-            return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext == ".bmp";
+            return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp";
         }
 
         // Checks if an image is already present in the list.
@@ -301,7 +301,7 @@ namespace Pixelfinder
         private void buttonAddListItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image files (*.jpg;*.jpeg;*.png;*.gif;*.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+            openFileDialog.Filter = "Image files (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp";
             openFileDialog.Multiselect = true; // Allows selecting multiple files
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
