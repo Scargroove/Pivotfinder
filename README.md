@@ -1,6 +1,6 @@
 # PivotFinder
 
-PivotFinder is a Windows Forms application that provides various tools to process images. It allows users to change alpha values, remove specific pixels, find pivot points, and apply coordinates to spritesheets. This tool is particularly useful for game developers working with sprite-based graphics.
+PivotFinder is a Windows Forms application that provides various tools to process images. It allows users to find pivot points, remove specific pixels, change alpha values and reverse apply coordinates to spritesheets. This tool is particularly useful for game developers working with sprite-based graphics.
 
 ## Features
 
@@ -23,32 +23,30 @@ PivotFinder is a Windows Forms application that provides various tools to proces
 
 You can drag and drop image files directly into the application window or specific areas like the PictureBox or ListBox. The application supports `.jpg`, `.jpeg`, `.png`, and `.bmp` file formats.
 
+### Sprite Size
+
+This value represents the size of each cell for the sprites in the spritesheet.
+
 ### Image Operations
 
 1.**Find Pivot Points**:
-   - Check the "Find Pivots" checkbox to identify pivot points using the specified pivot color and sprite size.
+   - Check the "find pivots" checkbox to identify pivot points with the specified pivot color and sprite size. The default pivot color is magenta.
 
 2. **Remove Pixels**:
-   - Check the "Remove Pivot" checkbox to remove pivot points by changing them to the color of the dominant neighboring pixel.
+   - Check the "remove pivot" checkbox to remove pivot points by changing them to the color of the dominant neighboring pixel.
 
 
 3. **Delete Images**:
-   - Select images in the ListBox and press the "Delete" key or click the "Delete" button to remove them from the list.
+   - Select images in the ListBox and press the "delete" key or click the "delete" button to remove them from the list.
 
 4. **Change Alpha Values**:
-   - Check the "Change Alpha" checkbox to convert alpha values within the specified range to fully opaque.
-   - Check the "Remove Alpha" checkbox to convert alpha values within the specified range to fully transparent.
-   - Check the "Set New Alpha Color" checkbox and click the "Alpha to Color" button to change alpha values within the specified range to a new color.
+   - Check the "change alpha" checkbox to convert alpha values within the specified range to fully opaque.
+   - Check the "remove alpha" checkbox to convert alpha values within the specified range to fully transparent.
+   - Check the "set new alpha color" checkbox and click the "set new color" button to change alpha values within the specified range to a new color.
 
 5. **Apply Coordinates to Spritesheets**:
    - Click the "Draw Pivots to Image" button to draw the pivots from a `.txt` file onto an image using the specified sprite size and pivot color options.
 
-### Configuration
-
-- **Sprite Size**: Specify the width and height of the sprite in the spritesheet.
-- **Alpha Range**: Specify the range of alpha values to be affected using the intput.
-- **Pivot Color**: Select the color to identify the pivot points by clicking the "Select Pivot Color" button.
-- **New Alpha Color**: Select the color to use for new alpha values by clicking the checkbox and the "Alpha to Color" button.
 
 ### Logging
 
