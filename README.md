@@ -11,7 +11,7 @@ PivotFinder is a Windows Forms application that provides various tools to proces
 
 ## Installation
 
-1. Download the installer from the [release page](https://github.com/yourusername/PivotFinder/releases).
+1. Download the installer from the [release page](https://github.com/Scargroove/Pivotfinder/releases).
 
 2. Run the downloaded installer (`PivotFinderSetup.exe`).
 
