@@ -1,4 +1,4 @@
-﻿namespace Pixelfinder
+﻿namespace Pivotfinder
 {
     partial class LogForm
     {

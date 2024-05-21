@@ -87,7 +87,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModifyImage.cs" />
     <Compile Include="LogForm.cs">
       <SubType>Form</SubType>
     </Compile>

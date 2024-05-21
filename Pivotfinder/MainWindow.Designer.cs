@@ -1,4 +1,4 @@
-﻿namespace Pixelfinder
+﻿namespace Pivotfinder
 {
     partial class MainWindow
     {
@@ -29,45 +29,68 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.pictureBox = new System.Windows.Forms.PictureBox();
             this.listBox = new System.Windows.Forms.ListBox();
             this.buttonDeleteListItem = new System.Windows.Forms.Button();
             this.buttonStartPixelfind = new System.Windows.Forms.Button();
-            this.numericUpDownSpriteWidth = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDownSpriteHeight = new System.Windows.Forms.NumericUpDown();
-            this.buttonSelectPivotColor = new System.Windows.Forms.Button();
-            this.groupBoxOptions = new System.Windows.Forms.GroupBox();
-            this.groupBoxAlpha = new System.Windows.Forms.GroupBox();
-            this.checkBoxSetNewAlphaColor = new System.Windows.Forms.CheckBox();
-            this.labelAlphaTo = new System.Windows.Forms.Label();
-            this.buttonAlphaToColor = new System.Windows.Forms.Button();
-            this.labelAlphaFrom = new System.Windows.Forms.Label();
-            this.numericUpDownAlphaFrom = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDownAlphaTo = new System.Windows.Forms.NumericUpDown();
-            this.checkBoxRemoveAlpha = new System.Windows.Forms.CheckBox();
-            this.checkBoxChangeAlpha = new System.Windows.Forms.CheckBox();
-            this.groupBoxPixelOptions = new System.Windows.Forms.GroupBox();
-            this.checkBoxFindPivots = new System.Windows.Forms.CheckBox();
-            this.checkBoxRemovePivot = new System.Windows.Forms.CheckBox();
             this.groupBoxSpriteSize = new System.Windows.Forms.GroupBox();
-            this.labelSpriteSizeY = new System.Windows.Forms.Label();
+            this.numericUpDownSpriteHeight = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownSpriteWidth = new System.Windows.Forms.NumericUpDown();
             this.labelSpriteSizeX = new System.Windows.Forms.Label();
+            this.labelSpriteSizeY = new System.Windows.Forms.Label();
+            this.groupBoxPixelOptions = new System.Windows.Forms.GroupBox();
+            this.checkBoxRemovePivot = new System.Windows.Forms.CheckBox();
+            this.buttonSelectPivotColor = new System.Windows.Forms.Button();
+            this.checkBoxFindPivots = new System.Windows.Forms.CheckBox();
+            this.groupBoxAlpha = new System.Windows.Forms.GroupBox();
+            this.checkBoxChangeAlpha = new System.Windows.Forms.CheckBox();
+            this.checkBoxRemoveAlpha = new System.Windows.Forms.CheckBox();
+            this.numericUpDownAlphaTo = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownAlphaFrom = new System.Windows.Forms.NumericUpDown();
+            this.labelAlphaFrom = new System.Windows.Forms.Label();
+            this.buttonAlphaToColor = new System.Windows.Forms.Button();
+            this.labelAlphaTo = new System.Windows.Forms.Label();
+            this.checkBoxSetNewAlphaColor = new System.Windows.Forms.CheckBox();
+            this.groupBoxOptions = new System.Windows.Forms.GroupBox();
             this.buttonAddListItem = new System.Windows.Forms.Button();
             this.buttonExit = new System.Windows.Forms.Button();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.buttonPivotToSpriteSheet = new System.Windows.Forms.Button();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
-            this.groupBoxOptions.SuspendLayout();
-            this.groupBoxAlpha.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAlphaFrom)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAlphaTo)).BeginInit();
-            this.groupBoxPixelOptions.SuspendLayout();
-            this.groupBoxSpriteSize.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            this.groupBoxSpriteSize.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).BeginInit();
+            this.groupBoxPixelOptions.SuspendLayout();
+            this.groupBoxAlpha.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAlphaTo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAlphaFrom)).BeginInit();
+            this.groupBoxOptions.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // pictureBox
+            // 
+            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox.BackgroundImage = global::Pivotfinder.Properties.Resources.icon;
+            this.pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pictureBox.Location = new System.Drawing.Point(12, 145);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(360, 341);
+            this.pictureBox.TabIndex = 0;
+            this.pictureBox.TabStop = false;
+            this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
+            this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
+            this.pictureBox.DragLeave += new System.EventHandler(this.PictureBox_DragLeave);
             // 
             // listBox
             // 
@@ -109,27 +132,18 @@
             this.buttonStartPixelfind.UseVisualStyleBackColor = true;
             this.buttonStartPixelfind.Click += new System.EventHandler(this.startOperation_Click);
             // 
-            // numericUpDownSpriteWidth
+            // groupBoxSpriteSize
             // 
-            this.numericUpDownSpriteWidth.Location = new System.Drawing.Point(27, 19);
-            this.numericUpDownSpriteWidth.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.numericUpDownSpriteWidth.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDownSpriteWidth.Name = "numericUpDownSpriteWidth";
-            this.numericUpDownSpriteWidth.Size = new System.Drawing.Size(50, 20);
-            this.numericUpDownSpriteWidth.TabIndex = 3;
-            this.numericUpDownSpriteWidth.Value = new decimal(new int[] {
-            128,
-            0,
-            0,
-            0});
+            this.groupBoxSpriteSize.Controls.Add(this.labelSpriteSizeY);
+            this.groupBoxSpriteSize.Controls.Add(this.labelSpriteSizeX);
+            this.groupBoxSpriteSize.Controls.Add(this.numericUpDownSpriteWidth);
+            this.groupBoxSpriteSize.Controls.Add(this.numericUpDownSpriteHeight);
+            this.groupBoxSpriteSize.Location = new System.Drawing.Point(6, 19);
+            this.groupBoxSpriteSize.Name = "groupBoxSpriteSize";
+            this.groupBoxSpriteSize.Size = new System.Drawing.Size(174, 49);
+            this.groupBoxSpriteSize.TabIndex = 10;
+            this.groupBoxSpriteSize.TabStop = false;
+            this.groupBoxSpriteSize.Text = "spritesize";
             // 
             // numericUpDownSpriteHeight
             // 
@@ -153,6 +167,71 @@
             0,
             0});
             // 
+            // numericUpDownSpriteWidth
+            // 
+            this.numericUpDownSpriteWidth.Location = new System.Drawing.Point(27, 19);
+            this.numericUpDownSpriteWidth.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUpDownSpriteWidth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownSpriteWidth.Name = "numericUpDownSpriteWidth";
+            this.numericUpDownSpriteWidth.Size = new System.Drawing.Size(50, 20);
+            this.numericUpDownSpriteWidth.TabIndex = 3;
+            this.numericUpDownSpriteWidth.Value = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            // 
+            // labelSpriteSizeX
+            // 
+            this.labelSpriteSizeX.AutoSize = true;
+            this.labelSpriteSizeX.Location = new System.Drawing.Point(9, 21);
+            this.labelSpriteSizeX.Name = "labelSpriteSizeX";
+            this.labelSpriteSizeX.Size = new System.Drawing.Size(15, 13);
+            this.labelSpriteSizeX.TabIndex = 6;
+            this.labelSpriteSizeX.Text = "x:";
+            // 
+            // labelSpriteSizeY
+            // 
+            this.labelSpriteSizeY.AutoSize = true;
+            this.labelSpriteSizeY.Location = new System.Drawing.Point(86, 21);
+            this.labelSpriteSizeY.Name = "labelSpriteSizeY";
+            this.labelSpriteSizeY.Size = new System.Drawing.Size(15, 13);
+            this.labelSpriteSizeY.TabIndex = 7;
+            this.labelSpriteSizeY.Text = "y:";
+            // 
+            // groupBoxPixelOptions
+            // 
+            this.groupBoxPixelOptions.Controls.Add(this.checkBoxFindPivots);
+            this.groupBoxPixelOptions.Controls.Add(this.buttonSelectPivotColor);
+            this.groupBoxPixelOptions.Controls.Add(this.checkBoxRemovePivot);
+            this.groupBoxPixelOptions.Location = new System.Drawing.Point(6, 74);
+            this.groupBoxPixelOptions.Name = "groupBoxPixelOptions";
+            this.groupBoxPixelOptions.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 94);
+            this.groupBoxPixelOptions.TabIndex = 12;
+            this.groupBoxPixelOptions.TabStop = false;
+            this.groupBoxPixelOptions.Text = "pivots";
+            // 
+            // checkBoxRemovePivot
+            // 
+            this.checkBoxRemovePivot.AutoSize = true;
+            this.checkBoxRemovePivot.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkBoxRemovePivot.Location = new System.Drawing.Point(6, 68);
+            this.checkBoxRemovePivot.Name = "checkBoxRemovePivot";
+            this.checkBoxRemovePivot.Size = new System.Drawing.Size(92, 17);
+            this.checkBoxRemovePivot.TabIndex = 7;
+            this.checkBoxRemovePivot.Text = "remove pivots";
+            this.checkBoxRemovePivot.UseVisualStyleBackColor = true;
+            this.checkBoxRemovePivot.CheckStateChanged += new System.EventHandler(this.checkBoxRemovePixel_CheckStateChanged);
+            // 
             // buttonSelectPivotColor
             // 
             this.buttonSelectPivotColor.Cursor = System.Windows.Forms.Cursors.Arrow;
@@ -165,18 +244,17 @@
             this.buttonSelectPivotColor.UseVisualStyleBackColor = true;
             this.buttonSelectPivotColor.Click += new System.EventHandler(this.buttonSelectPixelColor_Click);
             // 
-            // groupBoxOptions
+            // checkBoxFindPivots
             // 
-            this.groupBoxOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxOptions.Controls.Add(this.groupBoxAlpha);
-            this.groupBoxOptions.Controls.Add(this.groupBoxPixelOptions);
-            this.groupBoxOptions.Controls.Add(this.groupBoxSpriteSize);
-            this.groupBoxOptions.Location = new System.Drawing.Point(384, 80);
-            this.groupBoxOptions.Name = "groupBoxOptions";
-            this.groupBoxOptions.Size = new System.Drawing.Size(186, 295);
-            this.groupBoxOptions.TabIndex = 7;
-            this.groupBoxOptions.TabStop = false;
-            this.groupBoxOptions.Text = "options";
+            this.checkBoxFindPivots.AutoSize = true;
+            this.checkBoxFindPivots.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkBoxFindPivots.Location = new System.Drawing.Point(6, 46);
+            this.checkBoxFindPivots.Name = "checkBoxFindPivots";
+            this.checkBoxFindPivots.Size = new System.Drawing.Size(125, 17);
+            this.checkBoxFindPivots.TabIndex = 6;
+            this.checkBoxFindPivots.Text = "save pivots to textfile";
+            this.checkBoxFindPivots.UseVisualStyleBackColor = true;
+            this.checkBoxFindPivots.CheckedChanged += new System.EventHandler(this.checkBoxFindCoordinates_CheckedChanged);
             // 
             // groupBoxAlpha
             // 
@@ -195,67 +273,17 @@
             this.groupBoxAlpha.TabStop = false;
             this.groupBoxAlpha.Text = "set alpha";
             // 
-            // checkBoxSetNewAlphaColor
+            // checkBoxChangeAlpha
             // 
-            this.checkBoxSetNewAlphaColor.AutoSize = true;
-            this.checkBoxSetNewAlphaColor.Location = new System.Drawing.Point(6, 86);
-            this.checkBoxSetNewAlphaColor.Name = "checkBoxSetNewAlphaColor";
-            this.checkBoxSetNewAlphaColor.Size = new System.Drawing.Size(15, 14);
-            this.checkBoxSetNewAlphaColor.TabIndex = 17;
-            this.checkBoxSetNewAlphaColor.UseVisualStyleBackColor = true;
-            this.checkBoxSetNewAlphaColor.CheckedChanged += new System.EventHandler(this.checkBoxSetNewAlphaColor_CheckedChanged);
-            // 
-            // labelAlphaTo
-            // 
-            this.labelAlphaTo.AutoSize = true;
-            this.labelAlphaTo.Location = new System.Drawing.Point(89, 18);
-            this.labelAlphaTo.Name = "labelAlphaTo";
-            this.labelAlphaTo.Size = new System.Drawing.Size(19, 13);
-            this.labelAlphaTo.TabIndex = 14;
-            this.labelAlphaTo.Text = "to:";
-            // 
-            // buttonAlphaToColor
-            // 
-            this.buttonAlphaToColor.Location = new System.Drawing.Point(27, 81);
-            this.buttonAlphaToColor.Name = "buttonAlphaToColor";
-            this.buttonAlphaToColor.Size = new System.Drawing.Size(141, 23);
-            this.buttonAlphaToColor.TabIndex = 16;
-            this.buttonAlphaToColor.Text = "set new color";
-            this.buttonAlphaToColor.UseVisualStyleBackColor = true;
-            this.buttonAlphaToColor.Click += new System.EventHandler(this.buttonAlphaToColor_Click);
-            // 
-            // labelAlphaFrom
-            // 
-            this.labelAlphaFrom.AutoSize = true;
-            this.labelAlphaFrom.Location = new System.Drawing.Point(6, 18);
-            this.labelAlphaFrom.Name = "labelAlphaFrom";
-            this.labelAlphaFrom.Size = new System.Drawing.Size(30, 13);
-            this.labelAlphaFrom.TabIndex = 13;
-            this.labelAlphaFrom.Text = "from:";
-            // 
-            // numericUpDownAlphaFrom
-            // 
-            this.numericUpDownAlphaFrom.Location = new System.Drawing.Point(37, 16);
-            this.numericUpDownAlphaFrom.Maximum = new decimal(new int[] {
-            254,
-            0,
-            0,
-            0});
-            this.numericUpDownAlphaFrom.Name = "numericUpDownAlphaFrom";
-            this.numericUpDownAlphaFrom.Size = new System.Drawing.Size(46, 20);
-            this.numericUpDownAlphaFrom.TabIndex = 11;
-            // 
-            // numericUpDownAlphaTo
-            // 
-            this.numericUpDownAlphaTo.Location = new System.Drawing.Point(114, 16);
-            this.numericUpDownAlphaTo.Maximum = new decimal(new int[] {
-            254,
-            0,
-            0,
-            0});
-            this.numericUpDownAlphaTo.Name = "numericUpDownAlphaTo";
-            this.numericUpDownAlphaTo.Size = new System.Drawing.Size(46, 20);
-            this.numericUpDownAlphaTo.TabIndex = 12;
+            this.checkBoxChangeAlpha.AutoSize = true;
+            this.checkBoxChangeAlpha.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkBoxChangeAlpha.Location = new System.Drawing.Point(6, 63);
+            this.checkBoxChangeAlpha.Name = "checkBoxChangeAlpha";
+            this.checkBoxChangeAlpha.Size = new System.Drawing.Size(95, 17);
+            this.checkBoxChangeAlpha.TabIndex = 8;
+            this.checkBoxChangeAlpha.Text = "to fully opaque";
+            this.checkBoxChangeAlpha.UseVisualStyleBackColor = true;
+            this.checkBoxChangeAlpha.CheckedChanged += new System.EventHandler(this.checkBoxChangeAlpha_CheckedChanged);
             // 
             // checkBoxRemoveAlpha
             // 
@@ -269,85 +297,80 @@
             this.checkBoxRemoveAlpha.UseVisualStyleBackColor = true;
             this.checkBoxRemoveAlpha.CheckedChanged += new System.EventHandler(this.checkBoxRemoveAlpha_CheckedChanged);
             // 
-            // checkBoxChangeAlpha
+            // numericUpDownAlphaTo
             // 
-            this.checkBoxChangeAlpha.AutoSize = true;
-            this.checkBoxChangeAlpha.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.checkBoxChangeAlpha.Location = new System.Drawing.Point(6, 63);
-            this.checkBoxChangeAlpha.Name = "checkBoxChangeAlpha";
-            this.checkBoxChangeAlpha.Size = new System.Drawing.Size(95, 17);
-            this.checkBoxChangeAlpha.TabIndex = 8;
-            this.checkBoxChangeAlpha.Text = "to fully opaque";
-            this.checkBoxChangeAlpha.UseVisualStyleBackColor = true;
-            this.checkBoxChangeAlpha.CheckedChanged += new System.EventHandler(this.checkBoxChangeAlpha_CheckedChanged);
+            this.numericUpDownAlphaTo.Location = new System.Drawing.Point(114, 16);
+            this.numericUpDownAlphaTo.Maximum = new decimal(new int[] {
+            254,
+            0,
+            0,
+            0});
+            this.numericUpDownAlphaTo.Name = "numericUpDownAlphaTo";
+            this.numericUpDownAlphaTo.Size = new System.Drawing.Size(46, 20);
+            this.numericUpDownAlphaTo.TabIndex = 12;
             // 
-            // groupBoxPixelOptions
+            // numericUpDownAlphaFrom
             // 
-            this.groupBoxPixelOptions.Controls.Add(this.checkBoxFindPivots);
-            this.groupBoxPixelOptions.Controls.Add(this.buttonSelectPivotColor);
-            this.groupBoxPixelOptions.Controls.Add(this.checkBoxRemovePivot);
-            this.groupBoxPixelOptions.Location = new System.Drawing.Point(6, 74);
-            this.groupBoxPixelOptions.Name = "groupBoxPixelOptions";
-            this.groupBoxPixelOptions.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.groupBoxPixelOptions.Size = new System.Drawing.Size(174, 94);
-            this.groupBoxPixelOptions.TabIndex = 12;
-            this.groupBoxPixelOptions.TabStop = false;
-            this.groupBoxPixelOptions.Text = "pivots";
+            this.numericUpDownAlphaFrom.Location = new System.Drawing.Point(37, 16);
+            this.numericUpDownAlphaFrom.Maximum = new decimal(new int[] {
+            254,
+            0,
+            0,
+            0});
+            this.numericUpDownAlphaFrom.Name = "numericUpDownAlphaFrom";
+            this.numericUpDownAlphaFrom.Size = new System.Drawing.Size(46, 20);
+            this.numericUpDownAlphaFrom.TabIndex = 11;
             // 
-            // checkBoxFindPivots
+            // labelAlphaFrom
             // 
-            this.checkBoxFindPivots.AutoSize = true;
-            this.checkBoxFindPivots.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.checkBoxFindPivots.Location = new System.Drawing.Point(6, 46);
-            this.checkBoxFindPivots.Name = "checkBoxFindPivots";
-            this.checkBoxFindPivots.Size = new System.Drawing.Size(125, 17);
-            this.checkBoxFindPivots.TabIndex = 6;
-            this.checkBoxFindPivots.Text = "save pivots to textfile";
-            this.checkBoxFindPivots.UseVisualStyleBackColor = true;
-            this.checkBoxFindPivots.CheckedChanged += new System.EventHandler(this.checkBoxFindCoordinates_CheckedChanged);
+            this.labelAlphaFrom.AutoSize = true;
+            this.labelAlphaFrom.Location = new System.Drawing.Point(6, 18);
+            this.labelAlphaFrom.Name = "labelAlphaFrom";
+            this.labelAlphaFrom.Size = new System.Drawing.Size(30, 13);
+            this.labelAlphaFrom.TabIndex = 13;
+            this.labelAlphaFrom.Text = "from:";
             // 
-            // checkBoxRemovePivot
+            // buttonAlphaToColor
             // 
-            this.checkBoxRemovePivot.AutoSize = true;
-            this.checkBoxRemovePivot.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.checkBoxRemovePivot.Location = new System.Drawing.Point(6, 68);
-            this.checkBoxRemovePivot.Name = "checkBoxRemovePivot";
-            this.checkBoxRemovePivot.Size = new System.Drawing.Size(92, 17);
-            this.checkBoxRemovePivot.TabIndex = 7;
-            this.checkBoxRemovePivot.Text = "remove pivots";
-            this.checkBoxRemovePivot.UseVisualStyleBackColor = true;
-            this.checkBoxRemovePivot.CheckStateChanged += new System.EventHandler(this.checkBoxRemovePixel_CheckStateChanged);
+            this.buttonAlphaToColor.Location = new System.Drawing.Point(27, 81);
+            this.buttonAlphaToColor.Name = "buttonAlphaToColor";
+            this.buttonAlphaToColor.Size = new System.Drawing.Size(141, 23);
+            this.buttonAlphaToColor.TabIndex = 16;
+            this.buttonAlphaToColor.Text = "set new color";
+            this.buttonAlphaToColor.UseVisualStyleBackColor = true;
+            this.buttonAlphaToColor.Click += new System.EventHandler(this.buttonAlphaToColor_Click);
             // 
-            // groupBoxSpriteSize
+            // labelAlphaTo
             // 
-            this.groupBoxSpriteSize.Controls.Add(this.labelSpriteSizeY);
-            this.groupBoxSpriteSize.Controls.Add(this.labelSpriteSizeX);
-            this.groupBoxSpriteSize.Controls.Add(this.numericUpDownSpriteWidth);
-            this.groupBoxSpriteSize.Controls.Add(this.numericUpDownSpriteHeight);
-            this.groupBoxSpriteSize.Location = new System.Drawing.Point(6, 19);
-            this.groupBoxSpriteSize.Name = "groupBoxSpriteSize";
-            this.groupBoxSpriteSize.Size = new System.Drawing.Size(174, 49);
-            this.groupBoxSpriteSize.TabIndex = 10;
-            this.groupBoxSpriteSize.TabStop = false;
-            this.groupBoxSpriteSize.Text = "spritesize";
+            this.labelAlphaTo.AutoSize = true;
+            this.labelAlphaTo.Location = new System.Drawing.Point(89, 18);
+            this.labelAlphaTo.Name = "labelAlphaTo";
+            this.labelAlphaTo.Size = new System.Drawing.Size(19, 13);
+            this.labelAlphaTo.TabIndex = 14;
+            this.labelAlphaTo.Text = "to:";
             // 
-            // labelSpriteSizeY
+            // checkBoxSetNewAlphaColor
             // 
-            this.labelSpriteSizeY.AutoSize = true;
-            this.labelSpriteSizeY.Location = new System.Drawing.Point(86, 21);
-            this.labelSpriteSizeY.Name = "labelSpriteSizeY";
-            this.labelSpriteSizeY.Size = new System.Drawing.Size(15, 13);
-            this.labelSpriteSizeY.TabIndex = 7;
-            this.labelSpriteSizeY.Text = "y:";
+            this.checkBoxSetNewAlphaColor.AutoSize = true;
+            this.checkBoxSetNewAlphaColor.Location = new System.Drawing.Point(6, 86);
+            this.checkBoxSetNewAlphaColor.Name = "checkBoxSetNewAlphaColor";
+            this.checkBoxSetNewAlphaColor.Size = new System.Drawing.Size(15, 14);
+            this.checkBoxSetNewAlphaColor.TabIndex = 17;
+            this.checkBoxSetNewAlphaColor.UseVisualStyleBackColor = true;
+            this.checkBoxSetNewAlphaColor.CheckedChanged += new System.EventHandler(this.checkBoxSetNewAlphaColor_CheckedChanged);
             // 
-            // labelSpriteSizeX
+            // groupBoxOptions
             // 
-            this.labelSpriteSizeX.AutoSize = true;
-            this.labelSpriteSizeX.Location = new System.Drawing.Point(9, 21);
-            this.labelSpriteSizeX.Name = "labelSpriteSizeX";
-            this.labelSpriteSizeX.Size = new System.Drawing.Size(15, 13);
-            this.labelSpriteSizeX.TabIndex = 6;
-            this.labelSpriteSizeX.Text = "x:";
+            this.groupBoxOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxOptions.Controls.Add(this.groupBoxAlpha);
+            this.groupBoxOptions.Controls.Add(this.groupBoxPixelOptions);
+            this.groupBoxOptions.Controls.Add(this.groupBoxSpriteSize);
+            this.groupBoxOptions.Location = new System.Drawing.Point(384, 80);
+            this.groupBoxOptions.Name = "groupBoxOptions";
+            this.groupBoxOptions.Size = new System.Drawing.Size(186, 295);
+            this.groupBoxOptions.TabIndex = 7;
+            this.groupBoxOptions.TabStop = false;
+            this.groupBoxOptions.Text = "options";
             // 
             // buttonAddListItem
             // 
@@ -370,29 +393,6 @@
             this.buttonExit.Text = "exit";
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
-            // 
-            // imageList1
-            // 
-            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // pictureBox
-            // 
-            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox.BackgroundImage = global::Pivotfinder.Properties.Resources.icon;
-            this.pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox.Location = new System.Drawing.Point(12, 145);
-            this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(360, 341);
-            this.pictureBox.TabIndex = 0;
-            this.pictureBox.TabStop = false;
-            this.pictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragDrop);
-            this.pictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.PictureBox_DragEnter);
-            this.pictureBox.DragLeave += new System.EventHandler(this.PictureBox_DragLeave);
             // 
             // buttonPivotToSpriteSheet
             // 
@@ -437,53 +437,52 @@
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).EndInit();
-            this.groupBoxOptions.ResumeLayout(false);
-            this.groupBoxAlpha.ResumeLayout(false);
-            this.groupBoxAlpha.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAlphaFrom)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAlphaTo)).EndInit();
-            this.groupBoxPixelOptions.ResumeLayout(false);
-            this.groupBoxPixelOptions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.groupBoxSpriteSize.ResumeLayout(false);
             this.groupBoxSpriteSize.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpriteWidth)).EndInit();
+            this.groupBoxPixelOptions.ResumeLayout(false);
+            this.groupBoxPixelOptions.PerformLayout();
+            this.groupBoxAlpha.ResumeLayout(false);
+            this.groupBoxAlpha.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAlphaTo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAlphaFrom)).EndInit();
+            this.groupBoxOptions.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.ListBox listBox;
         private System.Windows.Forms.Button buttonDeleteListItem;
         private System.Windows.Forms.Button buttonStartPixelfind;
-        private System.Windows.Forms.NumericUpDown numericUpDownSpriteWidth;
-        private System.Windows.Forms.NumericUpDown numericUpDownSpriteHeight;
-        private System.Windows.Forms.Button buttonSelectPivotColor;
-        private System.Windows.Forms.GroupBox groupBoxOptions;
-        private System.Windows.Forms.Button buttonAddListItem;
-        private System.Windows.Forms.CheckBox checkBoxRemovePivot;
-        private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.GroupBox groupBoxSpriteSize;
         private System.Windows.Forms.Label labelSpriteSizeY;
         private System.Windows.Forms.Label labelSpriteSizeX;
-        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.NumericUpDown numericUpDownSpriteWidth;
+        private System.Windows.Forms.NumericUpDown numericUpDownSpriteHeight;
         private System.Windows.Forms.GroupBox groupBoxPixelOptions;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox checkBoxFindPivots;
-        private System.Windows.Forms.Button buttonPivotToSpriteSheet;
+        private System.Windows.Forms.Button buttonSelectPivotColor;
+        private System.Windows.Forms.CheckBox checkBoxRemovePivot;
         private System.Windows.Forms.GroupBox groupBoxAlpha;
-        private System.Windows.Forms.CheckBox checkBoxRemoveAlpha;
-        private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.NumericUpDown numericUpDownAlphaTo;
-        private System.Windows.Forms.NumericUpDown numericUpDownAlphaFrom;
-        private System.Windows.Forms.Label labelAlphaTo;
-        private System.Windows.Forms.Label labelAlphaFrom;
-        private System.Windows.Forms.CheckBox checkBoxChangeAlpha;
-        private System.Windows.Forms.Button buttonAlphaToColor;
         private System.Windows.Forms.CheckBox checkBoxSetNewAlphaColor;
+        private System.Windows.Forms.Label labelAlphaTo;
+        private System.Windows.Forms.Button buttonAlphaToColor;
+        private System.Windows.Forms.Label labelAlphaFrom;
+        private System.Windows.Forms.NumericUpDown numericUpDownAlphaFrom;
+        private System.Windows.Forms.NumericUpDown numericUpDownAlphaTo;
+        private System.Windows.Forms.CheckBox checkBoxRemoveAlpha;
+        private System.Windows.Forms.CheckBox checkBoxChangeAlpha;
+        private System.Windows.Forms.GroupBox groupBoxOptions;
+        private System.Windows.Forms.Button buttonAddListItem;
+        private System.Windows.Forms.Button buttonExit;
+        private System.Windows.Forms.Button buttonPivotToSpriteSheet;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 

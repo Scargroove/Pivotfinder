@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Pixelfinder
+namespace Pivotfinder
 {
     internal static class Program
     {

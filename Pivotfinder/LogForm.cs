@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Pixelfinder
+namespace Pivotfinder
 {
     public partial class LogForm : Form
     {
