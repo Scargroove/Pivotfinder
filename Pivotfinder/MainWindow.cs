@@ -373,16 +373,19 @@ namespace Pivotfinder
 
                         messages.Add(imagePath);
                         messages.Add("Processing time: " + stopwatch.ElapsedMilliseconds + " ms");
-                        if (changeAlphaToFullTransparent || removePixel || changeAlphaToFullOpaque)
+
+                        // Save coordinates if the option is selected and coordinates are found
+                        if (findCoordinates && coordinates.Any())
+                        {
+                            SaveCoordinatesToFile(imagePath, coordinates, messages);
+                        }
+
+                        // Save the modified image if any of the modification options is selected
+                        if (changeAlphaToFullTransparent || removePixel || changeAlphaToFullOpaque || changeAlphaToNewColor)
                         {
                             messages.Add("Image modified and saved successfully in: " + Path.Combine(Path.GetDirectoryName(imagePath), Path.GetFileNameWithoutExtension(imagePath) + "_modified.png"));
                         }
 
-                        // Save coordinates if the option is selected and coordinates are found
-                        else if (findCoordinates && coordinates.Any())
-                        {
-                            SaveCoordinatesToFile(imagePath, coordinates, messages);
-                        }
                         messages.Add("");
                         bitmap.Dispose();  // Release the resources of the Bitmap object
 
